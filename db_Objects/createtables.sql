@@ -28,7 +28,7 @@ CREATE TABLE Utilizador(
     nome varchar(255) NOT NULL,
     email varchar(255) NOT NULL,
     palavraPasse varchar(255) NOT NULL,
-    tipo int NOT NULL REFERENCES TipoUtilizador(id),
+    tipo int NOT NULL REFERENCES TipoUtilizador(id) DEFAULT 2,
     criadoEm TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     isEnabled boolean DEFAULT true
 );

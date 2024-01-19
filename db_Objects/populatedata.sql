@@ -11,8 +11,8 @@ VALUES ('Administrador', 'admin@gmail.com', 'admin', 1),
 SELECT * FROM Utilizador;
 
 INSERT INTO Armazem (nome, descricao,criadoPor)
-VALUES ('Armazém 1', 'Armazém 1', 1),
-       ('Armazém 2', 'Armazém 2', 1);
+VALUES ('Armazém 1', 'Descrição armazém 1', 1),
+       ('Armazém 2', 'Descrição armazém 2', 1);
 
 SELECT * FROM Armazem;
 
@@ -28,7 +28,9 @@ VALUES ('Intel i7-9700k', 'Processador Intel Core i7-9700K 3.6GHz c/ Turbo 4.9GH
        ('Monitor 24" LED - LG 24MK400H-B', 'Monitor 24" LED - LG 24MK400H-B', 99.90, 23, '', 1),
        ('Teclado Mecânico - Corsair K70 RGB MK.2', 'Teclado Mecânico - Corsair K70 RGB MK.2', 159.90, 23, '', 1),
        ('Rato Gaming - Corsair M65 RGB Elite', 'Rato Gaming - Corsair M65 RGB Elite', 69.90, 23, '', 1),
-       ('Webcam - Logitech C920 HD Pro', 'Webcam - Logitech C920 HD Pro', 99.90, 23, '', 1);
+       ('Webcam - Logitech C920 HD Pro', 'Webcam - Logitech C920 HD Pro', 99.90, 23, '', 1),
+       ('Samsung 860 Evo 500GB M.2', 'Disco Rígido SSD Samsung 860 Evo 500GB M.2 SATA', 89.90, 23, '', 1),
+       ('Samsung 860 Evo 1TB M.2', 'Disco Rígido SSD Samsung 860 Evo 1TB M.2 SATA', 149.90, 23, '', 1);
 
 SELECT * FROM Componente;
 
