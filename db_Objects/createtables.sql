@@ -148,7 +148,8 @@ CREATE TABLE EncomendaEquipamento(
     estado int references EstadoEncomenda(id),
     criadoPor int NOT NULL REFERENCES Utilizador(id),
     criadoEm TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    dataEncomenda TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    dataEncomenda TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    isEnabled boolean DEFAULT true
 );
 
 CREATE TABLE EntregaEncomendaComponente(
@@ -156,7 +157,8 @@ CREATE TABLE EntregaEncomendaComponente(
     encomenda int REFERENCES EncomendaComponente(id),
     componente int REFERENCES Componente(id),
     estado int REFERENCES EstadoEntrega(id),
-    dataEntrega TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    dataEntrega TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    isEnabled boolean DEFAULT true
 );
 
 CREATE TABLE EntregaEncomendaEquipamento(
@@ -164,12 +166,14 @@ CREATE TABLE EntregaEncomendaEquipamento(
     encomenda int REFERENCES EncomendaEquipamento(id),
     equipamento int REFERENCES Equipamento(id),
     estado int REFERENCES EstadoEntrega(id),
-    dataEntrega TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    dataEntrega TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    isEnabled boolean DEFAULT true
 );
 
 CREATE TABLE MaoObra(
     id serial PRIMARY KEY,
     tipo varchar(255) NOT NULL,
     descricao varchar(255) NOT NULL,
-    preco float NOT NULL
+    preco float NOT NULL,
+    isEnabled boolean DEFAULT true
 );
