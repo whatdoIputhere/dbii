@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+
+<body>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" value="{{ username }}" name="username" id="username" placeholder="Username">
+        <input type="text" value="{{ email }}" name="email" id="email" placeholder="Email">
+        <input type="password" name="password" id="password" placeholder="Password">
+        {% if error %}
+        <br>
+        <a>{{ error }}</a>
+        {% endif %}
+
+        <button type="submit">Register</button>
+    </form>
+
+    <br>
+    <a href="/login">Back to login</a>
+</body>
+
+</html>

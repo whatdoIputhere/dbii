@@ -40,7 +40,7 @@ BEGIN
 END;
 $$; 
 
-CALL InserirUtilizador('Cliente 2', 'user2@gmail.com','user2');
+CALL InserirUtilizador('Cliente 2', 'user2@gmail.com','$2b$12$LttOyjXCxF5k0hwLAU3qMuw6vhY0quJC2NglLI0CBX5ltafGTWyQa');
 
 SELECT * FROM Utilizador;
 -- #endregion
@@ -470,7 +470,7 @@ BEGIN
 END;
 $$;
 
-CALL AtualizarUtilizador(3, 'Cliente 2 atualizado', 'cliente2@gmail.com', 'cliente2', 2);
+CALL AtualizarUtilizador(3, 'Cliente 2 atualizado', 'cliente2@gmail.com', '$2b$12$LttOyjXCxF5k0hwLAU3qMuw6vhY0quJC2NglLI0CBX5ltafGTWyQa', 2);
 
 SELECT * FROM Utilizador;
 
@@ -1366,5 +1366,10 @@ CALL RemoverMaoObra(7);
 SELECT * FROM MaoObra;
 
 -- #endregion
+
+-- #endregion
+
+-- #region OTHERS
+
 
 -- #endregion

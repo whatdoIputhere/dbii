@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-fcd130nk&5%_39eeq99lbvw0x^b2$-0=f865(p8__2d&s7v=c5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [ '127.0.0.1']
 
 
 # Application definition
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bd2app'
 ]
 
 MIDDLEWARE = [
@@ -74,10 +75,14 @@ WSGI_APPLICATION = 'bd2project.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+       'default': {
+       'ENGINE': 'django.db.backends.postgresql',
+       'NAME': 'bd2',
+       'USER': 'postgres',
+       'PASSWORD': '123',
+       'HOST': 'localhost',
+       'PORT': '5432',
+   }
 }
 
 
