@@ -27,14 +27,14 @@ RETURNS text
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    user_password varchar(255);
+    user Utilizador;
 BEGIN
-    SELECT palavraPasse INTO user_password FROM Utilizador WHERE email = p_email;
+    SELECT * INTO user FROM Utilizador WHERE email = p_email;
     
-    IF user_password IS NULL THEN
-        RETURN 'Email does not exist';
+    IF user IS NULL THEN
+        RETURN '';
     ELSE
-        return user_password;
+        return user;
     END IF;
 END;
 $$;

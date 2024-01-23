@@ -1,17 +1,21 @@
 import psycopg2
 from contextlib import closing
+from django.db import connections
 import bcrypt
-import bcrypt
+from django.shortcuts import redirect
+import re
 
 def executedb(name, params, type):
     query = f"{name}({','.join(['%s'] * len(params))})"
-    with closing(psycopg2.connect(database="bd2", user="postgres", password="123", host="localhost", port="5432")) as conn:
-        with conn, conn.cursor() as cursor:
-            if type == "proc":
-                cursor.execute('CALL ' + query, params)
-            elif type == "func":
-                cursor.callproc(name, params)
-                return cursor.fetchone()[0]
+    cursor = connections['default'].cursor()
+    if type == "proc":
+        cursor.execute('CALL ' + query, params)
+    elif type == "func":
+        cursor.callproc(name, params)
+        return cursor.fetchone()
+    elif type == "view":
+        cursor.execute('SELECT * FROM ' + name)
+        return cursor.fetchall()
 
 def fregister(username, email, password):    
     try:
@@ -23,11 +27,44 @@ def fregister(username, email, password):
 
 def flogin(email, password):
     try:
-        hashed_pw = executedb("LoginUtilizador", [email],'func')
-        if bcrypt.checkpw(password.encode('utf-8'), hashed_pw.encode('utf-8')):
-            return True
+        user = executedb("LoginUtilizador", [email],'func').replace('(','').replace(')','').replace('"','').split(',')
+        if len(user[0]) == 0:
+            return False
+        if bcrypt.checkpw(password.encode('utf-8'), user[3].encode('utf-8')):
+            return user
         else:
             return False
     except Exception as e:
         print(f"Error: {str(e)}")
         return False
+    
+def getUtilizadores():
+    try:
+        return executedb("GetUtilizadores", [], 'view')        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
+    
+def getComponentes():
+    try:
+        return executedb("GetComponentes", [], 'view')        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
+    
+def getEquipamentos():
+    try:
+        return executedb("GetEquipamentos", [], 'view')        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
+
+def isEmailValid(email):
+    regex = re.compile(r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+')    
+    if re.fullmatch(regex, email):
+      return True
+    return False
+
+def printSessionValues(request):
+    for key, value in request.session.items():
+            print(f"{key}: {value}")

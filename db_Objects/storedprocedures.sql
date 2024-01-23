@@ -1,5 +1,4 @@
 -- #region INSERT
-
 -- #region TipoUtilizador
 SELECT * FROM TipoUtilizador;
 

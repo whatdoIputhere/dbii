@@ -1,5 +1,6 @@
 @echo off
-set PATH=%PATH%;C:\Program Files\PostgreSQL\16\bin
+
+set PATH=%PATH%;C:\Program Files\PostgreSQL\13\bin
 set PGUSER=postgres
 set PGPASSWORD=123
 set PGHOST=localhost
@@ -14,3 +15,4 @@ psql -d %CONNSTRING% -f ".\db_objects\createtables.sql"
 psql -d %CONNSTRING% -f ".\db_objects\populatedata.sql"
 psql -d %CONNSTRING% -f ".\db_objects\storedprocedures.sql"
 psql -d %CONNSTRING% -f ".\db_objects\functions.sql"
+psql -d %CONNSTRING% -f ".\db_objects\views.sql"

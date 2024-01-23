@@ -40,7 +40,8 @@ VALUES (1, 1, 10),
        (9, 1, 10),
        (10, 2, 10),
        (11, 1, 10),
-       (12, 1, 10);
+       (12, 1, 15),
+       (12, 2, 10);
 
 INSERT INTO TipoEquipamento (nome,criadoPor)
 VALUES ('Télemovel', 1),
@@ -95,6 +96,7 @@ VALUES  ('Montagem (curta duração)', 'Montagem com duração inferior a 30 min
         ('Reparação (curta duração)', 'Reparação com duração inferior a 30 minutos',10),
         ('Reparação (média duração)', 'Reparação com duração entre 30 minutos e 2 horas',30),
         ('Reparação (longa duração)', 'Reparação com duração superior a 2 horas',50);
+
 /*
 SELECT * FROM Tipoutilizador;
 SELECT * FROM Utilizador;
