@@ -12,7 +12,7 @@ def executedb(name, params, type):
         cursor.execute('CALL ' + query, params)
     elif type == "func":
         cursor.callproc(name, params)
-        return cursor.fetchone()
+        return cursor.fetchone()[0]
     elif type == "view":
         cursor.execute('SELECT * FROM ' + name)
         return cursor.fetchall()

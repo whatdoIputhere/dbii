@@ -12,21 +12,35 @@ INSERT INTO Armazem (nome, descricao,criadoPor)
 VALUES ('Armazém 1', 'Descrição armazém 1', 1),
        ('Armazém 2', 'Descrição armazém 2', 1);
 
-INSERT INTO Componente (nome, descricao, preco, iva,imagem,criadoPor)
-VALUES ('Intel i7-9700k', 'Processador Intel Core i7-9700K 3.6GHz c/ Turbo 4.9GHz 12MB Skt1151', 399.90, 23,'',1),
-       ('Placa Gráfica RTX 2080 Ti', 'Placa Gráfica MSI GeForce RTX 2080 Ti Gaming X Trio 11GB GDDR6', 1499.90, 23, '', 1),
-       ('MSI Z390 GAMING', 'Motherboard MSI MPG Z390 GAMING EDGE AC', 199.90, 23, '', 1),
-       ('Corsair Vengeance 16GB', 'Memória RAM Corsair Vengeance RGB PRO 16GB (2x8GB) DDR4 3200MHz C16 Pretas', 129.90, 23, '', 1),
-       ('Samsung 970 Evo Plus', 'Disco Rígido SSD Samsung 970 Evo Plus 500GB M.2 NVMe', 129.90, 23, '', 1),
-       ('Corsair RM750x 750W', 'Fonte de Alimentação Corsair RM750x 750W 80 Plus Gold Modular', 129.90, 23, '', 1),
-       ('NZXT H500 Preta', 'Caixa NZXT H500 Preta', 79.90, 23, '', 1),
-       ('Corsair LL120', 'Ventoinha Corsair LL120 RGB LED 120mm PWM', 29.90, 23, '', 1),
-       ('Monitor 24" LED - LG 24MK400H-B', 'Monitor 24" LED - LG 24MK400H-B', 99.90, 23, '', 1),
-       ('Teclado Mecânico - Corsair K70 RGB MK.2', 'Teclado Mecânico - Corsair K70 RGB MK.2', 159.90, 23, '', 1),
-       ('Rato Gaming - Corsair M65 RGB Elite', 'Rato Gaming - Corsair M65 RGB Elite', 69.90, 23, '', 1),
-       ('Webcam - Logitech C920 HD Pro', 'Webcam - Logitech C920 HD Pro', 99.90, 23, '', 1),
-       ('Samsung 860 Evo 500GB M.2', 'Disco Rígido SSD Samsung 860 Evo 500GB M.2 SATA', 89.90, 23, '', 1),
-       ('Samsung 860 Evo 1TB M.2', 'Disco Rígido SSD Samsung 860 Evo 1TB M.2 SATA', 149.90, 23, '', 1);
+INSERT INTO TipoComponente (nome,criadoPor)
+VALUES ('Processador', 1),
+       ('Placa Gráfica', 1),
+       ('Motherboard', 1),
+       ('Memória RAM', 1),
+       ('Disco', 1),
+       ('Fonte de Alimentação', 1),
+       ('Caixa', 1),
+       ('Ventoinha', 1),
+       ('Monitor', 1),
+       ('Teclado', 1),
+       ('Rato', 1),
+       ('Webcam', 1);
+
+INSERT INTO Componente (nome, descricao, tipo, preco, iva,imagem,criadoPor)
+VALUES ('Intel i7-9700k', 'Processador Intel Core i7-9700K 3.6GHz c/ Turbo 4.9GHz 12MB Skt1151', 1, 399.90, 23,'',1),
+       ('Placa Gráfica RTX 2080 Ti', 'Placa Gráfica MSI GeForce RTX 2080 Ti Gaming X Trio 11GB GDDR6', 2, 1499.90, 23, '', 1),
+       ('MSI Z390 GAMING', 'Motherboard MSI MPG Z390 GAMING EDGE AC', 3, 199.90, 23, '', 1),
+       ('Corsair Vengeance 16GB', 'Memória RAM Corsair Vengeance RGB PRO 16GB (2x8GB) DDR4 3200MHz C16 Pretas', 4, 129.90, 23, '', 1),
+       ('Samsung 970 Evo Plus', 'Disco Rígido SSD Samsung 970 Evo Plus 500GB M.2 NVMe', 5, 129.90, 23, '', 1),
+       ('Corsair RM750x 750W', 'Fonte de Alimentação Corsair RM750x 750W 80 Plus Gold Modular', 6, 129.90, 23, '', 1),
+       ('NZXT H500 Preta', 'Caixa NZXT H500 Preta', 7, 79.90, 23, '', 1),
+       ('Corsair LL120', 'Ventoinha Corsair LL120 RGB LED 120mm PWM', 8, 29.90, 23, '', 1),
+       ('Monitor 24" LED - LG 24MK400H-B', 'Monitor 24" LED - LG 24MK400H-B', 9, 99.90, 23, '', 1),
+       ('Teclado Mecânico - Corsair K70 RGB MK.2', 'Teclado Mecânico - Corsair K70 RGB MK.2', 10, 159.90, 23, '', 1),
+       ('Rato Gaming - Corsair M65 RGB Elite', 'Rato Gaming - Corsair M65 RGB Elite', 11, 69.90, 23, '', 1),
+       ('Webcam - Logitech C920 HD Pro', 'Webcam - Logitech C920 HD Pro', 12, 99.90, 23, '', 1),
+       ('Samsung 860 Evo 500GB M.2', 'Disco Rígido SSD Samsung 860 Evo 500GB M.2 SATA', 5, 89.90, 23, '', 1),
+       ('Samsung 860 Evo 1TB M.2', 'Disco Rígido SSD Samsung 860 Evo 1TB M.2 SATA', 5, 149.90, 23, '', 1);
 
 INSERT INTO ComponenteArmazem (componente, armazem, quantidade)
 VALUES (1, 1, 10),

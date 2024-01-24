@@ -10,6 +10,9 @@ urlpatterns = [
     path('gerircomponentes',views.gerirComponentes, name='gerircomponentes'),
     path('gerirutilizadores',views.gerirUtilizadores, name='gerirutilizadores'),
     path('gerirequipamentos',views.gerirEquipamentos, name='gerirequipamentos'),
+    path('editarcomponente',views.editarComponente, name='editarcomponente'),
+    path('editarutilizadore',views.editarUtilizadores, name='editarutilizadore'),
+    path('editarequipamento',views.editarEquipamentos, name='editarequipamento'),
 ]
 
 handler404='bd2app.views.notFound'

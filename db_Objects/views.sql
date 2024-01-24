@@ -1,4 +1,7 @@
-CREATE OR REPLACE VIEW GetUtilizadores AS SELECT 
+-- #region Utilizadores
+DROP VIEW IF EXISTS GetUtilizadores;
+
+CREATE VIEW GetUtilizadores AS SELECT 
 Utilizador.id, 
 Utilizador.nome, 
 Utilizador.email, 
@@ -10,10 +13,46 @@ JOIN Tipoutilizador ON Utilizador.tipo = Tipoutilizador.id;
 
 SELECT * FROM GetUtilizadores;
 
-CREATE OR REPLACE VIEW ComponentesWithQuantidade AS
-SELECT c.nome, c.descricao, c.preco, c.iva, SUM(ac.quantidade) AS quantidade
-FROM Componente c
-JOIN ComponenteArmazem ac ON c.id = ac.componente
-GROUP BY c.nome, c.descricao, c.preco, c.iva;
+-- #endregion
 
-SELECT * FROM ComponentesWithQuantidade;
+-- #region Componentes
+
+DROP VIEW IF EXISTS GetComponentes;
+
+CREATE VIEW GetComponentes AS SELECT
+Componente.id, 
+Componente.nome, 
+Componente.descricao,
+TipoComponente.nome AS tipo,
+Componente.preco, 
+Componente.iva, 
+SUM(ComponenteArmazem.quantidade) AS quantidade
+FROM Componente
+JOIN ComponenteArmazem ON Componente.id = ComponenteArmazem.componente
+JOIN TipoComponente ON Componente.tipo = TipoComponente.id
+GROUP BY Componente.id, TipoComponente.nome
+ORDER BY Componente.id;
+
+SELECT * FROM GetComponentes;
+
+-- #endregion
+
+-- #region Equipamentos
+
+DROP VIEW IF EXISTS GetEquipamentos;
+
+CREATE VIEW GetEquipamentos AS SELECT
+Equipamento.id,
+Equipamento.nome,
+Equipamento.descricao, 
+TipoEquipamento.nome AS tipo, 
+Equipamento.preco, 
+Equipamento.iva, 
+Equipamento.imagem AS criadoPor
+FROM Equipamento 
+JOIN TipoEquipamento ON Equipamento.tipo = TipoEquipamento.id
+ORDER BY Equipamento.id;
+
+SELECT * FROM GetEquipamentos;
+
+-- #endregion

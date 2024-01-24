@@ -42,10 +42,19 @@ CREATE TABLE Armazem(
     isEnabled boolean DEFAULT true
 );
 
+CREATE TABLE TipoComponente(
+    id serial PRIMARY KEY,
+    nome varchar(255) NOT NULL,
+    criadoPor int NOT NULL REFERENCES Utilizador(id),
+    criadoEm TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    isEnabled boolean DEFAULT true
+);
+
 CREATE TABLE Componente(
     id serial PRIMARY KEY,
     nome varchar(255) NOT NULL,
     descricao varchar(255) NOT NULL,
+    tipo int NOT NULL REFERENCES TipoComponente(id),
     preco float NOT NULL,
     iva int NOT NULL,
     imagem bytea NOT NULL,

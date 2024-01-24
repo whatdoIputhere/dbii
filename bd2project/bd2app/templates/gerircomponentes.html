@@ -4,8 +4,38 @@
 
 {% block content %}
 
-<h1>Componentes</h1>
-
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2>Componentes</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Descrição</th>
+                        <th scope="col">Tipo</th>
+                        <th scope="col">Preco</th>
+                        <th scope="col">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for componente in componentes %}
+                    <tr>
+                        <th scope="row">{{ componente.1 }}</th>
+                        <td>{{ componente.2 }}</td>
+                        <td>{{ componente.3 }}</td>
+                        <td>{{ componente.4 }}€</td>
+                        <td>
+                            <a href="/editarcomponente" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+                            <a href="/eliminarcomponente" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="/adicionarcomponente" class="btn btn-success">Adicionar Componente</a>
+        </div>
+    </div>
 
 
 {% endblock %}
