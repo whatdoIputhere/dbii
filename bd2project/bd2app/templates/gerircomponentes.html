@@ -26,16 +26,83 @@
                         <td>{{ componente.3 }}</td>
                         <td>{{ componente.4 }}€</td>
                         <td>
-                            <a href="/editarcomponente" class="btn btn-primary"><i class="fas fa-edit"></i></a>
-                            <a href="/eliminarcomponente" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#editModal{{ componente.0 }}"><i class="fas fa-edit"></i></button>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal{{ componente.0 }}"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>
+                    <div class="modal fade" id="editModal{{ componente.0 }}" tabindex="-1"
+                        aria-labelledby="editModalLabel{{ componente.0 }}" aria-hidden="true" data-bs-backdrop="static">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel{{ componente.0 }}">Editar Component</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    {% csrf_token %}
+                                    <form action="/editarcomponente" method="POST">
+                                        <div class="mb-3">
+                                            <label for="nome" class="form-label">Nome</label>
+                                            <input type="text" class="form-control" id="nome" name="nome"
+                                                value="{{ componente.1 }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="descricao" class="form-label">Descrição</label>
+                                            <textarea class="form-control" id="descricao" name="descricao"
+                                                rows="3">{{ componente.2 }}</textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="tipo" class="form-label">Tipo</label>
+                                            <input type="text" class="form-control" id="tipo" name="tipo"
+                                                value="{{ componente.3 }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="preco" class="form-label">Preço</label>
+                                            <input type="text" class="form-control" id="preco" name="preco"
+                                                value="{{ componente.4 }}">
+                                        </div>
+                                        <input type="hidden" name="id" value="{{ componente.0 }}">
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Fechar</button>
+                                    <button type="button" class="btn btn-primary">Guardar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="deleteModal{{ componente.0 }}" tabindex="-1"
+                        aria-labelledby="deleteModalLabel{{ componente.0 }}" aria-hidden="true"
+                        data-bs-backdrop="static">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteModalLabel{{ componente.0 }}">Confirmar Eliminação
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Tem certeza que deseja excluir o componente "{{ componente.1 }}"?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <a href="/eliminarcomponente" class="btn btn-danger">Eliminar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     {% endfor %}
                 </tbody>
             </table>
-            <a href="/adicionarcomponente" class="btn btn-success">Adicionar Componente</a>
         </div>
     </div>
-
+</div>
 
 {% endblock %}
