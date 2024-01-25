@@ -25,7 +25,8 @@ Componente.nome,
 Componente.descricao,
 TipoComponente.nome AS tipo,
 Componente.preco, 
-Componente.iva, 
+Componente.iva,
+Componente.imagem,
 SUM(ComponenteArmazem.quantidade) AS quantidade
 FROM Componente
 JOIN ComponenteArmazem ON Componente.id = ComponenteArmazem.componente

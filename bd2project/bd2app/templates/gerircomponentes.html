@@ -21,10 +21,10 @@
                 <tbody>
                     {% for componente in componentes %}
                     <tr>
-                        <th scope="row">{{ componente.1 }}</th>
-                        <td>{{ componente.2 }}</td>
-                        <td>{{ componente.3 }}</td>
-                        <td>{{ componente.4 }}€</td>
+                        <th id="nomecomponente{{ componente.0 }}" scope="row">{{ componente.1 }}</th>
+                        <td id="descricaocomponente{{ componente.0 }}">{{ componente.2 }}</td>
+                        <td id="tipocomponente{{ componente.0 }}">{{ componente.3 }}</td>
+                        <td id="precocomponente{{ componente.0 }}">{{ componente.4 }}€</td>
                         <td>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#editModal{{ componente.0 }}"><i class="fas fa-edit"></i></button>
@@ -34,7 +34,7 @@
                     </tr>
                     <div class="modal fade" id="editModal{{ componente.0 }}" tabindex="-1"
                         aria-labelledby="editModalLabel{{ componente.0 }}" aria-hidden="true" data-bs-backdrop="static">
-                        <div class="modal-dialog">
+                        <div style="max-width: 1000px;" class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="editModalLabel{{ componente.0 }}">Editar Componente</h5>
@@ -44,25 +44,44 @@
                                 <div class="modal-body">
                                     {% csrf_token %}
                                     <form action="/editarcomponente" method="POST">
-                                        <div class="mb-3">
-                                            <label for="nome" class="form-label">Nome</label>
-                                            <input type="text" class="form-control" id="nome" name="nome"
-                                                value="{{ componente.1 }}">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="descricao" class="form-label">Descrição</label>
-                                            <textarea class="form-control" id="descricao" name="descricao"
-                                                rows="3">{{ componente.2 }}</textarea>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="tipo" class="form-label">Tipo</label>
-                                            <input type="text" class="form-control" id="tipo" name="tipo"
-                                                value="{{ componente.3 }}">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="preco" class="form-label">Preço</label>
-                                            <input type="text" class="form-control" id="preco" name="preco"
-                                                value="{{ componente.4 }}">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="nome" class="form-label">Nome</label>
+                                                    <input type="text" class="form-control" id="nome{{componente.0}}" name="nome{{ componente.0 }}"
+                                                        value="{{ componente.1 }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="descricao" class="form-label">Descrição</label>
+                                                    <textarea class="form-control" id="descricao{{componente.0}}" name="descricao{{componente.0}}"
+                                                        rows="3">{{ componente.2 }}</textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="tipo" class="form-label">Tipo</label>
+                                                    <input type="text" class="form-control" id="tipo{{componente.0}}" name="tipo{{componente.0}}"
+                                                        value="{{ componente.3 }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="preco" class="form-label">Preço</label>
+                                                    <input type="text" class="form-control" id="preco{{componente.0}}" name="preco{{componente.0}}"
+                                                        value="{{ componente.4 }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="iva" class="form-label">Iva</label>
+                                                    <input type="text" class="form-control" id="iva{{componente.0}}" name="iva{{component.0}}" 
+                                                    value="{{ componente.5 }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="image" class="form-label">Imagem</label>
+                                                    <img style="width: 100%;" id="componenteimagem{{ componente.0 }}" src="{{ componente.6 }}" alt="Component Image" class="img-fluid">
+                                                </div>
+                                                <div class="mb-3">                                      
+                                                    <label for="image" class="form-label">Upload Imagem</label>      
+                                                    <input type="file" onchange="convertImageToBytea()" class="form-control" id="image{{component.0}}" name="image{{component.0}}">
+                                                </div>
+                                            </div>
                                         </div>
                                         <input type="hidden" name="id" value="{{ componente.0 }}">
                                     </form>
@@ -70,7 +89,7 @@
                                 <div class="modal-footer">
                                     <button type="button" id="btnclose{{ componente.0 }}" class="btn btn-secondary"
                                         data-bs-dismiss="modal">Fechar</button>
-                                    <button type="button" onclick='saveComponente("{{ componente }}")'
+                                    <button type="button" onclick='saveComponente("{{ componente.0 }}")'
                                         class="btn btn-primary">Guardar</button>
                                 </div>
                             </div>
@@ -107,15 +126,30 @@
 </div>
 
 <script>
-    function saveComponente(component) {
+    let imagebytea = "";
+    function saveComponente(componentId) {
+        component = {
+            id: componentId,
+            nome: $('#nome' + componentId).val(),
+            descricao: $('#descricao' + componentId).val(),
+            tipo: $('#tipo' + componentId).val(),
+            preco: $('#preco' + componentId).val(),
+            iva: $('#iva' + componentId).val(),
+            image: imagebytea
+        }
+        
         $.ajax({
             url: "/gerircomponentes",
             type: "POST",
-            data: { componente: component , csrfmiddlewaretoken: '{{ csrf_token }}'},
+            data: { componente: JSON.stringify(component), csrfmiddlewaretoken: '{{ csrf_token }}' },
 
             success: function (json) {
-                console.log("success");
-                $('#editModal' + component.replace('(','').split(',')[0]).modal('hide');
+                $('#nomecomponente' + componentId).text(component.nome);
+                $('#descricaocomponente' + componentId).text(component.descricao);
+                $('#tipocomponente' + componentId).text(component.tipo);
+                $('#precocomponente' + componentId).text(component.preco + "€");
+                $('#componenteimagem' + componentId).attr('src', component.image);
+                $('#editModal' + componentId).modal('hide');
             },
 
             error: function (xhr, errmsg, err) {
@@ -123,6 +157,17 @@
             }
         });
     };
+
+    function convertImageToBytea() {
+        var reader = new FileReader();
+        reader.readAsDataURL($('#image')[0].files[0]);
+        reader.onload = function () {
+            imagebytea = reader.result;
+        };
+        reader.onerror = function (error) {
+            console.log('Error: ', error);
+        };
+    }
 </script>
 
 {% endblock %}

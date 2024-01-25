@@ -4,6 +4,7 @@ from django.db import connections
 import bcrypt
 from django.shortcuts import redirect
 import re
+import json
 
 def executedb(name, params, type):
     query = f"{name}({','.join(['%s'] * len(params))})"
@@ -47,11 +48,16 @@ def getUtilizadores():
     
 def getComponentes():
     try:
-        return executedb("GetComponentes", [], 'view')        
+        componentes = executedb("GetComponentes", [], 'view')
+        for i in range(len(componentes)):
+            componentes[i] = list(componentes[i])
+            componentes[i][6] = componentes[i][6].tobytes().decode('utf-8')
+        return componentes
     except Exception as e:
         print(f"Error: {str(e)}")
         return False
-    
+
+
 def getEquipamentos():
     try:
         return executedb("GetEquipamentos", [], 'view')        
@@ -67,12 +73,15 @@ def isEmailValid(email):
 
 def editComponente(componente):
     try:
-        print(componente)
+        componente_obj = json.loads(componente)
+        values = list(componente_obj.values())
+        print(values)
+        print(executedb("AtualizarComponente", values, 'proc'))
         return True
-        #return executedb("EditarComponente", [componente],'func')
     except Exception as e:
         print(f"Error: {str(e)}")
         return False
+
 
 def printSessionValues(request):
     for key, value in request.session.items():

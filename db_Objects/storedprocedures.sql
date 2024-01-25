@@ -513,26 +513,37 @@ CREATE PROCEDURE AtualizarComponente(
     p_id int,
     p_nome varchar(255),
     p_descricao varchar(255),
+    p_tipo varchar(255),
     p_preco float,
     p_iva int,
-    p_imagem bytea,
-    p_criadoPor int
+    p_imagem bytea
 )
 LANGUAGE PLPGSQL
 AS $$
+DECLARE tipo_id INT;
 BEGIN
+    IF LENGTH(p_nome) <= 5 THEN
+        RAISE EXCEPTION 'Nome must have more than 5 characters';
+    END IF;
+
+    IF p_preco <= 0 OR p_iva <= 0 THEN
+        RAISE EXCEPTION 'Preco and IVA must be values above 0';
+    END IF;
+
+    SELECT id INTO tipo_id FROM TipoComponente WHERE nome = p_tipo;
+
     UPDATE Componente
     SET nome = p_nome,
         descricao = p_descricao,
+        tipo = tipo_id,
         preco = p_preco,
         iva = p_iva,
-        imagem = p_imagem,
-        criadoPor = p_criadoPor
+        imagem = p_imagem
     WHERE id = p_id;
 END;
 $$;
 
-CALL AtualizarComponente(15, 'Samsung 860 Evo 2TB M.2 atualizado', 'Disco Rígido SSD Samsung 860 Evo 2TB M.2 SATA atualizado', 299.90, 23, '', 1);
+CALL AtualizarComponente(15, 'Samsung 860 Evo 2TB M.2 atualizado', 'Disco Rígido SSD Samsung 860 Evo 2TB M.2 SATA atualizado', 299.90, 23, '');
 
 SELECT * FROM Componente;
 
