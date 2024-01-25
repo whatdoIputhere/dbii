@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from bd2app.functions import *
+from django.http import HttpResponse
 
 
 def index(request):
@@ -54,7 +55,12 @@ def register(request):
     
 def gerirComponentes(request):
     if isAdmin(request):
-        return render(request, 'gerircomponentes.html', context={'componentes': getComponentes()})
+        if(request.method != 'POST'):
+            return render(request, 'gerircomponentes.html', context={'componentes': getComponentes()})
+        data = request.POST
+        if(editComponente(data.get("componente"))):
+            return HttpResponse(status=200)
+        return HttpResponse(status=400)
     return redirect('index')
 
 def gerirUtilizadores(request):
@@ -64,58 +70,60 @@ def gerirUtilizadores(request):
 
 def gerirEquipamentos(request):
     if isAdmin(request):
-        return render(request, 'gerirequipamentos.html', context={'equipamentos': getEquipamentos()})
+        if(request.method != 'POST'):
+            return render(request, 'gerirequipamentos.html', context={'equipamentos': getEquipamentos()})
+        data = request.POST
     return redirect('index')
 
-def editarComponente(request):
-    if not isAdmin(request):
-        return redirect('index')
-    if request.method == 'POST':
-        data = request.POST
-        id = data.get("id")
-        nome = data.get("nome")
-        descricao = data.get("descricao")
-        preco = data.get("preco")
-        stock = data.get("stock")
-        if id == "0":
-            executedb("AdicionarComponente", [nome, descricao, preco, stock], 'proc')
-        else:
-            executedb("EditarComponente", [id, nome, descricao, preco, stock], 'proc')
-        return redirect('gerircomponentes')
-    return render(request, 'editarcomponente.html', context={'componente': getComponentes()[0]})
+# def editarComponente(request):
+#     if not isAdmin(request):
+#         return redirect('index')
+#     if request.method == 'POST':
+#         data = request.POST
+#         id = data.get("id")
+#         nome = data.get("nome")
+#         descricao = data.get("descricao")
+#         preco = data.get("preco")
+#         stock = data.get("stock")
+#         if id == "0":
+#             executedb("AdicionarComponente", [nome, descricao, preco, stock], 'proc')
+#         else:
+#             executedb("EditarComponente", [id, nome, descricao, preco, stock], 'proc')
+#         return redirect('gerircomponentes')
+#     return render(request, 'editarcomponente.html', context={'componente': getComponentes()[0]})
 
-def editarUtilizadores(request):
-    if isAdmin(request):
-        if request.method != 'POST':
-            return redirect('index')
-        data = request.POST
-        id = data.get("id")
-        nome = data.get("nome")
-        email = data.get("email")
-        password = data.get("password")
-        if id == "0":
-            executedb("AdicionarUtilizador", [nome, email, password], 'proc')
-        else:
-            executedb("EditarUtilizador", [id, nome, email, password], 'proc')
-        return redirect('gerirutilizadores')
-    return redirect('index')
+# def editarUtilizadores(request):
+#     if isAdmin(request):
+#         if request.method != 'POST':
+#             return redirect('index')
+#         data = request.POST
+#         id = data.get("id")
+#         nome = data.get("nome")
+#         email = data.get("email")
+#         password = data.get("password")
+#         if id == "0":
+#             executedb("AdicionarUtilizador", [nome, email, password], 'proc')
+#         else:
+#             executedb("EditarUtilizador", [id, nome, email, password], 'proc')
+#         return redirect('gerirutilizadores')
+#     return redirect('index')
 
-def editarEquipamentos(request):
-    if isAdmin(request):
-        if request.method != 'POST':
-            return redirect('index')
-        data = request.POST
-        id = data.get("id")
-        nome = data.get("nome")
-        descricao = data.get("descricao")
-        preco = data.get("preco")
-        stock = data.get("stock")
-        if id == "0":
-            executedb("AdicionarEquipamento", [nome, descricao, preco, stock], 'proc')
-        else:
-            executedb("EditarEquipamento", [id, nome, descricao, preco, stock], 'proc')
-        return redirect('gerirequipamentos')
-    return redirect('index')
+# def editarEquipamentos(request):
+#     if isAdmin(request):
+#         if request.method != 'POST':
+#             return redirect('index')
+#         data = request.POST
+#         id = data.get("id")
+#         nome = data.get("nome")
+#         descricao = data.get("descricao")
+#         preco = data.get("preco")
+#         stock = data.get("stock")
+#         if id == "0":
+#             executedb("AdicionarEquipamento", [nome, descricao, preco, stock], 'proc')
+#         else:
+#             executedb("EditarEquipamento", [id, nome, descricao, preco, stock], 'proc')
+#         return redirect('gerirequipamentos')
+#     return redirect('index')
 
 
 def notFound(request, exception=None):

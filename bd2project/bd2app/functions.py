@@ -65,6 +65,15 @@ def isEmailValid(email):
       return True
     return False
 
+def editComponente(componente):
+    try:
+        print(componente)
+        return True
+        #return executedb("EditarComponente", [componente],'func')
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
+
 def printSessionValues(request):
     for key, value in request.session.items():
             print(f"{key}: {value}")

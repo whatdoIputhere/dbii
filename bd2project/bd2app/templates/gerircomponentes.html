@@ -37,7 +37,7 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="editModalLabel{{ componente.0 }}">Editar Component</h5>
+                                    <h5 class="modal-title" id="editModalLabel{{ componente.0 }}">Editar Componente</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
@@ -68,9 +68,10 @@
                                     </form>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
+                                    <button type="button" id="btnclose{{ componente.0 }}" class="btn btn-secondary"
                                         data-bs-dismiss="modal">Fechar</button>
-                                    <button type="button" class="btn btn-primary">Guardar</button>
+                                    <button type="button" onclick='saveComponente("{{ componente }}")'
+                                        class="btn btn-primary">Guardar</button>
                                 </div>
                             </div>
                         </div>
@@ -104,5 +105,24 @@
         </div>
     </div>
 </div>
+
+<script>
+    function saveComponente(component) {
+        $.ajax({
+            url: "/gerircomponentes",
+            type: "POST",
+            data: { componente: component , csrfmiddlewaretoken: '{{ csrf_token }}'},
+
+            success: function (json) {
+                console.log("success");
+                $('#editModal' + component.replace('(','').split(',')[0]).modal('hide');
+            },
+
+            error: function (xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+            }
+        });
+    };
+</script>
 
 {% endblock %}
