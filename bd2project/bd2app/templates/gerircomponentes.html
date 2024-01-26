@@ -20,6 +20,7 @@
                 </thead>
                 <tbody>
                     {% for componente in componentes %}
+                    {% if componente.9 %}
                     <tr>
                         <th id="nomecomponente{{ componente.0 }}" scope="row">{{ componente.1 }}</th>
                         <td id="descricaocomponente{{ componente.0 }}">{{ componente.2 }}</td>
@@ -48,38 +49,48 @@
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label for="nome" class="form-label">Nome</label>
-                                                    <input type="text" class="form-control" id="nome{{componente.0}}" name="nome{{ componente.0 }}"
-                                                        value="{{ componente.1 }}">
+                                                    <input type="text" class="form-control" id="nome{{componente.0}}"
+                                                        name="nome{{ componente.0 }}" value="{{ componente.1 }}">
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="descricao" class="form-label">Descrição</label>
-                                                    <textarea class="form-control" id="descricao{{componente.0}}" name="descricao{{componente.0}}"
+                                                    <textarea class="form-control" id="descricao{{componente.0}}"
+                                                        name="descricao{{componente.0}}"
                                                         rows="3">{{ componente.2 }}</textarea>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="tipo" class="form-label">Tipo</label>
-                                                    <input type="text" class="form-control" id="tipo{{componente.0}}" name="tipo{{componente.0}}"
-                                                        value="{{ componente.3 }}">
+                                                    <div class="mb-3">
+                                                        <label for="tipo" class="form-label">Tipo</label>
+                                                        <select class="form-select" id="tipo{{componente.0}}" name="tipo{{componente.0}}">
+                                                            {% for tipo in tiposcomponente %}
+                                                            <option value="{{ tipo.0 }}" {% if tipo.1 == componente.3 %}selected{% endif %}>{{ tipo.1 }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="preco" class="form-label">Preço</label>
-                                                    <input type="text" class="form-control" id="preco{{componente.0}}" name="preco{{componente.0}}"
-                                                        value="{{ componente.4 }}">
+                                                    <input type="text" class="form-control" id="preco{{componente.0}}"
+                                                        name="preco{{componente.0}}" value="{{ componente.4 }}">
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="iva" class="form-label">Iva</label>
-                                                    <input type="text" class="form-control" id="iva{{componente.0}}" name="iva{{component.0}}" 
-                                                    value="{{ componente.5 }}">
+                                                    <input type="text" class="form-control" id="iva{{componente.0}}"
+                                                        name="iva{{component.0}}" value="{{ componente.5 }}">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label for="image" class="form-label">Imagem</label>
-                                                    <img style="width: 100%;" id="componenteimagem{{ componente.0 }}" src="{{ componente.6 }}" alt="Component Image" class="img-fluid">
+                                                    <img style="width: 100%;" id="componenteimagem{{ componente.0 }}"
+                                                        src="{{ componente.6 }}" alt="Component Image"
+                                                        class="img-fluid">
                                                 </div>
-                                                <div class="mb-3">                                      
-                                                    <label for="image" class="form-label">Upload Imagem</label>      
-                                                    <input type="file" onchange="convertImageToBytea()" class="form-control" id="image{{component.0}}" name="image{{component.0}}">
+                                                <div class="mb-3">
+                                                    <label for="image" class="form-label">Upload Imagem</label>
+                                                    <input type="file" onchange="convertImageToBytea()"
+                                                        class="form-control" id="image{{component.0}}"
+                                                        name="image{{component.0}}">
                                                 </div>
                                             </div>
                                         </div>
@@ -113,11 +124,13 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
                                         data-bs-dismiss="modal">Cancelar</button>
-                                    <a href="/eliminarcomponente" class="btn btn-danger">Eliminar</a>
+                                    <a onclick='deletecomponente("{{ componente.0 }}")'
+                                        class="btn btn-danger">Eliminar</a>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {% endif %}
                     {% endfor %}
                 </tbody>
             </table>
@@ -137,18 +150,17 @@
             iva: $('#iva' + componentId).val(),
             image: imagebytea
         }
-        
+
         $.ajax({
             url: "/gerircomponentes",
             type: "POST",
-            data: { componente: JSON.stringify(component), csrfmiddlewaretoken: '{{ csrf_token }}' },
-
+            data: { componente: JSON.stringify(component), csrfmiddlewaretoken: '{{ csrf_token }}', action: 'edit' },
             success: function (json) {
                 $('#nomecomponente' + componentId).text(component.nome);
                 $('#descricaocomponente' + componentId).text(component.descricao);
-                $('#tipocomponente' + componentId).text(component.tipo);
                 $('#precocomponente' + componentId).text(component.preco + "€");
                 $('#componenteimagem' + componentId).attr('src', component.image);
+                $('#tipocomponente' + componentId).text($('#tipo' + componentId + ' option:selected').text());
                 $('#editModal' + componentId).modal('hide');
             },
 
@@ -168,6 +180,23 @@
             console.log('Error: ', error);
         };
     }
+
+    function deletecomponente(componentId) {
+        $.ajax({
+            url: "/gerircomponentes",
+            type: "POST",
+            data: { id: componentId, csrfmiddlewaretoken: '{{ csrf_token }}', action: 'delete' },
+
+            success: function (json) {
+                $('#deleteModal' + componentId).modal('hide');
+                $('#nomecomponente' + componentId).parent().remove();
+            },
+
+            error: function (xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+            }
+        });
+    };
 </script>
 
 {% endblock %}

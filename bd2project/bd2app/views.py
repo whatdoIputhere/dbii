@@ -56,9 +56,13 @@ def register(request):
 def gerirComponentes(request):
     if isAdmin(request):
         if(request.method != 'POST'):
-            return render(request, 'gerircomponentes.html', context={'componentes': getComponentes()})
+            return render(request, 'gerircomponentes.html', context={'componentes': getComponentes(), 'tiposcomponente': getTiposComponentes()})
         data = request.POST
-        if(editComponente(data.get("componente"))):
+        if(data.get("action") == "edit"):
+            if(editComponente(data.get("componente"))):
+                return HttpResponse(status=200)
+            return HttpResponse(status=400)
+        if(deleteComponente(data.get("id"))):
             return HttpResponse(status=200)
         return HttpResponse(status=400)
     return redirect('index')

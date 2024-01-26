@@ -530,12 +530,10 @@ BEGIN
         RAISE EXCEPTION 'Preco and IVA must be values above 0';
     END IF;
 
-    SELECT id INTO tipo_id FROM TipoComponente WHERE nome = p_tipo;
-
     UPDATE Componente
     SET nome = p_nome,
         descricao = p_descricao,
-        tipo = tipo_id,
+        tipo = CAST(p_tipo AS INTEGER),
         preco = p_preco,
         iva = p_iva,
         imagem = p_imagem

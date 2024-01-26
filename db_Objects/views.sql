@@ -15,6 +15,18 @@ SELECT * FROM GetUtilizadores;
 
 -- #endregion
 
+-- #region TipoComponentes
+
+DROP VIEW IF EXISTS GetTipoComponentes;
+
+CREATE VIEW GetTipoComponentes AS SELECT
+*
+FROM TipoComponente;
+
+SELECT * FROM GetTipoComponentes;
+
+-- #endregion
+
 -- #region Componentes
 
 DROP VIEW IF EXISTS GetComponentes;
@@ -27,7 +39,9 @@ TipoComponente.nome AS tipo,
 Componente.preco, 
 Componente.iva,
 Componente.imagem,
-SUM(ComponenteArmazem.quantidade) AS quantidade
+SUM(ComponenteArmazem.quantidade) AS quantidade,
+Componente.criadoPor,
+Componente.isEnabled
 FROM Componente
 JOIN ComponenteArmazem ON Componente.id = ComponenteArmazem.componente
 JOIN TipoComponente ON Componente.tipo = TipoComponente.id

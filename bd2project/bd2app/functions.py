@@ -46,6 +46,13 @@ def getUtilizadores():
         print(f"Error: {str(e)}")
         return False
     
+def getTiposComponentes():
+    try:
+        return executedb("GetTipoComponentes", [], 'view')        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
+
 def getComponentes():
     try:
         componentes = executedb("GetComponentes", [], 'view')
@@ -56,7 +63,6 @@ def getComponentes():
     except Exception as e:
         print(f"Error: {str(e)}")
         return False
-
 
 def getEquipamentos():
     try:
@@ -75,14 +81,20 @@ def editComponente(componente):
     try:
         componente_obj = json.loads(componente)
         values = list(componente_obj.values())
-        print(values)
         print(executedb("AtualizarComponente", values, 'proc'))
         return True
     except Exception as e:
         print(f"Error: {str(e)}")
         return False
 
-
+def deleteComponente(id):
+    try:
+        executedb("RemoverComponente", [id], 'proc')
+        return True
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
+    
 def printSessionValues(request):
     for key, value in request.session.items():
             print(f"{key}: {value}")
