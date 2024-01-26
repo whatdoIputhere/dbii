@@ -526,8 +526,8 @@ BEGIN
         RAISE EXCEPTION 'Nome must have more than 5 characters';
     END IF;
 
-    IF p_preco <= 0 OR p_iva <= 0 THEN
-        RAISE EXCEPTION 'Preco and IVA must be values above 0';
+    IF p_preco <= 0 OR p_iva < 0 THEN
+        RAISE EXCEPTION 'Preco must be greater than 0 and IVA must be greater or equal to 0';
     END IF;
 
     UPDATE Componente

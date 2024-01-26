@@ -1,28 +1,18 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{% block title %}{% endblock %}</title>
+        {% load bootstrap5 %} {% bootstrap_css %} {% bootstrap_javascript %}
+        <script src="{% static 'fontawesomefree/js/fontawesome.js' %}"></script>
+        <script src="{% static 'fontawesomefree/js/solid.js' %}"></script>
+        <script src="{% static 'fontawesomefree/js/brands.js' %}"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %}</title>
-    {% load bootstrap5 %}
-    {% bootstrap_css %}
-</head>
-
-<body>
-    {% include 'navbar.html' %}
-
-    {% block content %}
-    {% endblock %}
-
-    {% include 'footer.html' %}
-
-    {% bootstrap_javascript %}
-    <script src="{% static 'fontawesomefree/js/fontawesome.js' %}"></script>
-    <script src="{% static 'fontawesomefree/js/solid.js' %}"></script>
-    <script src="{% static 'fontawesomefree/js/brands.js' %}"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</body>
-
+    <body>
+        {% include 'navbar.html' %} {% block content %} {% endblock %} {% include 'footer.html' %}
+    </body>
 </html>

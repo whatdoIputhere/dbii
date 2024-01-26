@@ -50,33 +50,41 @@
                                                 <div class="mb-3">
                                                     <label for="nome" class="form-label">Nome</label>
                                                     <input type="text" class="form-control" id="nome{{componente.0}}"
-                                                        name="nome{{ componente.0 }}" value="{{ componente.1 }}">
+                                                        name="nome" value="{{ componente.1 }}">
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="descricao" class="form-label">Descrição</label>
                                                     <textarea class="form-control" id="descricao{{componente.0}}"
-                                                        name="descricao{{componente.0}}"
-                                                        rows="3">{{ componente.2 }}</textarea>
+                                                        name="descricao" rows="3"
+                                                        maxlength="255">{{ componente.2 }}</textarea>
                                                 </div>
                                                 <div class="mb-3">
                                                     <div class="mb-3">
                                                         <label for="tipo" class="form-label">Tipo</label>
-                                                        <select class="form-select" id="tipo{{componente.0}}" name="tipo{{componente.0}}">
+                                                        <select class="form-select" id="tipo{{componente.0}}"
+                                                            name="tipo">
                                                             {% for tipo in tiposcomponente %}
-                                                            <option value="{{ tipo.0 }}" {% if tipo.1 == componente.3 %}selected{% endif %}>{{ tipo.1 }}</option>
+                                                            <option value="{{ tipo.0 }}" {% if tipo.1 == componente.3 %}
+                                                                selected {% endif %}>
+                                                                {{ tipo.1 }}
+                                                            </option>
                                                             {% endfor %}
                                                         </select>
                                                     </div>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="preco" class="form-label">Preço</label>
-                                                    <input type="text" class="form-control" id="preco{{componente.0}}"
-                                                        name="preco{{componente.0}}" value="{{ componente.4 }}">
+                                                    <input type="number" class="form-control" id="preco{{componente.0}}"
+                                                        name="preco" value="{{ componente.4 }}">
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="iva" class="form-label">Iva</label>
-                                                    <input type="text" class="form-control" id="iva{{componente.0}}"
-                                                        name="iva{{component.0}}" value="{{ componente.5 }}">
+                                                    <input type="number" class="form-control" id="iva{{componente.0}}"
+                                                        name="iva" value="{{ componente.5 }}" min="0" max="100">
+                                                </div>
+
+                                                <div id="err{{ componente.0 }}" class="alert alert-danger d-none"
+                                                    role="alert">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -88,9 +96,9 @@
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="image" class="form-label">Upload Imagem</label>
-                                                    <input type="file" onchange="convertImageToBytea()"
-                                                        class="form-control" id="image{{component.0}}"
-                                                        name="image{{component.0}}">
+                                                    <input type="file"
+                                                        onchange="convertImageToBytea('{{ componente.0 }}')"
+                                                        class="form-control" id="image{{ componente.0 }}" name="image">
                                                 </div>
                                             </div>
                                         </div>
@@ -140,6 +148,67 @@
 
 <script>
     let imagebytea = "";
+    let err = "";
+
+    $('input[name="preco"]').on('input', function () {
+        if (this.value.includes('.')) {
+            if (this.value.split('.')[1].length > 2)
+                this.value = this.value.slice(0, -1);
+        }
+    });
+
+    $('input[name="iva"]').on('input', function () {
+            if (this.value.length > 2 && this.value[0] != 1)
+                this.value = this.value.slice(0, -1);
+            else if(this.value.length > 3 && this.value[0] == 1)
+                this.value = this.value.slice(0, -1);
+    });
+
+    function isFormValid(nome, descricao, tipo, preco, iva, image, componentId) {
+        let isvalid = true;
+
+        nome == ""
+            ? (addInvalidCssClass('nome', isvalid, componentId), err = "Campo obrigatório por preencher")
+            : nome.length > 50 || nome.length < 5
+                ? (addInvalidCssClass('nome', isvalid, componentId), isvalid = false, err = "Nome tem de ter entre 5 e 50 caracteres")
+                : $('#nome' + componentId).removeClass('is-invalid');
+
+        descricao == ""
+            ? (addInvalidCssClass('descricao', isvalid, componentId), isvalid = false, err = "Campo obrigatório por preencher")
+            : descricao.length > 255 || descricao.length < 10
+                ? (addInvalidCssClass('descricao', isvalid, componentId), isvalid = false, err = "Descrição tem de ter entre 10 e 200 caracteres")
+                : $('#descricao' + componentId).removeClass('is-invalid');
+
+        preco == ""
+            ? (addInvalidCssClass('preco', isvalid, componentId), isvalid = false, err = "Campo obrigatório por preencher")
+            : isNaN(preco)
+                ? (addInvalidCssClass('preco', isvalid, componentId), isvalid = false, err = "Preo tem de ser um número")
+                : preco < 0
+                    ? (addInvalidCssClass('preco', isvalid, componentId), isvalid = false, err = "Preco não pode ser negativo")
+                    : $('#preco' + componentId).removeClass('is-invalid');
+
+        iva == ""
+            ? (addInvalidCssClass('iva', isvalid, componentId), isvalid = false, err = "Campo obrigatório por preencher")
+            : isNaN(iva)
+                ? (addInvalidCssClass('iva', isvalid, componentId), isvalid = false, err = "Iva tem de ser um número")
+                : iva < 0 || iva > 100
+                    ? (addInvalidCssClass('iva', isvalid, componentId), isvalid = false, err = "Iva tem de ser um número entre 0 e 100")
+                    : $('#iva' + componentId).removeClass('is-invalid');
+        let errorDiv = $('#err' + componentId);
+        console.log(errorDiv);
+
+        isvalid
+            ? (errorDiv.text(''), isvalid = true, errorDiv.addClass('d-none'))
+            : (errorDiv.text(err), errorDiv.removeClass('d-none'));
+
+        return isvalid;
+    }
+
+    function addInvalidCssClass(campo, isvalid, componentId) {
+        $('#' + campo + componentId).addClass('is-invalid');
+        isvalid = false;
+    }
+
     function saveComponente(componentId) {
         component = {
             id: componentId,
@@ -148,8 +217,10 @@
             tipo: $('#tipo' + componentId).val(),
             preco: $('#preco' + componentId).val(),
             iva: $('#iva' + componentId).val(),
-            image: imagebytea
+            image: imagebytea == "" ? $('#imagemcomponente' + componentId).attr('src') : imagebytea
         }
+        if (!isFormValid(component.nome, component.descricao, component.tipo, component.preco, component.iva, component.image, component.id))
+            return;
 
         $.ajax({
             url: "/gerircomponentes",
@@ -163,6 +234,7 @@
                     $('#precocomponente' + componentId).text(component.preco + "€");
                     $('#imagemcomponente' + componentId).attr('src', component.image);
                     $('#tipocomponente' + componentId).text($('#tipo' + componentId + ' option:selected').text());
+                    imagebytea = "";
                 });
             },
 
@@ -172,11 +244,12 @@
         });
     };
 
-    function convertImageToBytea() {
+    function convertImageToBytea(componentId) {
         var reader = new FileReader();
-        reader.readAsDataURL($('#image')[0].files[0]);
+        reader.readAsDataURL($('#image' + componentId)[0].files[0]);
         reader.onload = function () {
             imagebytea = reader.result;
+            $('#imagemcomponente' + componentId).attr('src', imagebytea);
         };
         reader.onerror = function (error) {
             console.log('Error: ', error);
