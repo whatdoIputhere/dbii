@@ -1,0 +1,8 @@
+.dataTables_filter {
+    display: flex;
+    gap: 5px;
+}
+
+.dataTables_filter a {
+    max-height: 36px;
+}

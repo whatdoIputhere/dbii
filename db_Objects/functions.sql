@@ -20,21 +20,51 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION LoginUtilizador(
+DROP FUNCTION IF EXISTS LoginUtilizador;
+
+CREATE FUNCTION LoginUtilizador(
     p_email varchar(255)
 )
 RETURNS text
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    user Utilizador;
+    user Utilizador%ROWTYPE;
 BEGIN
     SELECT * INTO user FROM Utilizador WHERE email = p_email;
     
     IF user IS NULL THEN
         RETURN '';
     ELSE
-        return user;
+        RETURN user;
     END IF;
 END;
 $$;
+
+
+DROP FUNCTION IF EXISTS InserirComponenteReturn;
+
+CREATE FUNCTION InserirComponenteReturn(
+    p_nome varchar(255),
+    p_descricao varchar(255),
+    p_tipo int,
+    p_preco float,
+    p_iva int,
+    p_imagem bytea,
+    p_criadoPor int
+)
+RETURNS Componente
+LANGUAGE PLPGSQL
+AS $$
+DECLARE
+    new_componente Componente%ROWTYPE;
+BEGIN
+    INSERT INTO Componente (nome, descricao, tipo, preco, iva, imagem, criadoPor)
+    VALUES (p_nome, p_descricao, p_tipo, p_preco, p_iva, p_imagem, p_criadoPor)
+    RETURNING * INTO new_componente;
+
+    RETURN new_componente;
+END;
+$$;
+
+--SELECT * FROM InserirComponenteReturn('Componente 1', 'Componente 1', 1, 10, 23, '', 1);

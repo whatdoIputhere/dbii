@@ -1,15 +1,10 @@
-{% extends 'base.html' %}
-
-{% block title %}Utilizadores{% endblock %}
-
-{% block content %}
-
+{% extends 'base.html' %} {% block title %}Utilizadores{% endblock %} {% block content %}
 
 <div class="container">
     <div class="row">
         <div class="col">
             <h2>Utilizadores</h2>
-            <table class="table table-striped">
+            <table id="utilizadorestable" class="table table-striped">
                 <thead>
                     <tr>
                         <th scope="col">Nome</th>
@@ -24,15 +19,48 @@
                         <th scope="row">{{ user.1 }}</th>
                         <td>{{ user.2 }}</td>
                         <td>{{ user.4 }}</td>
-                        <td>
-                            <a href="/editarequipamento/{{ equipamento.0 }}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
-                            <a href="/eliminarequipamento/{{ equipamento.0 }}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                        <td style="min-width: 88px">
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editModal{{ componente.0 }}"
+                            >
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-danger"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteModal{{ componente.0 }}"
+                            >
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            <a href="/adicionarutilizador" class="btn btn-success">Adicionar Utilizador</a>
         </div>
     </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#utilizadorestable").DataTable({
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.10.25/i18n/Portuguese.json",
+            },
+            columnDefs: [{ targets: -1, orderable: false }],
+            dom: 'lf<rt>ip',
+            initComplete: function () {
+                var btn = $(
+                    `<button type="button" class="btn btn-success" data-bs-toggle="modal" 
+                    data-bs-target="#deleteModal{{ componente.0 }}">Adicionar Utilizador</button>`
+                );
+                $(".dataTables_filter").append(btn);
+            },
+        });
+    });
+</script>
 {% endblock %}

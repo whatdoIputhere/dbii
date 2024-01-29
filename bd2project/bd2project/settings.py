@@ -72,7 +72,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bd2project.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 

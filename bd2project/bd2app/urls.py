@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('',views.index, name='index'),
@@ -13,6 +14,9 @@ urlpatterns = [
     # path('editarcomponente',views.editarComponente, name='editarcomponente'),
     # path('editarutilizador',views.editarUtilizadores, name='editarutilizador'),
     # path('editarequipamento',views.editarEquipamentos, name='editarequipamento'),
+    
 ]
+
+urlpatterns += staticfiles_urlpatterns()
 
 handler404='bd2app.views.notFound'

@@ -13,7 +13,7 @@ def executedb(name, params, type):
         cursor.execute('CALL ' + query, params)
     elif type == "func":
         cursor.callproc(name, params)
-        return cursor.fetchone()[0]
+        return cursor.fetchone()
     elif type == "view":
         cursor.execute('SELECT * FROM ' + name)
         return cursor.fetchall()
@@ -28,8 +28,8 @@ def fregister(username, email, password):
 
 def flogin(email, password):
     try:
-        user = executedb("LoginUtilizador", [email],'func').replace('(','').replace(')','').replace('"','').split(',')
-        if len(user[0]) == 0:
+        user = executedb("LoginUtilizador", [email],'func')[0].replace('(', '').replace(')', '').split(',')
+        if not user[0]:
             return False
         if bcrypt.checkpw(password.encode('utf-8'), user[3].encode('utf-8')):
             return user
@@ -70,6 +70,27 @@ def getEquipamentos():
     except Exception as e:
         print(f"Error: {str(e)}")
         return False
+    
+def getArmazens():
+    try:
+        return executedb("GetArmazens", [], 'view')        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
+
+def getFornececedores():
+    try:
+        return executedb("GetFornecedores", [], 'view')        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
+
+def getComponentesArmazem():
+    try:
+        return executedb("GetComponentesArmazem", [], 'view')        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
 
 def isEmailValid(email):
     regex = re.compile(r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+')    
@@ -81,8 +102,20 @@ def editComponente(componente):
     try:
         componente_obj = json.loads(componente)
         values = list(componente_obj.values())
-        print(executedb("AtualizarComponente", values, 'proc'))
+        executedb("AtualizarComponente", values, 'proc')
         return True
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
+    
+def addComponente(componente):
+    try:
+        componente_obj = json.loads(componente)
+        values = list(componente_obj.values())
+        list.pop(values, 0);
+        newComponente = executedb("InserirComponenteReturn", values, 'func')
+        print(newComponente)
+        return newComponente
     except Exception as e:
         print(f"Error: {str(e)}")
         return False

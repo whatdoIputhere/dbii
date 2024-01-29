@@ -75,6 +75,7 @@ DROP PROCEDURE IF EXISTS InserirComponente;
 CREATE PROCEDURE InserirComponente(
     p_nome varchar(255),
     p_descricao varchar(255),
+    p_tipo int,
     p_preco float,
     p_iva int,
     p_imagem bytea,
@@ -83,12 +84,12 @@ CREATE PROCEDURE InserirComponente(
 LANGUAGE PLPGSQL
 AS $$
 BEGIN
-    INSERT INTO Componente (nome, descricao, preco, iva, imagem , criadoPor)
-    VALUES (p_nome, p_descricao, p_preco, p_iva, p_imagem, p_criadoPor);
+    INSERT INTO Componente (nome, descricao, tipo, preco, iva, imagem, criadoPor)
+    VALUES (p_nome, p_descricao, p_tipo, p_preco, p_iva, p_imagem, p_criadoPor);
 END;
 $$; 
 
-CALL InserirComponente('Samsung 860 Evo 2TB M.2', 'Disco Rígido SSD Samsung 860 Evo 2TB M.2 SATA', 299.90, 23, '', 1);
+CALL InserirComponente('Samsung 860 Evo 2TB M.2', 'Disco Rígido SSD Samsung 860 Evo 2TB M.2 SATA', 5, 299.90, 23, '', 1);
 
 SELECT * FROM Componente;
 -- #endregion

@@ -39,11 +39,11 @@ TipoComponente.nome AS tipo,
 Componente.preco, 
 Componente.iva,
 Componente.imagem,
-SUM(ComponenteArmazem.quantidade) AS quantidade,
+COALESCE(SUM(ComponenteArmazem.quantidade), 0) AS quantidade,
 Componente.criadoPor,
 Componente.isEnabled
 FROM Componente
-JOIN ComponenteArmazem ON Componente.id = ComponenteArmazem.componente
+LEFT JOIN ComponenteArmazem ON Componente.id = ComponenteArmazem.componente
 JOIN TipoComponente ON Componente.tipo = TipoComponente.id
 GROUP BY Componente.id, TipoComponente.nome
 ORDER BY Componente.id;
@@ -71,3 +71,44 @@ ORDER BY Equipamento.id;
 SELECT * FROM GetEquipamentos;
 
 -- #endregion
+
+-- #region Fornecedores
+
+DROP VIEW IF EXISTS GetFornecedores;
+
+CREATE VIEW GetFornecedores AS SELECT
+*
+FROM Fornecedor;
+
+-- #endregion
+
+-- #region Armazéns
+
+DROP VIEW IF EXISTS GetArmazens;
+
+CREATE VIEW GetArmazens AS SELECT
+*
+FROM Armazem;
+
+SELECT * FROM GetArmazens;
+
+-- #endregion
+
+-- #region ComponentesArmazem
+
+DROP VIEW IF EXISTS GetComponentesArmazem;
+
+CREATE VIEW GetComponentesArmazem AS SELECT
+componenteArmazem.componente,
+componente.nome AS nomeComponente,
+componenteArmazem.armazem,
+armazem.nome AS nomeArmazem,
+componenteArmazem.quantidade
+FROM ComponenteArmazem
+JOIN Componente ON ComponenteArmazem.componente = Componente.id
+JOIN Armazem ON ComponenteArmazem.armazem = Armazem.id;
+
+SELECT * FROM GetComponentesArmazem;
+
+-- #endregion
+

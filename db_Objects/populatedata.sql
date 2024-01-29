@@ -117,6 +117,7 @@ SELECT * FROM Utilizador;
 SELECT * FROM Armazem;
 SELECT * FROM Componente;
 SELECT * FROM ComponenteArmazem;
+SELECT * FROM TipoComponente;
 SELECT * FROM TipoEquipamento;
 SELECT * FROM Equipamento;
 SELECT * FROM ProducaoEquipamento;
