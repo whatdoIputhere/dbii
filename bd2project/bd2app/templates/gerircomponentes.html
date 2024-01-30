@@ -33,202 +33,15 @@
                                 data-bs-target="#deleteModal{{ componente.0 }}"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>
-                    <div class="modal fade" id="editModal{{ componente.0 }}" tabindex="-1"
-                        aria-labelledby="editModalLabel{{ componente.0 }}" aria-hidden="true" data-bs-backdrop="static">
-                        <div style="max-width: 1000px;" class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="editModalLabel{{ componente.0 }}">Editar Componente</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form action="/editarcomponente" method="POST">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label for="nome" class="form-label">Nome</label>
-                                                    <input type="text" class="form-control" id="nome{{componente.0}}"
-                                                        name="nome" value="{{ componente.1 }}">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="descricao" class="form-label">Descrição</label>
-                                                    <textarea class="form-control" id="descricao{{componente.0}}"
-                                                        name="descricao" rows="3"
-                                                        maxlength="255">{{ componente.2 }}</textarea>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <div class="mb-3">
-                                                        <label for="tipo" class="form-label">Tipo</label>
-                                                        <select class="form-select" id="tipo{{componente.0}}"
-                                                            name="tipo">
-                                                            {% for tipo in tiposcomponente %}
-                                                            <option value="{{ tipo.0 }}" {% if tipo.1 == componente.3 %}
-                                                                selected {% endif %}>
-                                                                {{ tipo.1 }}
-                                                            </option>
-                                                            {% endfor %}
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="preco" class="form-label">Preço</label>
-                                                    <input type="number" class="form-control" id="preco{{componente.0}}"
-                                                        name="preco" value="{{ componente.4 }}">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="iva" class="form-label">Iva</label>
-                                                    <input type="number" class="form-control" id="iva{{componente.0}}"
-                                                        name="iva" value="{{ componente.5 }}" min="0" max="100">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="quantidade" class="form-label">Quantidade em
-                                                        armazém</label>
-                                                    <input disabled type="number" class="form-control"
-                                                        id="quantidade{{componente.0}}" name="quantidade"
-                                                        value="{{ componente.7 }}">
-                                                </div>
-                                                {% if componente.7 > 0 %}
-                                                <div class="mb-3">
-                                                    <span>Armazéns em que se encontra</span>
-                                                    <ul name="armazenslist{{ componente.0 }}">
-                                                        {% for componenteA in componentesarmazem %}
-                                                        {% if componenteA.0 == componente.0 %}
-                                                        <li>{{componenteA.3}}: {{componenteA.4}} unidades</li>
-                                                        {% endif %}
-                                                        {% endfor %}
-                                                    </ul>
-                                                </div>
-                                                {% endif %}
-                                                <div id="err{{ componente.0 }}" class="alert alert-danger d-none"
-                                                    role="alert">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label for="image" class="form-label">Imagem</label>
-                                                    <img style="width: 100%;" id="imagemcomponente{{ componente.0 }}"
-                                                        src="{{ componente.6 }}" alt="Imagem do Componente"
-                                                        class="img-fluid">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="image" class="form-label">Upload Imagem</label>
-                                                    <input type="file"
-                                                        onchange="convertImageToBytea('{{ componente.0 }}')"
-                                                        class="form-control" id="image{{ componente.0 }}" name="image">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <input type="hidden" name="id" value="{{ componente.0 }}">
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" id="btnclose{{ componente.0 }}" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">Fechar</button>
-                                    <button type="button" onclick='saveComponente("{{ componente.0 }}")'
-                                        class="btn btn-primary">Guardar</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal fade" id="deleteModal{{ componente.0 }}" tabindex="-1"
-                        aria-labelledby="deleteModalLabel{{ componente.0 }}" aria-hidden="true"
-                        data-bs-backdrop="static">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="deleteModalLabel{{ componente.0 }}">Confirmar Eliminação
-                                    </h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Tem certeza que deseja excluir o componente "{{ componente.1 }}"?</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">Cancelar</button>
-                                    <a onclick='deletecomponente("{{ componente.0 }}")'
-                                        class="btn btn-danger">Eliminar</a>
-                                </div>
-                            </div>
-                        </div>
+                    <div name="editdeletemodal">
+                        {% include 'modals/editdeletecomponente.html' %}
                     </div>
                     {% endif %}
                     {% endfor %}
                 </tbody>
             </table>
 
-            <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true"
-                data-bs-backdrop="static">
-                <div style="max-width: 1000px;" class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="createModalLabel">Adicionar Componente</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="/adicionarcomponente" method="POST">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="nome" class="form-label">Nome</label>
-                                            <input type="text" class="form-control" id="nome" name="nome">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="descricao" class="form-label">Descrição</label>
-                                            <textarea class="form-control" id="descricao" name="descricao" rows="3"
-                                                maxlength="255"></textarea>
-                                        </div>
-                                        <div class="mb-3">
-                                            <div class="mb-3">
-                                                <label for="tipo" class="form-label">Tipo</label>
-                                                <select class="form-select" id="tipo" name="tipo">
-                                                    {% for tipo in tiposcomponente %}
-                                                    <option value="{{ tipo.0 }}">
-                                                        {{ tipo.1 }}
-                                                    </option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="preco" class="form-label">Preço</label>
-                                            <input type="number" class="form-control" id="preco" name="preco">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="iva" class="form-label">Iva</label>
-                                            <input type="number" class="form-control" id="iva" name="iva" min="0"
-                                                max="100">
-                                        </div>
-
-                                        <div id="err" class="alert alert-danger d-none" role="alert">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="image" class="form-label">Imagem</label>
-                                            <img style="width: 100%;" id="imagemcomponente" src=""
-                                                alt="Imagem do Componente" class="img-fluid">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="image" class="form-label">Upload Imagem</label>
-                                            <input type="file" onchange='convertImageToBytea("")' class="form-control"
-                                                id="image" name="image">
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" id="btnclose" class="btn btn-secondary"
-                                data-bs-dismiss="modal">Fechar</button>
-                            <button type="button" onclick='saveComponente("")' class="btn btn-primary">Guardar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {% include 'modals/createcomponente.html' %}
         </div>
     </div>
 </div>
@@ -372,13 +185,14 @@
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal${componentId}"><i class="fas fa-trash"></i></button>`
                             ]).draw(false);
                         }
+                        $('#editModal').unbind('hidden.bs.modal');
                     });
-
                     return;
                 }
                 if (response.includes("add")) {
                     response = response.replace("add,", "").replace("(", "").replace(")", "").split(',');
                     let newId = response[0];
+                    component.id = newId;
                     $('#createModal').modal('hide');
                     $('#createModal').on('hidden.bs.modal', function () {
                         let newRow = [
@@ -397,8 +211,24 @@
                         $('#preco').val("");
                         $('#iva').val("");
                         $('#imagemcomponente').attr('src', "");
-                        $('#tipo').val($('#tipo option:first').val());                        
+                        $('#tipo').val($('#tipo option:first').val());
                         imagebytea = "";
+                        $('#createModal').unbind('hidden.bs.modal');
+                        componentValues = Object.values(component);
+                        $.ajax({
+                            url: "modals/editdeletecomponente",
+                            type: "POST",
+                            data: { componente: JSON.stringify(componentValues), csrfmiddlewaretoken: '{{ csrf_token }}' },
+                            success: function (response) {
+                                component = {};
+                                let modal = response;
+                                $('div[name="editdeletemodal"]').last().after(modal);
+                            },
+                            error: function (xhr, errmsg, err) {
+                                console.log(xhr.status + ": " + xhr.responseText);
+                            }
+                        });
+
                     });
                     return;
                 }
@@ -431,7 +261,11 @@
 
             success: function (json) {
                 $('#deleteModal' + componentId).modal('hide');
-                $('#nomecomponente' + componentId).parent().remove();
+                $('#deleteModal' + componentId).on('hidden.bs.modal', function () {
+                    let table = $('#componentestable').DataTable();
+                    table.row(selectedRow).remove().draw();
+                    $('#deleteModal').unbind('hidden.bs.modal');
+                });
             },
 
             error: function (xhr, errmsg, err) {

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from bd2app.functions import *
 from django.http import HttpResponse
+from urllib.parse import unquote
 
 
 def index(request):
@@ -87,6 +88,15 @@ def gerirEquipamentos(request):
             return render(request, 'gerirequipamentos.html', context={'equipamentos': getEquipamentos()})
         data = request.POST
     return redirect('index')
+
+def editDeleteComponenteModal(request):
+    if isAdmin(request):
+        componente = unquote(request.POST.get("componente"))  
+        componente = json.loads(componente) 
+        return render(request, 'modals/editdeletecomponente.html', context={'componente': componente})
+            
+            
+            
 
 # def editarComponente(request):
 #     if not isAdmin(request):

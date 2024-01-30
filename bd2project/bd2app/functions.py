@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 import re
 import json
 
+# TODO: Add try catch to all functions and display information that something went wrong with the database
 def executedb(name, params, type):
     query = f"{name}({','.join(['%s'] * len(params))})"
     cursor = connections['default'].cursor()
@@ -114,7 +115,6 @@ def addComponente(componente):
         values = list(componente_obj.values())
         list.pop(values, 0);
         newComponente = executedb("InserirComponenteReturn", values, 'func')
-        print(newComponente)
         return newComponente
     except Exception as e:
         print(f"Error: {str(e)}")
