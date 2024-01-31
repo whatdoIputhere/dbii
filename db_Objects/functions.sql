@@ -42,6 +42,22 @@ END;
 $$;
 
 
+
+DROP TYPE IF EXISTS ComponenteInfo;
+
+CREATE TYPE ComponenteInfo AS (
+    id int,
+    nome varchar(255),
+    descricao varchar(255),
+    tipo varchar(255),
+    preco float,
+    iva int,
+    imagem bytea,
+    quantidade int,
+    criadoPor int,
+    isEnabled boolean
+);
+
 DROP FUNCTION IF EXISTS InserirComponenteReturn;
 
 CREATE FUNCTION InserirComponenteReturn(
@@ -53,15 +69,18 @@ CREATE FUNCTION InserirComponenteReturn(
     p_imagem bytea,
     p_criadoPor int
 )
-RETURNS Componente
+RETURNS ComponenteInfo
 LANGUAGE PLPGSQL
 AS $$
 DECLARE
-    new_componente Componente%ROWTYPE;
+    componenteId int;
+    new_componente ComponenteInfo;
 BEGIN
     INSERT INTO Componente (nome, descricao, tipo, preco, iva, imagem, criadoPor)
     VALUES (p_nome, p_descricao, p_tipo, p_preco, p_iva, p_imagem, p_criadoPor)
-    RETURNING * INTO new_componente;
+    RETURNING id INTO componenteId;
+
+    SELECT * INTO new_componente FROM GetComponentes WHERE id = componenteId;
 
     RETURN new_componente;
 END;

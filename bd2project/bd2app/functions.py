@@ -5,6 +5,7 @@ import bcrypt
 from django.shortcuts import redirect
 import re
 import json
+import datetime
 
 # TODO: Add try catch to all functions and display information that something went wrong with the database
 def executedb(name, params, type):
@@ -101,9 +102,8 @@ def isEmailValid(email):
 
 def editComponente(componente):
     try:
-        componente_obj = json.loads(componente)
-        values = list(componente_obj.values())
-        executedb("AtualizarComponente", values, 'proc')
+        componente_obj = json.loads(componente)        
+        executedb("AtualizarComponente", componente_obj, 'proc')
         return True
     except Exception as e:
         print(f"Error: {str(e)}")
@@ -112,10 +112,9 @@ def editComponente(componente):
 def addComponente(componente):
     try:
         componente_obj = json.loads(componente)
-        values = list(componente_obj.values())
-        list.pop(values, 0);
-        newComponente = executedb("InserirComponenteReturn", values, 'func')
-        return newComponente
+        componente_obj.pop(0)
+        newComponente = executedb("InserirComponenteReturn", componente_obj, 'func')
+        return json.dumps(newComponente, cls=CustomEncoder)
     except Exception as e:
         print(f"Error: {str(e)}")
         return False
@@ -131,3 +130,11 @@ def deleteComponente(id):
 def printSessionValues(request):
     for key, value in request.session.items():
             print(f"{key}: {value}")
+            
+class CustomEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime.datetime):
+            return obj.isoformat()
+        elif isinstance(obj, memoryview):
+            return obj.tobytes().decode('utf-8')
+        return super().default(obj)

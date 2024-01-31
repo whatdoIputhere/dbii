@@ -92,10 +92,8 @@ def gerirEquipamentos(request):
 def editDeleteComponenteModal(request):
     if isAdmin(request):
         componente = unquote(request.POST.get("componente"))  
-        componente = json.loads(componente) 
-        return render(request, 'modals/editdeletecomponente.html', context={'componente': componente})
-            
-            
+        componente = json.loads(componente)
+        return render(request, 'modals/editdeletecomponente.html', context={'componente': componente, 'tiposcomponente': getTiposComponentes(), 'armazens': getArmazens(), 'componentesarmazem': getComponentesArmazem()})
             
 
 # def editarComponente(request):

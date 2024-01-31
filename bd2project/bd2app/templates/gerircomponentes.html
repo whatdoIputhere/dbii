@@ -25,7 +25,7 @@
                         <th id="nomecomponente{{ componente.0 }}" scope="row">{{ componente.1 }}</th>
                         <td id="descricaocomponente{{ componente.0 }}">{{ componente.2 }}</td>
                         <td id="tipocomponente{{ componente.0 }}">{{ componente.3 }}</td>
-                        <td id="precocomponente{{ componente.0 }}">{{ componente.4 }}€</td>
+                        <td id="precocomponente{{ componente.0 }}">{{ componente.4|floatformat:2 }}€</td>
                         <td style="min-width: 88px;">
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#editModal{{ componente.0 }}"><i class="fas fa-edit"></i></button>
@@ -168,7 +168,7 @@
         $.ajax({
             url: "/gerircomponentes",
             type: "POST",
-            data: { componente: JSON.stringify(component), csrfmiddlewaretoken: '{{ csrf_token }}', action: componentId == "" ? 'add' : 'edit' },
+            data: { componente: JSON.stringify(Object.values(component)), csrfmiddlewaretoken: '{{ csrf_token }}', action: componentId == "" ? 'add' : 'edit' },
             success: function (response) {
                 if (response == "edit") {
                     $('#editModal' + componentId).modal('hide');
@@ -177,22 +177,24 @@
                         let row = table.row(selectedRow);
                         if (row) {
                             row.data([
-                                component.nome,
+                                `<strong>${component.nome}</strong>`,
                                 component.descricao,
                                 $('#tipo' + componentId + ' option:selected').text(),
                                 component.preco + "€",
                                 `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal${componentId}"><i class="fas fa-edit"></i></button>
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal${componentId}"><i class="fas fa-trash"></i></button>`
                             ]).draw(false);
+                            $('#editModal' + componentId).unbind('hidden.bs.modal');
                         }
-                        $('#editModal').unbind('hidden.bs.modal');
                     });
                     return;
                 }
                 if (response.includes("add")) {
-                    response = response.replace("add,", "").replace("(", "").replace(")", "").split(',');
+                    response = JSON.parse(response.replace("add,", ""));
+                    
                     let newId = response[0];
-                    component.id = newId;
+                    response[4] = parseFloat(response[4]).toFixed(2);
+                    component.preco = parseFloat(component.preco).toFixed(2);
                     $('#createModal').modal('hide');
                     $('#createModal').on('hidden.bs.modal', function () {
                         let newRow = [
@@ -211,10 +213,12 @@
                         $('#preco').val("");
                         $('#iva').val("");
                         $('#imagemcomponente').attr('src', "");
+                        $('#image').val("");
                         $('#tipo').val($('#tipo option:first').val());
                         imagebytea = "";
                         $('#createModal').unbind('hidden.bs.modal');
-                        componentValues = Object.values(component);
+                        componentValues = Object.values(response);
+
                         $.ajax({
                             url: "modals/editdeletecomponente",
                             type: "POST",
@@ -264,7 +268,7 @@
                 $('#deleteModal' + componentId).on('hidden.bs.modal', function () {
                     let table = $('#componentestable').DataTable();
                     table.row(selectedRow).remove().draw();
-                    $('#deleteModal').unbind('hidden.bs.modal');
+                    $('#deleteModal' + componentId).unbind('hidden.bs.modal');
                 });
             },
 

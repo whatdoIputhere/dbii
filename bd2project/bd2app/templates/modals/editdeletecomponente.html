@@ -38,7 +38,7 @@
                                     <div class="mb-3">
                                         <label for="preco" class="form-label">Preço</label>
                                         <input type="number" class="form-control" id="preco{{componente.0}}"
-                                            name="preco" value="{{ componente.4 }}">
+                                            name="preco" value="{{ componente.4|floatformat:2 }}">
                                     </div>
                                     <div class="mb-3">
                                         <label for="iva" class="form-label">Iva</label>
