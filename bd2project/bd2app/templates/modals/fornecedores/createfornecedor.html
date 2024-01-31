@@ -1,0 +1,106 @@
+<div
+    class="modal fade"
+    id="createModal"
+    tabindex="-1"
+    aria-labelledby="createModalLabel"
+    aria-hidden="true"
+    data-bs-backdrop="static"
+>
+    <div style="max-width: 1000px" class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createModalLabel">Adicionar Componente</h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+            </div>
+            <div class="modal-body">
+                <form action="/adicionarcomponente" method="POST">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="nome" class="form-label">Nome</label>
+                                <input type="text" class="form-control" id="nome" name="nome" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="descricao" class="form-label">Descrição</label>
+                                <textarea
+                                    class="form-control"
+                                    id="descricao"
+                                    name="descricao"
+                                    rows="3"
+                                    maxlength="255"
+                                ></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <div class="mb-3">
+                                    <label for="tipo" class="form-label">Tipo</label>
+                                    <select class="form-select" id="tipo" name="tipo">
+                                        {% for tipo in tiposcomponente %}
+                                        <option value="{{ tipo.0 }}">{{ tipo.1 }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="preco" class="form-label">Preço</label>
+                                <input type="number" class="form-control" id="preco" name="preco" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="iva" class="form-label">Iva</label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="iva"
+                                    name="iva"
+                                    min="0"
+                                    max="100"
+                                />
+                            </div>
+
+                            <div id="err" class="alert alert-danger d-none" role="alert"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Imagem</label>
+                                <img
+                                    style="width: 100%"
+                                    id="imagemcomponente"
+                                    src=""
+                                    alt="Imagem do Componente"
+                                    class="img-fluid"
+                                />
+                            </div>
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Upload Imagem</label>
+                                <input
+                                    type="file"
+                                    onchange='convertImageToBytea("")'
+                                    class="form-control"
+                                    id="image"
+                                    name="image"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    id="btnclose"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Fechar
+                </button>
+                <button type="button" onclick='saveComponente("")' class="btn btn-primary">
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

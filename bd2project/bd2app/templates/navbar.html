@@ -17,6 +17,15 @@
                 </li>
                 
                 <li class="nav-item">                    
+                    <a {% if request.path == '/gerirfornecedores' %} 
+                    class="nav-link active" aria-current="page"
+                    {% else %} 
+                    class="nav-link"
+                    {% endif %}
+                    href="/gerirfornecedores">Fornecedores</a>
+                </li>
+                
+                <li class="nav-item">                    
                     <a {% if request.path == '/gerirequipamentos' %} 
                     class="nav-link active" aria-current="page"
                     {% else %} 
@@ -34,6 +43,31 @@
                     href="/gerirutilizadores">Utilizadores</a>
                 </li>
             </ul>
+        </div>
+        <div class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="">
+                    <i class="fas fa-user"></i>
+                    {% if request.session.user %}
+                    {{ request.session.user.1 }}
+                    {% else %}
+                    Guest
+                    {% endif %}
+                </a>
+            </li>
+            <li class="nav-item">
+                {% if request.session.user %}
+                <a class="nav-link" href="/logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+                {% else %}
+                <a class="nav-link" href="/login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login
+                </a>
+                {% endif %}
+            </li>
         </div>
     </div>
 </nav>

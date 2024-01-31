@@ -22,8 +22,8 @@
                     {% for componente in componentes %}
                     {% if componente.9 %}
                     <tr>
-                        <th id="nomecomponente{{ componente.0 }}" scope="row">{{ componente.1 }}</th>
-                        <td id="descricaocomponente{{ componente.0 }}">{{ componente.2 }}</td>
+                        <td id="nomecomponente{{ componente.0 }}"><b>{{ componente.1 }}<b></td>
+                        <td id="descricaocomponente{{ componente.0 }}">{{ componente.2|truncatechars:130 }}</td>
                         <td id="tipocomponente{{ componente.0 }}">{{ componente.3 }}</td>
                         <td id="precocomponente{{ componente.0 }}">{{ componente.4|floatformat:2 }}€</td>
                         <td style="min-width: 88px;">
@@ -34,14 +34,14 @@
                         </td>
                     </tr>
                     <div name="editdeletemodal">
-                        {% include 'modals/editdeletecomponente.html' %}
+                        {% include 'modals/componentes/editdeletecomponente.html' %}
                     </div>
                     {% endif %}
                     {% endfor %}
                 </tbody>
             </table>
 
-            {% include 'modals/createcomponente.html' %}
+            {% include 'modals/componentes/createcomponente.html' %}
         </div>
     </div>
 </div>
@@ -177,8 +177,8 @@
                         let row = table.row(selectedRow);
                         if (row) {
                             row.data([
-                                `<strong>${component.nome}</strong>`,
-                                component.descricao,
+                                `<b>${component.nome}</b>`,
+                                component.descricao.length > 130 ? component.descricao.substring(0, 130) + "..." : component.descricao,
                                 $('#tipo' + componentId + ' option:selected').text(),
                                 component.preco + "€",
                                 `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal${componentId}"><i class="fas fa-edit"></i></button>
@@ -199,7 +199,7 @@
                     $('#createModal').on('hidden.bs.modal', function () {
                         let newRow = [
                             `<strong>${component.nome}</strong>`,
-                            component.descricao,
+                            component.descricao.length > 130 ? component.descricao.substring(0, 130) + "..." : component.descricao,
                             $('#tipo option:selected').text(),
                             component.preco + "€",
                             `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal${newId}"><i class="fas fa-edit"></i></button>
@@ -220,7 +220,7 @@
                         componentValues = Object.values(response);
 
                         $.ajax({
-                            url: "modals/editdeletecomponente",
+                            url: "modals/componentes/editdeletecomponente",
                             type: "POST",
                             data: { componente: JSON.stringify(componentValues), csrfmiddlewaretoken: '{{ csrf_token }}' },
                             success: function (response) {

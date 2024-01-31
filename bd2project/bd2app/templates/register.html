@@ -3,19 +3,21 @@
 {% block title %}Register{% endblock %}
 
 {% block content %}
-<form method="post">
-    {% csrf_token %}
-    <input type="text" value="{{ username }}" name="username" id="username" placeholder="Username">
-    <input type="text" value="{{ email }}" name="email" id="email" placeholder="Email">
-    <input type="password" name="password" id="password" placeholder="Password">
-    {% if error %}
-    <br>
-    <a>{{ error }}</a>
-    {% endif %}
+<div class="container">
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" value="{{ username }}" name="username" id="username" placeholder="Username">
+        <input type="text" value="{{ email }}" name="email" id="email" placeholder="Email">
+        <input type="password" name="password" id="password" placeholder="Password">
+        {% if error %}
+        <br>
+        <a>{{ error }}</a>
+        {% endif %}
+        
+        <button type="submit">Register</button>
+    </form>
     
-    <button type="submit">Register</button>
-</form>
-
-<br>
-<a href="/login">Back to login</a>
+    <br>
+    <a href="/login">Back to login</a>
+</div>
 {% endblock %}

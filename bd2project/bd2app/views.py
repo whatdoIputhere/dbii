@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from bd2app.functions import *
 from django.http import HttpResponse
 from urllib.parse import unquote
+from django.http import HttpResponseForbidden
 
 
 def index(request):
@@ -77,74 +78,60 @@ def gerirComponentes(request):
         return HttpResponse(status=400)
     return redirect('index')
 
+def gerirFornecedores(request):
+    if not isAdmin(request):
+        return redirect('index')
+    return render(request, 'gerirfornecedores.html', 
+                  context={'fornecedores': getFornecedores(),
+                           'componentes': getComponentes(),
+                           'tiposcomponente': getTiposComponentes(), })
+
 def gerirUtilizadores(request):
     if not isAdmin(request):
         return redirect('index')
     return render(request, 'gerirutilizadores.html', context={'utilizadores': getUtilizadores()})
 
 def gerirEquipamentos(request):
-    if isAdmin(request):
-        if(request.method != 'POST'):
+    if not isAdmin(request):
+        return redirect('index')
+    if(request.method != 'POST'):
             return render(request, 'gerirequipamentos.html', context={'equipamentos': getEquipamentos()})
-        data = request.POST
-    return redirect('index')
 
 def editDeleteComponenteModal(request):
-    if isAdmin(request):
-        componente = unquote(request.POST.get("componente"))  
+    if request.META.get('HTTP_REFERER') is None:
+        return render(request, '404.html')
+    
+        componente = unquote(request.POST.get("componente"))
         componente = json.loads(componente)
-        return render(request, 'modals/editdeletecomponente.html', context={'componente': componente, 'tiposcomponente': getTiposComponentes(), 'armazens': getArmazens(), 'componentesarmazem': getComponentesArmazem()})
+        return render(request, 'modals/componentes/editdeletecomponente.html', 
+                      context={'componente': componente, 
+                                'tiposcomponente': getTiposComponentes(), 
+                                'armazens': getArmazens(), 
+                                'componentesarmazem': getComponentesArmazem()})
             
-
-# def editarComponente(request):
-#     if not isAdmin(request):
-#         return redirect('index')
-#     if request.method == 'POST':
-#         data = request.POST
-#         id = data.get("id")
-#         nome = data.get("nome")
-#         descricao = data.get("descricao")
-#         preco = data.get("preco")
-#         stock = data.get("stock")
-#         if id == "0":
-#             executedb("AdicionarComponente", [nome, descricao, preco, stock], 'proc')
-#         else:
-#             executedb("EditarComponente", [id, nome, descricao, preco, stock], 'proc')
-#         return redirect('gerircomponentes')
-#     return render(request, 'editarcomponente.html', context={'componente': getComponentes()[0]})
-
-# def editarUtilizadores(request):
-#     if isAdmin(request):
-#         if request.method != 'POST':
-#             return redirect('index')
-#         data = request.POST
-#         id = data.get("id")
-#         nome = data.get("nome")
-#         email = data.get("email")
-#         password = data.get("password")
-#         if id == "0":
-#             executedb("AdicionarUtilizador", [nome, email, password], 'proc')
-#         else:
-#             executedb("EditarUtilizador", [id, nome, email, password], 'proc')
-#         return redirect('gerirutilizadores')
-#     return redirect('index')
-
-# def editarEquipamentos(request):
-#     if isAdmin(request):
-#         if request.method != 'POST':
-#             return redirect('index')
-#         data = request.POST
-#         id = data.get("id")
-#         nome = data.get("nome")
-#         descricao = data.get("descricao")
-#         preco = data.get("preco")
-#         stock = data.get("stock")
-#         if id == "0":
-#             executedb("AdicionarEquipamento", [nome, descricao, preco, stock], 'proc')
-#         else:
-#             executedb("EditarEquipamento", [id, nome, descricao, preco, stock], 'proc')
-#         return redirect('gerirequipamentos')
-#     return redirect('index')
+def editDeleteFornecedorModal(request):
+    if request.META.get('HTTP_REFERER') is None:
+        return render(request, '404.html')
+    
+        fornecedor = unquote(request.POST.get("fornecedor"))
+        fornecedor = json.loads(fornecedor)
+        return render(request, 'modals/fornecedores/editdeletecomponente.html', 
+                      context={'componente': componente, 
+                                'tiposcomponente': getTiposComponentes(), 
+                                'armazens': getArmazens(), 
+                                'componentesarmazem': getComponentesArmazem()})
+        
+def viewEditComponentes(request):
+    if request.META.get('HTTP_REFERER') is None:
+        return render(request, '404.html')
+    
+        componente = unquote(request.POST.get("componente"))
+        componente = json.loads(componente)
+        return render(request, 'modals/fornecedores/vieweditcomponentes.html', 
+                      context={'componente': componente, 
+                                'tiposcomponente': getTiposComponentes(), 
+                                'armazens': getArmazens(), 
+                                'componentesarmazem': getComponentesArmazem()})
 
 
 def notFound(request, exception=None):
@@ -152,6 +139,7 @@ def notFound(request, exception=None):
 
 def isAdmin(request):
     if 'user' in request.session:
-        if request.session['user'][4] != '1':
-            return False
-    return True
+        if request.session['user'][4] == '1':
+            return True
+        return False
+    return False

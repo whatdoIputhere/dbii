@@ -1,0 +1,91 @@
+{% extends 'base.html' %} {% block title %}Fornecedores{% endblock %} {% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2>Fornecedores</h2>
+            <table id="fornecedorestable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Contacto</th>
+                        <th scope="col">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fornecedor in fornecedores %}
+                    <tr>
+                        <td><b>{{ fornecedor.1 }}</b></td>
+                        <td>{{ fornecedor.4 }}</td>
+                        <td>{{ fornecedor.3 }}</td>
+                        <td style="min-width: 88px">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#editModal{{ fornecedor.0 }}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                                data-bs-target="#componentesModal{{ fornecedor.0 }}">
+                                <i class="fas fa-boxes" style="color: #fff"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal{{ fornecedor.0 }}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <div name="modals">
+                        <div name="editdeletemodal">
+                            {% include 'modals/fornecedores/editdeletefornecedor.html' %}
+                        </div>
+                        <div name="vieweditcomponentes">
+                            {% include 'modals/fornecedores/vieweditcomponentes.html' %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% include 'modals/fornecedores/createfornecedor.html' %}
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedRow = "";
+    $(document).ready(function () {
+        $("#fornecedorestable").DataTable({
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.10.25/i18n/Portuguese.json",
+                sSearch: "",
+            },
+            columnDefs: [{ targets: -1, orderable: false }],
+            dom: "lf<rt>ip",
+            initComplete: function () {
+                let btn = $(
+                    `<button style="max-height: 36px; max-width: 181px;" type="button" class="btn btn-success" data-bs-toggle="modal" 
+                data-bs-target="#createModal">Adicionar Fornecedor</button>`
+                );
+                $(".dataTables_filter").append(btn);
+                $(".dataTables_filter input").attr("placeholder", "Procurar");
+
+                $("#fornecedorestable tbody").on("click", "button", function () {
+                    let table = $("#fornecedorestable").DataTable();
+                    let row = table.row($(this).parents("tr"));
+                    selectedRow = row.index();
+                });
+                
+                
+                $("select[name='tipo']").change(function() {
+                    let fornecedorid = this.id.replace('tipo','');
+                    let selectedTipo = $(this).find(":selected").text().trim();                    
+                    
+                    let componentesList = "{{ componentes|escapejs }}".replaceAll("'",'"').replaceAll('True','"True"').replaceAll('False','"False"');
+
+                    $('#componente' + fornecedorid).empty();
+                    
+                });
+            },
+        });
+    });
+</script>
+{% endblock %}

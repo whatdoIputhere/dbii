@@ -11,11 +11,10 @@ urlpatterns = [
     path('gerircomponentes',views.gerirComponentes, name='gerircomponentes'),
     path('gerirutilizadores',views.gerirUtilizadores, name='gerirutilizadores'),
     path('gerirequipamentos',views.gerirEquipamentos, name='gerirequipamentos'),
-    path('modals/editdeletecomponente',views.editDeleteComponenteModal, name='editdeletecomponente'),
-    # path('editarcomponente',views.editarComponente, name='editarcomponente'),
-    # path('editarutilizador',views.editarUtilizadores, name='editarutilizador'),
-    # path('editarequipamento',views.editarEquipamentos, name='editarequipamento'),
-    path('modals/editdeletecomponente', views.editDeleteComponenteModal, name='editdeletecomponente'),
+    path('gerirfornecedores',views.gerirFornecedores, name='gerirfornecedores'),
+    path('modals/componentes/editdeletecomponente',views.editDeleteComponenteModal, name='editdeletecomponente'),
+    path('modals/fornecedores/editdeletefornecedor',views.editDeleteFornecedorModal, name='editdeletecomponente'),
+    path('modals/fornecedores/vieweditcomponentes',views.viewEditComponentes, name='vieweditcomponentes'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

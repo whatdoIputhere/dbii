@@ -1,0 +1,82 @@
+<div name="editdeletemodal">
+    <div name="modalsdiv">
+        <div class="modal fade" id="componentesModal{{ fornecedor.0 }}" tabindex="-1"
+            aria-labelledby="componentesModal{{ fornecedor.0 }}" aria-hidden="true" data-bs-backdrop="static">
+            <div style="max-width: 1000px" class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="componentesModal{{ fornecedor.0 }}">
+                            Componentes do Fornecedor: {{ fornecedor.1 }}
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/editarfornecedor" method="POST">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="tipo" class="form-label">Tipo</label>
+                                        <select class="form-select" id="tipo{{ fornecedor.0 }}" name="tipo">
+                                            {% for tipo in tiposcomponente %}
+                                            <option value="{{ tipo.0 }}" {% if tipo.1 == componente.3 %} selected {% endif %}>
+                                                {{ tipo.1 }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="componente" class="form-label">Componente</label>                                        
+                                        <select class="form-select" id="componente{{ fornecedor.0 }}" name="componente">
+                                            {% for componente in componentes %}
+                                            {% if componente.3 == "Processador" %}
+                                            <option value="{{ componente.0 }}" {% if componente.0 == componente.2 %} selected {% endif %}>
+                                                {{ componente.1 }}
+                                            </option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                </div>
+                            </div>
+                            <input type="hidden" name="id" value="{{ fornecedor.0 }}" />
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnclose{{ fornecedor.0 }}" class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                            Fechar
+                        </button>
+                        <button type="button" onclick='savefornecedor("{{ fornecedor.0 }}")' class="btn btn-primary">
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="deleteModal{{ fornecedor.0 }}" tabindex="-1"
+            aria-labelledby="deleteModalLabel{{ fornecedor.0 }}" aria-hidden="true" data-bs-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel{{ fornecedor.0 }}">
+                            Confirmar Eliminação
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Tem certeza que deseja excluir o fornecedor "{{ fornecedor.1 }}"?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <a onclick='deletefornecedor("{{ fornecedor.0 }}")' class="btn btn-danger">Eliminar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
