@@ -84,7 +84,8 @@ def gerirFornecedores(request):
     return render(request, 'gerirfornecedores.html', 
                   context={'fornecedores': getFornecedores(),
                            'componentes': getComponentes(),
-                           'tiposcomponente': getTiposComponentes(), })
+                           'tiposcomponente': getTiposComponentes(), 
+                           'fornecedorcomponente': getFornecedorComponente()})
 
 def gerirUtilizadores(request):
     if not isAdmin(request):
@@ -131,7 +132,7 @@ def viewEditComponentes(request):
                       context={'componente': componente, 
                                 'tiposcomponente': getTiposComponentes(), 
                                 'armazens': getArmazens(), 
-                                'componentesarmazem': getComponentesArmazem()})
+                                'fornecedorcomponente': getFornecedorComponente()()})
 
 
 def notFound(request, exception=None):

@@ -1,11 +1,10 @@
 {% extends 'base.html' %} {% block title %}Fornecedores{% endblock %} {% block content %}
 <style>
-    li a:hover {
-        background-color: #198754;
+    .listacomponentes li a:hover {
+        background-color: #dc3545;
         cursor: pointer;
-        color: white;
+        color: white !important;
     }
-
 </style>
 <div class="container">
     <div class="row">
@@ -27,16 +26,28 @@
                         <td>{{ fornecedor.4 }}</td>
                         <td>{{ fornecedor.3 }}</td>
                         <td style="min-width: 88px">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#editModal{{ fornecedor.0 }}">
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editModal{{ fornecedor.0 }}"
+                            >
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button type="button" class="btn btn-info" data-bs-toggle="modal"
-                                data-bs-target="#componentesModal{{ fornecedor.0 }}">
+                            <button
+                                type="button"
+                                class="btn btn-info"
+                                data-bs-toggle="modal"
+                                data-bs-target="#componentesModal{{ fornecedor.0 }}"
+                            >
                                 <i class="fas fa-boxes" style="color: #fff"></i>
                             </button>
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                data-bs-target="#deleteModal{{ fornecedor.0 }}">
+                            <button
+                                type="button"
+                                class="btn btn-danger"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteModal{{ fornecedor.0 }}"
+                            >
                                 <i class="fas fa-trash"></i>
                             </button>
                         </td>
@@ -69,7 +80,7 @@
             dom: "lf<rt>ip",
             initComplete: function () {
                 let btn = $(
-                    `<button style="max-height: 36px; max-width: 181px;" type="button" class="btn btn-success" data-bs-toggle="modal" 
+                    `<button style="max-height: 36px; max-width: 181px;" type="button" class="btn btn-success" data-bs-toggle="modal"
                 data-bs-target="#createModal">Adicionar Fornecedor</button>`
                 );
                 $(".dataTables_filter").append(btn);
@@ -80,18 +91,27 @@
                     let row = table.row($(this).parents("tr"));
                     selectedRow = row.index();
                 });
-                
-                
+
+                $("select[name='componente']").change(function() {
+                    let fornecedorid = this.id.replace('componente','');
+                    let errorDiv = $('#componenteserr' + fornecedorid);                    
+                    errorDiv.text('');
+                    errorDiv.addClass('d-none')
+                });
+
                 $("select[name='tipo']").change(function() {
-                    if(this.getElementsByTagName('option')[0].value == 0) 
-                        this.removeChild(this.getElementsByTagName('option')[0]);
+                    if(this.getElementsByTagName('option')[0].value == 0)
+                    this.removeChild(this.getElementsByTagName('option')[0]);
+                    let fornecedorid = this.id.replace('tipo','');
+                    $('#btnaddcomponentes'+fornecedorid).prop('disabled', false);
+                    let errorDiv = $('#componenteserr' + fornecedorid);
+                    errorDiv.text('');
+                    errorDiv.addClass('d-none')
                     
-                    let fornecedorid = this.id.replace('tipo','');                    
-                    let selectedTipo = $(this).find(":selected").text().trim();                    
-                    
-                    let componentesList = [{% for componente in componentes %}"{{ componente }}",{% endfor %}];
-                    
+                    let selectedTipo = $(this).find(":selected").text().trim();
                     $('#componente'+fornecedorid).empty();
+                    
+                    let componentesList = [{% for componente in componentes %}"{{ componente }}",{% endfor %}];                    
                     componentesList.forEach((componente, index) => {
                         componente = JSON.parse(componente.replace(/&#x27;/g, '"').replace('True','"True"').replace('False','"False"'));
                         if (componente[3] == selectedTipo) {
@@ -106,9 +126,15 @@
     function addComponentToList(fornecedorId){
         let componenteId = $('#componente'+fornecedorId).val();
         let componenteName = $('#componente'+fornecedorId+' option:selected').text();
-
+        let list = $('#addedcomponentes'+fornecedorId);        
+        let errorDiv = $('#componenteserr' + fornecedorId);        
         
-        $('#addedcomponentes'+fornecedorId).append(`<li onclick="this.parentNode.removeChild(this);"><a>${componenteName}</a></li>`);
+        if(list.find(`li:contains(${componenteName})`).length == 0)
+            list.append(`<li onclick="this.parentNode.removeChild(this);"><a>${componenteName}</a></li>`);
+        else{
+            errorDiv.text("Componente já foi adicionado à lista")
+            errorDiv.removeClass('d-none');
+        }
     }
 </script>
 {% endblock %}

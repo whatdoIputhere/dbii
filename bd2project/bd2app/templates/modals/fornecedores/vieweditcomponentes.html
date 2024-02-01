@@ -26,21 +26,27 @@
                                         </select>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="componente" class="form-label">Componente</label>                                        
+                                        <label for="componente" class="form-label">Componente</label>
                                         <select class="form-select" id="componente{{ fornecedor.0 }}" name="componente">
-                                            <option value="0">Selecione um tipo</option>                                        
+                                            <option value="0">Selecione um tipo</option>
                                         </select>
                                     </div>
                                     <div class="mb-3">
-                                        <button type="button" onclick='addComponentToList("{{ fornecedor.0 }}")' class="btn btn-success">
+                                        <button id="btnaddcomponentes{{fornecedor.0}}" type="button" disabled
+                                            onclick='addComponentToList("{{ fornecedor.0 }}")' class="btn btn-success">
                                             Adicionar componente à lista
                                         </button>
                                     </div>
+                                    <div id="componenteserr{{ fornecedor.0 }}" class="alert alert-danger d-none" role="alert"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <span>Componentes adicionados (clique no componente para remover)</span>
-                                    <ul id="addedcomponentes{{ fornecedor.0 }}">
-
+                                    <ul class="listacomponentes" id="addedcomponentes{{ fornecedor.0 }}">
+                                        {% for componente in fornecedorcomponente %}
+                                        {% if componente.0 == fornecedor.0 %}
+                                        <li onclick="this.parentNode.removeChild(this);"><a>{{componente.3}}</a></li>
+                                        {% endif %}
+                                        {% endfor %}                                        
                                     </ul>
                                 </div>
                             </div>

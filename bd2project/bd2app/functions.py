@@ -86,6 +86,13 @@ def getFornecedores():
     except Exception as e:
         print(f"Error: {str(e)}")
         return []
+    
+def getFornecedorComponente():
+    try:
+        return executedb("GetFornecedorComponente", [], 'view')        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return []
 
 def getComponentesArmazem():
     try:
