@@ -112,3 +112,20 @@ SELECT * FROM GetComponentesArmazem;
 
 -- #endregion
 
+-- #region GetFornecedorComponente
+
+DROP VIEW IF EXISTS GetFornecedorComponente;
+
+CREATE VIEW GetFornecedorComponente AS SELECT
+fornecedorComponente.fornecedor,
+fornecedor.nome AS nomeFornecedor,
+fornecedorComponente.componente,
+componente.nome AS nomeComponente
+FROM FornecedorComponente
+JOIN Fornecedor ON FornecedorComponente.fornecedor = Fornecedor.id
+JOIN Componente ON FornecedorComponente.componente = Componente.id
+WHERE componente.isEnabled = 'True';
+
+SELECT * FROM GetFornecedorComponente;
+
+-- #endregion

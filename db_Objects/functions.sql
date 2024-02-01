@@ -41,9 +41,7 @@ BEGIN
 END;
 $$;
 
-
-
-DROP TYPE IF EXISTS ComponenteInfo;
+DROP TYPE IF EXISTS ComponenteInfo CASCADE;
 
 CREATE TYPE ComponenteInfo AS (
     id int,

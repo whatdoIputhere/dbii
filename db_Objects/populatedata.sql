@@ -92,6 +92,19 @@ INSERT INTO Fornecedor (nome, morada, telefone, email, nif,criadoPor)
 VALUES ('Fornecedor 1', 'Rua do Fornecedor 1', '912345678', 'fornecedor1@gmail.com', '123456789',1),
        ('Fornecedor 2', 'Rua do Fornecedor 2', '912345678', 'fornecedor2@gmail.com', '123456789',1);
 
+INSERT INTO FornecedorComponente(fornecedor, componente)
+VALUES (1, 1),
+       (1, 2),
+       (1, 3),
+       (2, 3),
+       (2, 5),
+       (2, 6),
+       (2, 7),
+       (3, 8),
+       (3, 9),
+       (3, 10),
+       (3, 11);
+       
 INSERT INTO EstadoEncomenda (nome)
 VALUES ('Em processamento'),
        ('Em transporte'),

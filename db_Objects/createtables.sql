@@ -131,6 +131,13 @@ CREATE TABLE Fornecedor(
     isEnabled boolean DEFAULT true
 );
 
+CREATE TABLE FornecedorComponente(
+    fornecedor int REFERENCES Fornecedor(id),
+    componente int REFERENCES Componente(id),
+    CONSTRAINT pk_FornecedorComponente PRIMARY KEY (fornecedor, componente),
+    isEnabled boolean DEFAULT true
+);
+
 CREATE TABLE EstadoEncomenda(
     id serial PRIMARY KEY,
     nome varchar(255) NOT NULL,

@@ -514,7 +514,7 @@ CREATE PROCEDURE AtualizarComponente(
     p_id int,
     p_nome varchar(255),
     p_descricao varchar(255),
-    p_tipo varchar(255),
+    p_tipo int,
     p_preco float,
     p_iva int,
     p_imagem bytea
@@ -542,9 +542,7 @@ BEGIN
 END;
 $$;
 
-CALL AtualizarComponente(15, 'Samsung 860 Evo 2TB M.2 atualizado', 'Disco Rígido SSD Samsung 860 Evo 2TB M.2 SATA atualizado', 299.90, 23, '');
-
-SELECT * FROM Componente;
+CALL AtualizarComponente(15, 'Samsung 860 Evo 2TB M.2 atualizado', 'Disco Rígido SSD Samsung 860 Evo 2TB M.2 SATA atualizado', 5, 299.90, 23, '');
 
 -- #endregion
 
