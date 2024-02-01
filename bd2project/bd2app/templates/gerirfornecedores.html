@@ -1,5 +1,12 @@
 {% extends 'base.html' %} {% block title %}Fornecedores{% endblock %} {% block content %}
+<style>
+    li a:hover {
+        background-color: #198754;
+        cursor: pointer;
+        color: white;
+    }
 
+</style>
 <div class="container">
     <div class="row">
         <div class="col">
@@ -76,16 +83,32 @@
                 
                 
                 $("select[name='tipo']").change(function() {
-                    let fornecedorid = this.id.replace('tipo','');
+                    if(this.getElementsByTagName('option')[0].value == 0) 
+                        this.removeChild(this.getElementsByTagName('option')[0]);
+                    
+                    let fornecedorid = this.id.replace('tipo','');                    
                     let selectedTipo = $(this).find(":selected").text().trim();                    
                     
-                    let componentesList = "{{ componentes|escapejs }}".replaceAll("'",'"').replaceAll('True','"True"').replaceAll('False','"False"');
-
-                    $('#componente' + fornecedorid).empty();
+                    let componentesList = [{% for componente in componentes %}"{{ componente }}",{% endfor %}];
                     
+                    $('#componente'+fornecedorid).empty();
+                    componentesList.forEach((componente, index) => {
+                        componente = JSON.parse(componente.replace(/&#x27;/g, '"').replace('True','"True"').replace('False','"False"'));
+                        if (componente[3] == selectedTipo) {
+                            $('#componente'+fornecedorid).append(`<option value="${componente[0]}">${componente[1]}</option>`);
+                        }
+                    });
                 });
             },
         });
     });
+
+    function addComponentToList(fornecedorId){
+        let componenteId = $('#componente'+fornecedorId).val();
+        let componenteName = $('#componente'+fornecedorId+' option:selected').text();
+
+        
+        $('#addedcomponentes'+fornecedorId).append(`<li onclick="this.parentNode.removeChild(this);"><a>${componenteName}</a></li>`);
+    }
 </script>
 {% endblock %}
