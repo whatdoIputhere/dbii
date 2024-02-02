@@ -43,7 +43,7 @@
                                 <ul class="listacomponentes" id="addedcomponentes{{ fornecedor.0 }}">
                                     {% for componente in fornecedorcomponente %} {% if componente.0 == fornecedor.0 %}
                                     <li onclick="this.parentNode.removeChild(this);">
-                                        <a>{{componente.3}}</a>
+                                        <a id="{{componente.0}}">{{componente.3}}</a>
                                     </li>
                                     {% endif %} {% endfor %}
                                 </ul>
@@ -57,7 +57,7 @@
                         data-bs-dismiss="modal">
                         Fechar
                     </button>
-                    <button type="button" onclick='savefornecedor("{{ fornecedor.0 }}")' class="btn btn-primary">
+                    <button type="button" onclick='savecomponentesfornecedor("{{ fornecedor.0 }}")' class="btn btn-primary">
                         Guardar
                     </button>
                 </div>

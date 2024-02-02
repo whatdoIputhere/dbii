@@ -97,6 +97,10 @@ def gerirFornecedores(request):
         if(newFornecedor):
             return HttpResponse(status=200, content="add,"+str(newFornecedor))
         return HttpResponse(status=400)
+    if(data.get("action") == "addcomponentes"):
+        if(addFornecedorComponente(data.get("componentes"), data.get("fornecedorId"))):
+            return HttpResponse(status=200, content="addcomponentes")
+        return HttpResponse(status=400)
     if(deleteFornecedor(data.get("id"))):
         print('deleted ' + data.get("id"))
         return HttpResponse(status=200, content="delete")

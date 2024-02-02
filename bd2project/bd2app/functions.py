@@ -55,6 +55,16 @@ def getArmazens():
     except Exception as e:
         print(f"Error: {str(e)}")
         return []
+
+#region CRUD FornecedorComponente
+def addFornecedorComponente(componentes, fornecedor):
+    try:
+        print(componentes + "," + fornecedor)
+        executedb("InserirFornecedorComponente", [componentes.replace('"',''),fornecedor], 'proc')
+        return True
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
     
 def getFornecedorComponente():
     try:
@@ -62,6 +72,7 @@ def getFornecedorComponente():
     except Exception as e:
         print(f"Error: {str(e)}")
         return []
+#endregion
 
 def getComponentesArmazem():
     try:

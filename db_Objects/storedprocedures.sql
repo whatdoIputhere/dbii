@@ -262,6 +262,38 @@ CALL InserirFornecedor('Fornecedor 3', 'Rua do Fornecedor 3', '912345678', 'forn
 SELECT * FROM Fornecedor;
 -- #endregion
 
+-- #region FornecedorComponente
+
+SELECT * FROM FornecedorComponente;
+
+DROP PROCEDURE IF EXISTS InserirFornecedorComponente;
+
+CREATE OR REPLACE PROCEDURE InserirFornecedorComponente(
+     componentesArray varchar,
+     fornecedorId integer
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    componenteId integer;
+BEGIN
+    FOREACH componenteId IN ARRAY string_to_array(componentesArray, ',')::INTEGER[]
+    LOOP
+        IF NOT EXISTS (SELECT 1 FROM FornecedorComponente WHERE componente = componenteId AND fornecedor = fornecedorId) THEN
+            INSERT INTO FornecedorComponente(componente,fornecedor) 
+            VALUES (componenteId, fornecedorId);
+        END IF;
+        
+    END LOOP;
+END;
+$$;
+
+CALL InserirFornecedorComponente('4,5', 3);
+
+SELECT * FROM FornecedorComponente;
+
+-- #endregion
+
 -- #region EstadoEncomenda
 SELECT * FROM EstadoEncomenda;
 
