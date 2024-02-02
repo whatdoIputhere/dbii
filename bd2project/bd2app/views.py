@@ -138,13 +138,13 @@ def viewEditComponentes(request):
     if request.META.get('HTTP_REFERER') is None:
         return render(request, '404.html')
     
-        componente = unquote(request.POST.get("componente"))
-        componente = json.loads(componente)
-        return render(request, 'modals/fornecedores/vieweditcomponentes.html', 
-                      context={'componente': componente, 
-                                'tiposcomponente': getTiposComponentes(), 
-                                'armazens': getArmazens(), 
-                                'fornecedorcomponente': getFornecedorComponente()()})
+    fornecedor = unquote(request.POST.get("fornecedor"))
+    fornecedor = json.loads(fornecedor)
+    return render(request, 'modals/fornecedores/vieweditcomponentes.html', 
+                    context={'fornecedor': fornecedor,
+                            'componentes': getComponentes(),
+                            'tiposcomponente': getTiposComponentes(),
+                            'fornecedorcomponente': getFornecedorComponente()})
 
 
 def notFound(request, exception=None):

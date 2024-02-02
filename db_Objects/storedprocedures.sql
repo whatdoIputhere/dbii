@@ -728,8 +728,7 @@ CREATE PROCEDURE AtualizarFornecedor(
     p_morada varchar(255),
     p_telefone varchar(255),
     p_email varchar(255),
-    p_nif varchar(255),
-    p_criadoPor int
+    p_nif varchar(255)
 )
 LANGUAGE PLPGSQL
 AS $$
@@ -739,13 +738,12 @@ BEGIN
         morada = p_morada,
         telefone = p_telefone,
         email = p_email,
-        nif = p_nif,
-        criadoPor = p_criadoPor
+        nif = p_nif
     WHERE id = p_id;
 END;
 $$;
 
-CALL AtualizarFornecedor(3, 'Fornecedor 3 atualizado', 'Rua do Fornecedor 3 atualizado', '912345678', 'fornecedor3@gmail.com', '123456789', 1);
+CALL AtualizarFornecedor(3, 'Fornecedor 3 atualizado', 'Rua do Fornecedor 3 atualizado', '912345678', 'fornecedor3@gmail.com', '123456789');
 
 SELECT * FROM Fornecedor;
 

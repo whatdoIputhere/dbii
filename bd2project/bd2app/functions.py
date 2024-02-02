@@ -7,19 +7,6 @@ import re
 import json
 import datetime
 
-# TODO: Add try catch to all functions and display information that something went wrong with the database
-def executedb(name, params, type):
-    query = f"{name}({','.join(['%s'] * len(params))})"
-    cursor = connections['default'].cursor()
-    if type == "proc":
-        cursor.execute('CALL ' + query, params)
-    elif type == "func":
-        cursor.callproc(name, params)
-        return cursor.fetchone()
-    elif type == "view":
-        cursor.execute('SELECT * FROM ' + name)
-        return cursor.fetchall()
-
 def fregister(username, email, password):    
     try:
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
@@ -55,17 +42,6 @@ def getTiposComponentes():
         print(f"Error: {str(e)}")
         return False
 
-def getComponentes():
-    try:
-        componentes = executedb("GetComponentes", [], 'view')
-        for i in range(len(componentes)):
-            componentes[i] = list(componentes[i])
-            componentes[i][6] = componentes[i][6].tobytes().decode('utf-8')
-        return componentes
-    except Exception as e:
-        print(f"Error: {str(e)}")
-        return False
-
 def getEquipamentos():
     try:
         return executedb("GetEquipamentos", [], 'view')        
@@ -76,13 +52,6 @@ def getEquipamentos():
 def getArmazens():
     try:
         return executedb("GetArmazens", [], 'view')        
-    except Exception as e:
-        print(f"Error: {str(e)}")
-        return []
-
-def getFornecedores():
-    try:
-        return executedb("GetFornecedores", [], 'view')        
     except Exception as e:
         print(f"Error: {str(e)}")
         return []
@@ -101,27 +70,34 @@ def getComponentesArmazem():
         print(f"Error: {str(e)}")
         return []
 
-def isEmailValid(email):
-    regex = re.compile(r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+')    
-    if re.fullmatch(regex, email):
-      return True
-    return False
+#region CRUD Componente
 
-def editComponente(componente):
-    try:
-        componente_obj = json.loads(componente)        
-        executedb("AtualizarComponente", componente_obj, 'proc')
-        return True
-    except Exception as e:
-        print(f"Error: {str(e)}")
-        return False
-    
 def addComponente(componente):
     try:
         componente_obj = json.loads(componente)
         componente_obj.pop(0)
         newComponente = executedb("InserirComponenteReturn", componente_obj, 'func')
         return json.dumps(newComponente, cls=CustomEncoder)
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
+    
+def getComponentes():
+    try:
+        componentes = executedb("GetComponentes", [], 'view')
+        for i in range(len(componentes)):
+            componentes[i] = list(componentes[i])
+            componentes[i][6] = componentes[i][6].tobytes().decode('utf-8')
+        return componentes
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
+
+def editComponente(componente):
+    try:
+        componente_obj = json.loads(componente)        
+        executedb("AtualizarComponente", componente_obj, 'proc')
+        return True
     except Exception as e:
         print(f"Error: {str(e)}")
         return False
@@ -133,13 +109,31 @@ def deleteComponente(id):
     except Exception as e:
         print(f"Error: {str(e)}")
         return False
-    
+#endregion
+
+#region CRUD Fornecedor
 def addFornecedor(fornecedor):
     try:
         fornecedor_obj = json.loads(fornecedor)
         fornecedor_obj.pop(0)
         newFornecedor = executedb("InserirFornecedorReturn", fornecedor_obj, 'func')
         return json.dumps(newFornecedor, cls=CustomEncoder)
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
+    
+def getFornecedores():
+    try:
+        return executedb("GetFornecedores", [], 'view')        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return []
+    
+def editFornecedor(fornecedor):
+    try:
+        fornecedor_obj = json.loads(fornecedor) 
+        executedb("AtualizarFornecedor", fornecedor_obj, 'proc')
+        return True
     except Exception as e:
         print(f"Error: {str(e)}")
         return False
@@ -151,7 +145,9 @@ def deleteFornecedor(id):
     except Exception as e:
         print(f"Error: {str(e)}")
         return False
-    
+#endregion
+
+#region Support functions
 def printSessionValues(request):
     for key, value in request.session.items():
             print(f"{key}: {value}")
@@ -163,3 +159,23 @@ class CustomEncoder(json.JSONEncoder):
         elif isinstance(obj, memoryview):
             return obj.tobytes().decode('utf-8')
         return super().default(obj)
+    
+# TODO: Add try catch to all functions and display information that something went wrong with the database
+def executedb(name, params, type):
+    query = f"{name}({','.join(['%s'] * len(params))})"
+    cursor = connections['default'].cursor()
+    if type == "proc":
+        cursor.execute('CALL ' + query, params)
+    elif type == "func":
+        cursor.callproc(name, params)
+        return cursor.fetchone()
+    elif type == "view":
+        cursor.execute('SELECT * FROM ' + name)
+        return cursor.fetchall()
+
+def isEmailValid(email):
+    regex = re.compile(r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+')    
+    if re.fullmatch(regex, email):
+      return True
+    return False
+#endregion

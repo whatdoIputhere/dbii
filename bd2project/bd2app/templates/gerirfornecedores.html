@@ -26,28 +26,16 @@
                         <td>{{ fornecedor.4 }}</td>
                         <td>{{ fornecedor.3 }}</td>
                         <td style="min-width: 88px">
-                            <button
-                                type="button"
-                                class="btn btn-primary"
-                                data-bs-toggle="modal"
-                                data-bs-target="#editModal{{ fornecedor.0 }}"
-                            >
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#editModal{{ fornecedor.0 }}">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button
-                                type="button"
-                                class="btn btn-info"
-                                data-bs-toggle="modal"
-                                data-bs-target="#componentesModal{{ fornecedor.0 }}"
-                            >
+                            <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                                data-bs-target="#componentesModal{{ fornecedor.0 }}">
                                 <i class="fas fa-boxes" style="color: #fff"></i>
                             </button>
-                            <button
-                                type="button"
-                                class="btn btn-danger"
-                                data-bs-toggle="modal"
-                                data-bs-target="#deleteModal{{ fornecedor.0 }}"
-                            >
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal{{ fornecedor.0 }}">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </td>
@@ -88,46 +76,46 @@
                     selectedRow = row.index();
                 });
 
-                $("select[name='componente']").change(function() {
-                    let fornecedorid = this.id.replace('componente','');
-                    let errorDiv = $('#componenteserr' + fornecedorid);                    
+                $("select[name='componente']").change(function () {
+                    let fornecedorid = this.id.replace('componente', '');
+                    let errorDiv = $('#componenteserr' + fornecedorid);
                     errorDiv.text('');
                     errorDiv.addClass('d-none')
                 });
 
-                $("select[name='tipo']").change(function() {
-                    if(this.getElementsByTagName('option')[0].value == 0)
-                    this.removeChild(this.getElementsByTagName('option')[0]);
-                    let fornecedorid = this.id.replace('tipo','');
-                    $('#btnaddcomponentes'+fornecedorid).prop('disabled', false);
+                $("select[name='tipo']").change(function () {
+                    if (this.getElementsByTagName('option')[0].value == 0)
+                        this.removeChild(this.getElementsByTagName('option')[0]);
+                    let fornecedorid = this.id.replace('tipo', '');
+                    $('#btnaddcomponentes' + fornecedorid).prop('disabled', false);
                     let errorDiv = $('#componenteserr' + fornecedorid);
                     errorDiv.text('');
                     errorDiv.addClass('d-none')
-                    
+
                     let selectedTipo = $(this).find(":selected").text().trim();
-                    $('#componente'+fornecedorid).empty();
-                    
-                    let componentesList = [{% for componente in componentes %}"{{ componente }}",{% endfor %}];                    
-                    componentesList.forEach((componente, index) => {
-                        componente = JSON.parse(componente.replace(/&#x27;/g, '"').replace('True','"True"').replace('False','"False"'));
-                        if (componente[3] == selectedTipo) {
-                            $('#componente'+fornecedorid).append(`<option value="${componente[0]}">${componente[1]}</option>`);
-                        }
-                    });
-                });
+                    $('#componente' + fornecedorid).empty();
+
+                    let componentesList = [{% for componente in componentes %}"{{ componente }}", {% endfor %}];
+        componentesList.forEach((componente, index) => {
+            componente = JSON.parse(componente.replace(/&#x27;/g, '"').replace('True', '"True"').replace('False', '"False"'));
+            if (componente[3] == selectedTipo) {
+                $('#componente' + fornecedorid).append(`<option value="${componente[0]}">${componente[1]}</option>`);
+            }
+        });
+    });
             },
         });
     });
 
-    function addComponentToList(fornecedorId){
-        let componenteId = $('#componente'+fornecedorId).val();
-        let componenteName = $('#componente'+fornecedorId+' option:selected').text();
-        let list = $('#addedcomponentes'+fornecedorId);        
-        let errorDiv = $('#componenteserr' + fornecedorId);        
-        
-        if(list.find(`li:contains(${componenteName})`).length == 0)
+    function addComponentToList(fornecedorId) {
+        let componenteId = $('#componente' + fornecedorId).val();
+        let componenteName = $('#componente' + fornecedorId + ' option:selected').text();
+        let list = $('#addedcomponentes' + fornecedorId);
+        let errorDiv = $('#componenteserr' + fornecedorId);
+
+        if (list.find(`li:contains(${componenteName})`).length == 0)
             list.append(`<li onclick="this.parentNode.removeChild(this);"><a>${componenteName}</a></li>`);
-        else{
+        else {
             errorDiv.text("Componente já foi adicionado à lista")
             errorDiv.removeClass('d-none');
         }
@@ -186,7 +174,7 @@
             morada: $('#morada' + fornecedorId).val(),
             telefone: $('#telefone' + fornecedorId).val(),
             email: $('#email' + fornecedorId).val(),
-            nif: $('#nif' + fornecedorId).val()
+            nif: $('#nif' + fornecedorId).val(),
         }
         if (fornecedorId == "")
             fornecedor.criadoPor = "{{ request.session.user.0 }}";
@@ -201,16 +189,27 @@
                 if (response == "edit") {
                     $('#editModal' + fornecedorId).modal('hide');
                     $('#editModal' + fornecedorId).on('hidden.bs.modal', function () {
-                        let table = $('#componentestable').DataTable();
+                        let table = $('#fornecedorestable').DataTable();
                         let row = table.row(selectedRow);
                         if (row) {
                             row.data([
-                                `<b>${fornecedor.nome}</b>`,
-                                fornecedor.morada.length > 130 ? fornecedor.morada.substring(0, 130) + "..." : fornecedor.morada,
-                                $('#tipo' + fornecedorId + ' option:selected').text(),
-                                fornecedor.preco + "€",
-                                `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal${fornecedorId}"><i class="fas fa-edit"></i></button>
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal${fornecedorId}"><i class="fas fa-trash"></i></button>`
+                                `<strong>${fornecedor.nome}</strong>`,
+                                fornecedor.email,
+                                fornecedor.telefone,
+                                `<button type="button" class="btn btn-primary" data-bs-toggle="modal" 
+                                    data-bs-target="#editModal${fornecedor.id}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                
+                                <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                                    data-bs-target="#componentesModal${fornecedor.id}">
+                                    <i class="fas fa-boxes" style="color: #fff"></i>
+                                </button>
+
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" 
+                                    data-bs-target="#deleteModal${fornecedor.id}">
+                                    <i class="fas fa-trash"></i>
+                                </button>`
                             ]).draw(false);
                             $('#editModal' + fornecedorId).unbind('hidden.bs.modal');
                         }
@@ -219,7 +218,7 @@
                 }
                 if (response.includes("add")) {
                     response = JSON.parse(response.replace("add,", ""));
-                    
+
                     let newId = response[0];
                     console.log(response);
                     $('#createModal').modal('hide');
@@ -228,8 +227,20 @@
                             `<strong>${fornecedor.nome}</strong>`,
                             fornecedor.email,
                             fornecedor.telefone,
-                            `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal${newId}"><i class="fas fa-edit"></i></button>
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal${newId}"><i class="fas fa-trash"></i></button>`
+                            `<button type="button" class="btn btn-primary" data-bs-toggle="modal" 
+                                    data-bs-target="#editModal${newId}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                
+                                <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                                    data-bs-target="#componentesModal${newId}">
+                                    <i class="fas fa-boxes" style="color: #fff"></i>
+                                </button>
+
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" 
+                                    data-bs-target="#deleteModal${newId}">
+                                    <i class="fas fa-trash"></i>
+                                </button>`
                         ];
                         let table = $('#fornecedorestable').DataTable();
                         table.row.add(newRow).draw();
@@ -237,9 +248,9 @@
                         $('#nome').val("");
                         $('#morada').val("");
                         $('#telefone').val("");
-                        $('#email').val("");                        
+                        $('#email').val("");
                         $('#nif').val("");
-                                                
+
                         $('#createModal').unbind('hidden.bs.modal');
                         fornecedorValues = Object.values(response);
 
@@ -254,8 +265,25 @@
                                     let modalsdiv = `<div name="modals">
                                             ${editDeleteModal}                                            
                                     </div>`
-                                    console.log(modalsdiv);
                                     $('div[name="modals"]').last().after(modalsdiv);
+                                } catch (error) {
+                                    console.log(error);
+                                }
+                            },
+                            error: function (xhr, errmsg, err) {
+                                console.log(xhr.status + ": " + xhr.responseText);
+                            }
+                        });
+
+                        $.ajax({
+                            url: "modals/fornecedores/vieweditcomponentes",
+                            type: "POST",
+                            data: { fornecedor: JSON.stringify(fornecedorValues), csrfmiddlewaretoken: '{{ csrf_token }}' },
+                            success: function (response) {
+                                try {
+                                    fornecedor = {};
+                                    let vieweditcomponentesModal = response;                                    
+                                    $('div[name="modals"]').append(vieweditcomponentesModal);
                                 } catch (error) {
                                     console.log(error);
                                 }
