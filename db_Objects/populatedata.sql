@@ -99,11 +99,7 @@ VALUES (1, 1),
        (2, 3),
        (2, 5),
        (2, 6),
-       (2, 7),
-       (3, 8),
-       (3, 9),
-       (3, 10),
-       (3, 11);
+       (2, 7);
        
 INSERT INTO EstadoEncomenda (nome)
 VALUES ('Em processamento'),

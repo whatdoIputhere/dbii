@@ -81,11 +81,26 @@ def gerirComponentes(request):
 def gerirFornecedores(request):
     if not isAdmin(request):
         return redirect('index')
-    return render(request, 'gerirfornecedores.html', 
-                  context={'fornecedores': getFornecedores(),
-                           'componentes': getComponentes(),
-                           'tiposcomponente': getTiposComponentes(), 
-                           'fornecedorcomponente': getFornecedorComponente()})
+    if(request.method != 'POST'):
+        return render(request, 'gerirfornecedores.html', 
+                    context={'fornecedores': getFornecedores(),
+                            'componentes': getComponentes(),
+                            'tiposcomponente': getTiposComponentes(), 
+                            'fornecedorcomponente': getFornecedorComponente()})
+    data = request.POST
+    if(data.get("action") == "edit"):
+        if(editFornecedor(data.get("fornecedor"))):
+            return HttpResponse(status=200, content="edit")
+        return HttpResponse(status=400)
+    if(data.get("action") == "add"):
+        newFornecedor = addFornecedor(data.get("fornecedor"))
+        if(newFornecedor):
+            return HttpResponse(status=200, content="add,"+str(newFornecedor))
+        return HttpResponse(status=400)
+    if(deleteFornecedor(data.get("id"))):
+        print('deleted ' + data.get("id"))
+        return HttpResponse(status=200, content="delete")
+    return HttpResponse(status=400)
 
 def gerirUtilizadores(request):
     if not isAdmin(request):
@@ -102,25 +117,22 @@ def editDeleteComponenteModal(request):
     if request.META.get('HTTP_REFERER') is None:
         return render(request, '404.html')
     
-        componente = unquote(request.POST.get("componente"))
-        componente = json.loads(componente)
-        return render(request, 'modals/componentes/editdeletecomponente.html', 
-                      context={'componente': componente, 
-                                'tiposcomponente': getTiposComponentes(), 
-                                'armazens': getArmazens(), 
-                                'componentesarmazem': getComponentesArmazem()})
+    componente = unquote(request.POST.get("componente"))
+    componente = json.loads(componente)
+    return render(request, 'modals/componentes/editdeletecomponente.html', 
+                    context={'componente': componente, 
+                            'tiposcomponente': getTiposComponentes(), 
+                            'armazens': getArmazens(), 
+                            'componentesarmazem': getComponentesArmazem()})
             
 def editDeleteFornecedorModal(request):
     if request.META.get('HTTP_REFERER') is None:
         return render(request, '404.html')
     
-        fornecedor = unquote(request.POST.get("fornecedor"))
-        fornecedor = json.loads(fornecedor)
-        return render(request, 'modals/fornecedores/editdeletecomponente.html', 
-                      context={'componente': componente, 
-                                'tiposcomponente': getTiposComponentes(), 
-                                'armazens': getArmazens(), 
-                                'componentesarmazem': getComponentesArmazem()})
+    fornecedor = unquote(request.POST.get("fornecedor"))
+    fornecedor = json.loads(fornecedor)
+    return render(request, 'modals/fornecedores/editdeletefornecedor.html', 
+                    context={'fornecedor': fornecedor})
         
 def viewEditComponentes(request):
     if request.META.get('HTTP_REFERER') is None:

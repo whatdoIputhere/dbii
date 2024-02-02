@@ -53,12 +53,8 @@
                         </td>
                     </tr>
                     <div name="modals">
-                        <div name="editdeletemodal">
-                            {% include 'modals/fornecedores/editdeletefornecedor.html' %}
-                        </div>
-                        <div name="vieweditcomponentes">
-                            {% include 'modals/fornecedores/vieweditcomponentes.html' %}
-                        </div>
+                        {% include 'modals/fornecedores/editdeletefornecedor.html' %}
+                        {% include 'modals/fornecedores/vieweditcomponentes.html' %}
                     </div>
                     {% endfor %}
                 </tbody>
@@ -136,5 +132,171 @@
             errorDiv.removeClass('d-none');
         }
     }
+
+    function addInvalidCssClass(campo, isvalid, componentId) {
+        $('#' + campo + componentId).addClass('is-invalid');
+        isvalid = false;
+    }
+
+    function isFormValid(nome, morada, telefone, email, nif, fornecedorId) {
+        let isvalid = true;
+
+        nome == ""
+            ? (addInvalidCssClass('nome', isvalid, fornecedorId), err = "Campo obrigatório por preencher")
+            : nome.length > 50 || nome.length < 5
+                ? (addInvalidCssClass('nome', isvalid, fornecedorId), isvalid = false, err = "Nome tem de ter entre 5 e 50 caracteres")
+                : $('#nome' + fornecedorId).removeClass('is-invalid');
+
+        morada == ""
+            ? (addInvalidCssClass('morada', isvalid, fornecedorId), isvalid = false, err = "Campo obrigatório por preencher")
+            : morada.length > 255 || morada.length < 10
+                ? (addInvalidCssClass('morada', isvalid, fornecedorId), isvalid = false, err = "Morada tem de ter entre 10 e 200 caracteres")
+                : $('#morada' + fornecedorId).removeClass('is-invalid');
+        let regexToValidateEmail = /\S+@\S+\.\S+/;
+        email == ""
+            ? (addInvalidCssClass('email', isvalid, fornecedorId), isvalid = false, err = "Campo obrigatório por preencher")
+            : !regexToValidateEmail.test(email)
+                ? (addInvalidCssClass('email', isvalid, fornecedorId), isvalid = false, err = "Email inválido")
+                : $('#email' + fornecedorId).removeClass('is-invalid');
+
+        telefone == ""
+            ? (addInvalidCssClass('telefone', isvalid, fornecedorId), isvalid = false, err = "Campo obrigatório por preencher")
+            : telefone.length < 9
+                ? (addInvalidCssClass('telefone', isvalid, fornecedorId), isvalid = false, err = "Contacto inválido")
+                : $('#telefone' + fornecedorId).removeClass('is-invalid');
+
+        nif == ""
+            ? (addInvalidCssClass('nif', isvalid, fornecedorId), isvalid = false, err = "Campo obrigatório por preencher")
+            : nif.length != 9
+                ? (addInvalidCssClass('nif', isvalid, fornecedorId), isvalid = false, err = "Nif inválido")
+                : $('#nif' + fornecedorId).removeClass('is-invalid');
+        let errorDiv = $('#err' + fornecedorId);
+
+        isvalid
+            ? (errorDiv.text(''), isvalid = true, errorDiv.addClass('d-none'))
+            : (errorDiv.text(err), errorDiv.removeClass('d-none'));
+
+        return isvalid;
+    }
+
+    function savefornecedor(fornecedorId) {
+        fornecedor = {
+            id: fornecedorId,
+            nome: $('#nome' + fornecedorId).val(),
+            morada: $('#morada' + fornecedorId).val(),
+            telefone: $('#telefone' + fornecedorId).val(),
+            email: $('#email' + fornecedorId).val(),
+            nif: $('#nif' + fornecedorId).val()
+        }
+        if (fornecedorId == "")
+            fornecedor.criadoPor = "{{ request.session.user.0 }}";
+        if (!isFormValid(fornecedor.nome, fornecedor.morada, fornecedor.telefone, fornecedor.email, fornecedor.nif, fornecedor.id))
+            return;
+
+        $.ajax({
+            url: "/gerirfornecedores",
+            type: "POST",
+            data: { fornecedor: JSON.stringify(Object.values(fornecedor)), csrfmiddlewaretoken: '{{ csrf_token }}', action: fornecedorId == "" ? 'add' : 'edit' },
+            success: function (response) {
+                if (response == "edit") {
+                    $('#editModal' + fornecedorId).modal('hide');
+                    $('#editModal' + fornecedorId).on('hidden.bs.modal', function () {
+                        let table = $('#componentestable').DataTable();
+                        let row = table.row(selectedRow);
+                        if (row) {
+                            row.data([
+                                `<b>${fornecedor.nome}</b>`,
+                                fornecedor.morada.length > 130 ? fornecedor.morada.substring(0, 130) + "..." : fornecedor.morada,
+                                $('#tipo' + fornecedorId + ' option:selected').text(),
+                                fornecedor.preco + "€",
+                                `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal${fornecedorId}"><i class="fas fa-edit"></i></button>
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal${fornecedorId}"><i class="fas fa-trash"></i></button>`
+                            ]).draw(false);
+                            $('#editModal' + fornecedorId).unbind('hidden.bs.modal');
+                        }
+                    });
+                    return;
+                }
+                if (response.includes("add")) {
+                    response = JSON.parse(response.replace("add,", ""));
+                    
+                    let newId = response[0];
+                    console.log(response);
+                    $('#createModal').modal('hide');
+                    $('#createModal').on('hidden.bs.modal', function () {
+                        let newRow = [
+                            `<strong>${fornecedor.nome}</strong>`,
+                            fornecedor.email,
+                            fornecedor.telefone,
+                            `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal${newId}"><i class="fas fa-edit"></i></button>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal${newId}"><i class="fas fa-trash"></i></button>`
+                        ];
+                        let table = $('#fornecedorestable').DataTable();
+                        table.row.add(newRow).draw();
+
+                        $('#nome').val("");
+                        $('#morada').val("");
+                        $('#telefone').val("");
+                        $('#email').val("");                        
+                        $('#nif').val("");
+                                                
+                        $('#createModal').unbind('hidden.bs.modal');
+                        fornecedorValues = Object.values(response);
+
+                        $.ajax({
+                            url: "modals/fornecedores/editdeletefornecedor",
+                            type: "POST",
+                            data: { fornecedor: JSON.stringify(fornecedorValues), csrfmiddlewaretoken: '{{ csrf_token }}' },
+                            success: function (response) {
+                                try {
+                                    fornecedor = {};
+                                    let editDeleteModal = response;
+                                    let modalsdiv = `<div name="modals">
+                                            ${editDeleteModal}                                            
+                                    </div>`
+                                    console.log(modalsdiv);
+                                    $('div[name="modals"]').last().after(modalsdiv);
+                                } catch (error) {
+                                    console.log(error);
+                                }
+                            },
+                            error: function (xhr, errmsg, err) {
+                                console.log(xhr.status + ": " + xhr.responseText);
+                            }
+                        });
+
+                    });
+                    return;
+                }
+
+            },
+
+            error: function (xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+            }
+        });
+    };
+
+    function deletefornecedor(fornecedorId) {
+        console.log(fornecedorId);
+        $.ajax({
+            url: "/gerirfornecedores",
+            type: "POST",
+            data: { id: fornecedorId, csrfmiddlewaretoken: '{{ csrf_token }}', action: 'delete' },
+
+            success: function (json) {
+                $('#deleteModal' + fornecedorId).modal('hide');
+                $('#deleteModal' + fornecedorId).on('hidden.bs.modal', function () {
+                    let table = $('#fornecedorestable').DataTable();
+                    table.row(selectedRow).remove().draw();
+                    $('#deleteModal' + fornecedorId).unbind('hidden.bs.modal');
+                });
+            },
+
+            error: function (xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+            }
+        });
+    };
 </script>
 {% endblock %}

@@ -9,7 +9,8 @@ Utilizador.palavraPasse,
 Tipoutilizador.nome AS tipo, 
 Utilizador.isEnabled
 FROM Utilizador
-JOIN Tipoutilizador ON Utilizador.tipo = Tipoutilizador.id;
+JOIN Tipoutilizador ON Utilizador.tipo = Tipoutilizador.id
+WHERE Utilizador.isEnabled = 'True';
 
 SELECT * FROM GetUtilizadores;
 
@@ -21,7 +22,8 @@ DROP VIEW IF EXISTS GetTipoComponentes;
 
 CREATE VIEW GetTipoComponentes AS SELECT
 *
-FROM TipoComponente;
+FROM TipoComponente
+WHERE isEnabled = 'True';
 
 SELECT * FROM GetTipoComponentes;
 
@@ -45,6 +47,7 @@ Componente.isEnabled
 FROM Componente
 LEFT JOIN ComponenteArmazem ON Componente.id = ComponenteArmazem.componente
 JOIN TipoComponente ON Componente.tipo = TipoComponente.id
+WHERE Componente.isEnabled = 'True'
 GROUP BY Componente.id, TipoComponente.nome
 ORDER BY Componente.id;
 
@@ -66,6 +69,7 @@ Equipamento.iva,
 Equipamento.imagem AS criadoPor
 FROM Equipamento 
 JOIN TipoEquipamento ON Equipamento.tipo = TipoEquipamento.id
+WHERE Equipamento.isEnabled = 'True'
 ORDER BY Equipamento.id;
 
 SELECT * FROM GetEquipamentos;
@@ -78,7 +82,8 @@ DROP VIEW IF EXISTS GetFornecedores;
 
 CREATE VIEW GetFornecedores AS SELECT
 *
-FROM Fornecedor;
+FROM Fornecedor
+WHERE isEnabled = 'True';
 
 -- #endregion
 

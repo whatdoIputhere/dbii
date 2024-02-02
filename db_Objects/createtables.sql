@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS MaoObra CASCADE;
+DROP TABLE IF EXISTS FornecedorComponente CASCADE;
 DROP TABLE IF EXISTS EntregaEncomendaEquipamento CASCADE;
 DROP TABLE IF EXISTS EntregaEncomendaComponente CASCADE;
 DROP TABLE IF EXISTS EncomendaEquipamento CASCADE;

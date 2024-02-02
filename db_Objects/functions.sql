@@ -85,3 +85,40 @@ END;
 $$;
 
 --SELECT * FROM InserirComponenteReturn('Componente 1', 'Componente 1', 1, 10, 23, '', 1);
+CREATE TABLE Fornecedor(
+    id serial PRIMARY KEY,
+    nome varchar(255) NOT NULL,
+    morada varchar(255) NOT NULL,
+    telefone varchar(12) NOT NULL,
+    email varchar(255) NOT NULL,
+    nif varchar(9) NOT NULL,
+    criadoPor int NOT NULL REFERENCES Utilizador(id),
+    criadoEm TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    isEnabled boolean DEFAULT true
+);
+
+DROP FUNCTION IF EXISTS InserirFornecedorReturn;
+
+CREATE FUNCTION InserirFornecedorReturn(
+    p_nome varchar(255),
+    p_morada varchar(255),
+    p_telefone varchar(12),
+    p_email varchar(255),
+    p_nif varchar(9),
+    p_criadoPor int
+)
+RETURNS Fornecedor
+LANGUAGE PLPGSQL
+AS $$
+DECLARE
+    new_fornecedor Fornecedor%ROWTYPE;
+BEGIN
+    INSERT INTO Fornecedor (nome, morada, telefone, email, nif, criadoPor)
+    VALUES (p_nome, p_morada, p_telefone, p_email, p_nif, p_criadoPor)
+    RETURNING * INTO new_fornecedor;    
+
+    RETURN new_fornecedor;
+END;
+$$;
+
+--SELECT * FROM InserirFornecedorReturn('Fornecedor 1', 'Rua do Fornecedor 1', '912345678', 'asd@gmail.com', '123456789', 1);

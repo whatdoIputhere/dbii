@@ -13,7 +13,7 @@ urlpatterns = [
     path('gerirequipamentos',views.gerirEquipamentos, name='gerirequipamentos'),
     path('gerirfornecedores',views.gerirFornecedores, name='gerirfornecedores'),
     path('modals/componentes/editdeletecomponente',views.editDeleteComponenteModal, name='editdeletecomponente'),
-    path('modals/fornecedores/editdeletefornecedor',views.editDeleteFornecedorModal, name='editdeletecomponente'),
+    path('modals/fornecedores/editdeletefornecedor',views.editDeleteFornecedorModal, name='editdeletefornecedor'),
     path('modals/fornecedores/vieweditcomponentes',views.viewEditComponentes, name='vieweditcomponentes'),
 ]
 

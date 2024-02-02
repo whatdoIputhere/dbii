@@ -134,6 +134,24 @@ def deleteComponente(id):
         print(f"Error: {str(e)}")
         return False
     
+def addFornecedor(fornecedor):
+    try:
+        fornecedor_obj = json.loads(fornecedor)
+        fornecedor_obj.pop(0)
+        newFornecedor = executedb("InserirFornecedorReturn", fornecedor_obj, 'func')
+        return json.dumps(newFornecedor, cls=CustomEncoder)
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
+
+def deleteFornecedor(id):
+    try:
+        executedb("RemoverFornecedor", [id], 'proc')
+        return True
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
+    
 def printSessionValues(request):
     for key, value in request.session.items():
             print(f"{key}: {value}")
