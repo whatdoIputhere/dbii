@@ -14,7 +14,8 @@ urlpatterns = [
     path('gerirfornecedores',views.gerirFornecedores, name='gerirfornecedores'),
     path('modals/componentes/editdeletecomponente',views.editDeleteComponenteModal, name='editdeletecomponente'),
     path('modals/fornecedores/editdeletefornecedor',views.editDeleteFornecedorModal, name='editdeletefornecedor'),
-    path('modals/fornecedores/vieweditcomponentes',views.viewEditComponentes, name='vieweditcomponentes'),
+    path('modals/fornecedores/vieweditcomponentes',views.viewEditComponentesModal, name='vieweditcomponentes'),
+    path('modals/equipamentos/editdeleteequipamento',views.editDeleteEquipamentoModal, name='editdeleteequipamento'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

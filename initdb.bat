@@ -16,3 +16,6 @@ psql -d %CONNSTRING% -f ".\db_objects\populatedata.sql"
 psql -d %CONNSTRING% -f ".\db_objects\storedprocedures.sql"
 psql -d %CONNSTRING% -f ".\db_objects\functions.sql"
 psql -d %CONNSTRING% -f ".\db_objects\views.sql"
+
+cd .\bd2project
+python manage.py migrate

@@ -1,12 +1,11 @@
-{% extends 'base.html' %}
-
-{% block title %}Home{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% block title %}Home{% endblock %} {% block content %}
 
 <div class="container">
-    {% if request.session.user %}
+    {% if request.session.user %} {% if " " in request.session.user.1 %}
+    <h1>Welcome {{ request.session.user.1|slice:"1:-1" }}</h1>
+    {% else %}
     <h1>Welcome {{ request.session.user.1 }}</h1>
+    {% endif %}
     <a href="/logout">Logout</a>
     {% else %}
     <h1>Welcome Guest</h1>

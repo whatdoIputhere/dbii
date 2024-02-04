@@ -134,3 +134,39 @@ WHERE componente.isEnabled = 'True';
 SELECT * FROM GetFornecedorComponente;
 
 -- #endregion
+
+-- #region GetProducaoEquipamento
+
+DROP VIEW IF EXISTS GetProducaoEquipamento;
+
+CREATE VIEW GetProducaoEquipamento AS SELECT	
+producaoEquipamento.id,
+producaoEquipamento.equipamento,
+equipamento.nome AS nomeEquipamento,
+producaoEquipamento.componente,
+componente.nome AS nomeComponente,
+producaoEquipamento.criadoPor,
+producaoEquipamento.criadoEm,
+producaoEquipamento.isEnabled
+FROM ProducaoEquipamento
+JOIN Equipamento ON ProducaoEquipamento.equipamento = Equipamento.id
+JOIN Componente ON ProducaoEquipamento.componente = Componente.id
+WHERE ProducaoEquipamento.isEnabled = 'True';
+
+SELECT * FROM GetProducaoEquipamento;
+
+
+-- #endregion
+
+-- #region TipoEquipamento
+
+DROP VIEW IF EXISTS GetTipoEquipamento;
+
+CREATE VIEW GetTipoEquipamento AS SELECT
+*
+FROM TipoEquipamento
+WHERE isEnabled = 'True';
+
+SELECT * FROM GetTipoEquipamento;
+
+-- #endregion

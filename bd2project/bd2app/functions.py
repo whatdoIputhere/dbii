@@ -41,10 +41,17 @@ def getTiposComponentes():
     except Exception as e:
         print(f"Error: {str(e)}")
         return False
-
-def getEquipamentos():
+    
+def getTiposEquipamentos():
     try:
-        return executedb("GetEquipamentos", [], 'view')        
+        return executedb("GetTipoEquipamento", [], 'view')        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
+
+def getComponentesArmazem():
+    try:
+        return executedb("GetComponentesArmazem", [], 'view')        
     except Exception as e:
         print(f"Error: {str(e)}")
         return []
@@ -55,6 +62,24 @@ def getArmazens():
     except Exception as e:
         print(f"Error: {str(e)}")
         return []
+
+#region CRUD Equipamento
+
+def getEquipamentos():
+    try:
+        return executedb("GetEquipamentos", [], 'view')        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return []
+
+def getProducaoEquipamento():
+    try:
+        return executedb("GetProducaoEquipamento", [], 'view')        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return []
+
+#endregion
 
 #region CRUD FornecedorComponente
 def addFornecedorComponente(componentes, fornecedor):
@@ -73,13 +98,6 @@ def getFornecedorComponente():
         print(f"Error: {str(e)}")
         return []
 #endregion
-
-def getComponentesArmazem():
-    try:
-        return executedb("GetComponentesArmazem", [], 'view')        
-    except Exception as e:
-        print(f"Error: {str(e)}")
-        return []
 
 #region CRUD Componente
 
@@ -188,5 +206,12 @@ def isEmailValid(email):
     regex = re.compile(r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+')    
     if re.fullmatch(regex, email):
       return True
+    return False
+
+def isAdmin(request):
+    if 'user' in request.session:
+        if request.session['user'][4] == '1':
+            return True
+        return False
     return False
 #endregion

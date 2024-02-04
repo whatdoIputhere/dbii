@@ -15,25 +15,31 @@
                         <th scope="col">Nome</th>
                         <th scope="col">Descrição</th>
                         <th scope="col">Tipo</th>
+                        <th scope="col">Preço</th>
                         <th scope="col">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for equipamento in equipamentos %}
                     <tr>
-                        <th scope="row">{{ equipamento.1 }}</td>
+                        <td><b>{{ equipamento.1 }}</b></td>
                         <td>{{ equipamento.2 }}</td>
                         <td>{{ equipamento.3 }}</td>
+                        <td>{{ equipamento.4|floatformat:2 }}€</td>
                         <td style="min-width: 105px;">
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#editModal{{ componente.0 }}"><i class="fas fa-edit"></i></button>
+                                data-bs-target="#editModal{{ equipamento.0 }}"><i class="fas fa-edit"></i></button>
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                data-bs-target="#deleteModal{{ componente.0 }}"><i class="fas fa-trash"></i></button>
+                                data-bs-target="#deleteModal{{ equipamento.0 }}"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>
+                    <div name="editdeletemodal">
+                        {% include 'modals/equipamentos/editdeleteequipamento.html' %}
+                    </div>
                     {% endfor %}
                 </tbody>
             </table>
+            {% include 'modals/equipamentos/createequipamento.html' %}
         </div>
     </div>
 </div>
@@ -50,7 +56,7 @@
             initComplete: function () {
                 var btn = $(
                     `<button type="button" class="btn btn-success" data-bs-toggle="modal" 
-                    data-bs-target="#deleteModal{{ componente.0 }}">Adicionar Equipamento</button>`
+                    data-bs-target="#createModal">Adicionar Equipamento</button>`
                 );
                 $(".dataTables_filter").append(btn);
             },

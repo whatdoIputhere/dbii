@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS Equipamento CASCADE;
 DROP TABLE IF EXISTS MaoObra CASCADE;
 DROP TABLE IF EXISTS FornecedorComponente CASCADE;
 DROP TABLE IF EXISTS EntregaEncomendaEquipamento CASCADE;
@@ -10,7 +11,6 @@ DROP TABLE IF EXISTS Fornecedor CASCADE;
 DROP TABLE IF EXISTS ProducaoEquipamento CASCADE;
 DROP TABLE IF EXISTS DetalhesFatura CASCADE;
 DROP TABLE IF EXISTS Fatura CASCADE;
-DROP TABLE IF EXISTS Equipamento CASCADE;
 DROP TABLE IF EXISTS TipoEquipamento CASCADE;
 DROP TABLE IF EXISTS ComponenteArmazem CASCADE;
 DROP TABLE IF EXISTS TipoComponente CASCADE;
@@ -81,6 +81,22 @@ CREATE TABLE TipoEquipamento(
     isEnabled boolean DEFAULT true
 );
 
+
+CREATE TABLE Fatura(
+    id serial PRIMARY KEY,
+    numero int NOT NULL,
+    data TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    isEnabled boolean DEFAULT true
+);
+
+CREATE TABLE MaoObra(
+    id serial PRIMARY KEY,
+    tipo varchar(255) NOT NULL,
+    descricao varchar(255) NOT NULL,
+    preco float NOT NULL,
+    isEnabled boolean DEFAULT true
+);
+
 CREATE TABLE Equipamento (
     id serial PRIMARY KEY,
     nome varchar(255) NOT NULL,
@@ -90,26 +106,21 @@ CREATE TABLE Equipamento (
     iva int NOT NULL,
     criadoEm TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     criadoPor int NOT NULL REFERENCES Utilizador(id),
+    maoObra int REFERENCES MaoObra(id),
     imagem bytea NOT NULL,
-    isEnabled boolean DEFAULT true
-);
-
-CREATE TABLE Fatura(
-    id serial PRIMARY KEY,
-    numero int NOT NULL,
-    data TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     isEnabled boolean DEFAULT true
 );
 
 CREATE TABLE DetalhesFatura(
     fatura int REFERENCES Fatura(id),
-    componente int REFERENCES Componente(id),
+    equipamento int REFERENCES equipamento(id),
     quantidade int NOT NULL,
     preco float NOT NULL,
     iva int NOT NULL,
-    CONSTRAINT pk_DetalhesFatura PRIMARY KEY (fatura, componente),
+    CONSTRAINT pk_DetalhesFatura PRIMARY KEY (fatura, equipamento),
     isEnabled boolean DEFAULT true
 );
+
 
 CREATE TABLE ProducaoEquipamento(
     id serial PRIMARY KEY,
@@ -185,13 +196,5 @@ CREATE TABLE EntregaEncomendaEquipamento(
     equipamento int REFERENCES Equipamento(id),
     estado int REFERENCES EstadoEntrega(id),
     dataEntrega TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    isEnabled boolean DEFAULT true
-);
-
-CREATE TABLE MaoObra(
-    id serial PRIMARY KEY,
-    tipo varchar(255) NOT NULL,
-    descricao varchar(255) NOT NULL,
-    preco float NOT NULL,
     isEnabled boolean DEFAULT true
 );

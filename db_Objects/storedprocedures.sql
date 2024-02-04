@@ -195,7 +195,7 @@ DROP PROCEDURE IF EXISTS InserirDetalhesFatura;
 
 CREATE PROCEDURE InserirDetalhesFatura(
     p_fatura int,
-    p_componente int,
+    p_equipamento int,
     p_quantidade int,
     p_preco float,
     p_iva int
@@ -203,8 +203,8 @@ CREATE PROCEDURE InserirDetalhesFatura(
 LANGUAGE PLPGSQL
 AS $$
 BEGIN
-    INSERT INTO DetalhesFatura (fatura, componente, quantidade, preco, iva)
-    VALUES (p_fatura, p_componente, p_quantidade, p_preco, p_iva);
+    INSERT INTO DetalhesFatura (fatura, equipamento, quantidade, preco, iva)
+    VALUES (p_fatura, p_equipamento, p_quantidade, p_preco, p_iva);
 END;
 $$; 
 
@@ -701,7 +701,7 @@ DROP PROCEDURE IF EXISTS AtualizarDetalhesFatura;
 
 CREATE PROCEDURE AtualizarDetalhesFatura(
     p_fatura int,
-    p_componente int,
+    p_equipamento int,
     p_quantidade int,
     p_preco float,
     p_iva int
@@ -713,7 +713,7 @@ BEGIN
     SET quantidade = p_quantidade,
         preco = p_preco,
         iva = p_iva
-    WHERE fatura = p_fatura AND componente = p_componente;
+    WHERE fatura = p_fatura AND equipamento = p_equipamento;
 END;
 $$;
 
@@ -1167,7 +1167,7 @@ DROP PROCEDURE IF EXISTS RemoverDetalhesFatura;
 
 CREATE PROCEDURE RemoverDetalhesFatura(
     p_fatura int,
-    p_componente int
+    p_equipamento int
 )
 LANGUAGE PLPGSQL
 AS $$
@@ -1175,7 +1175,7 @@ AS $$
 BEGIN
     UPDATE DetalhesFatura
     SET isEnabled = false
-    WHERE fatura = p_fatura AND componente = p_componente;
+    WHERE fatura = p_fatura AND equipamento = p_equipamento;
 END;
 $$;
 

@@ -31,7 +31,7 @@ AS $$
 DECLARE
     user Utilizador%ROWTYPE;
 BEGIN
-    SELECT * INTO user FROM Utilizador WHERE email = p_email;
+    SELECT * INTO user FROM Utilizador WHERE email = p_email and isEnabled = true;
     
     IF user IS NULL THEN
         RETURN '';
@@ -83,19 +83,6 @@ BEGIN
     RETURN new_componente;
 END;
 $$;
-
---SELECT * FROM InserirComponenteReturn('Componente 1', 'Componente 1', 1, 10, 23, '', 1);
-CREATE TABLE Fornecedor(
-    id serial PRIMARY KEY,
-    nome varchar(255) NOT NULL,
-    morada varchar(255) NOT NULL,
-    telefone varchar(12) NOT NULL,
-    email varchar(255) NOT NULL,
-    nif varchar(9) NOT NULL,
-    criadoPor int NOT NULL REFERENCES Utilizador(id),
-    criadoEm TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    isEnabled boolean DEFAULT true
-);
 
 DROP FUNCTION IF EXISTS InserirFornecedorReturn;
 

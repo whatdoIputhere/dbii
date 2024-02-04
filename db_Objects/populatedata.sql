@@ -2,8 +2,6 @@ INSERT INTO TipoUtilizador (nome)
 VALUES ('Administrador'),
        ('Cliente');
 
-
-
 INSERT INTO Utilizador (nome, email, palavraPasse, tipo)
 VALUES ('Administrador', 'admin@gmail.com', '$2b$12$bEA0U1vkool/YOrdtZ4ZpeVUQuIoOJ98I5qKF1pV7Oq/NW./LL5HW', 1),
        ('Cliente 1', 'user@gmail.com', '$2b$12$pDGguGvWL8Bzs.lkNGijh.BTw8TrNv0pv0TtTacI3f3qVuGWT5FCK', 2);
@@ -69,25 +67,6 @@ VALUES ('Télemovel', 1),
        ('Rato',1),
        ('Webcam',1);
 
-
-
-INSERT INTO Equipamento (nome, descricao, tipo, preco, iva, imagem, criadoPor)
-VALUES ('PC Gaming #1', 'Processador: i7-9700k, Placa Gráfica: RTX 2080 Ti, Memória RAM: 16GB, Disco Rígido: 500GB, Fonte de Alimentação: 750W, Caixa: NZXT H500 Preta, Ventoinha: Corsair LL120', 2, 2249.99, 23, '', 1),
-       ('Monitor LG 24"', 'Monitor 24" LED - LG 24MK400H-B', 7, 99.90, 23, '', 1),
-       ('Corsair K70', 'Teclado Mecânico - Corsair K70 RGB MK.2', 8, 159.90, 23, '', 1),
-       ('Corsair m65', 'Rato Gaming - Corsair M65 RGB Elite', 9, 69.90, 23, '', 1),
-       ('Logitech C920', 'Webcam - Logitech C920 HD Pro', 10, 99.90, 23, '', 1);
-
-INSERT INTO ProducaoEquipamento (equipamento, componente,criadoPor)
-VALUES (1, 1,1),
-       (1, 2,1),
-       (1, 3,1),
-       (1, 4,1),
-       (1, 5,1),
-       (1, 6,1),
-       (1, 7,1),
-       (1, 8,1);
-
 INSERT INTO Fornecedor (nome, morada, telefone, email, nif,criadoPor)
 VALUES ('Fornecedor 1', 'Rua do Fornecedor 1', '912345678', 'fornecedor1@gmail.com', '123456789',1),
        ('Fornecedor 2', 'Rua do Fornecedor 2', '912345678', 'fornecedor2@gmail.com', '123456789',1);
@@ -119,6 +98,23 @@ VALUES  ('Montagem (curta duração)', 'Montagem com duração inferior a 30 min
         ('Reparação (curta duração)', 'Reparação com duração inferior a 30 minutos',10),
         ('Reparação (média duração)', 'Reparação com duração entre 30 minutos e 2 horas',30),
         ('Reparação (longa duração)', 'Reparação com duração superior a 2 horas',50);
+
+INSERT INTO Equipamento (nome, descricao, tipo, preco, iva, criadoPor, maoobra, imagem)
+VALUES ('PC Gaming #1', 'Processador: i7-9700k, Placa Gráfica: RTX 2080 Ti, Memória RAM: 16GB, Disco Rígido: 500GB, Fonte de Alimentação: 750W, Caixa: NZXT H500 Preta, Ventoinha: Corsair LL120', 2, 2249.99, 23, 1,2,''),
+       ('Monitor LG 24"', 'Monitor 24" LED - LG 24MK400H-B', 7, 99.90, 23, 1,1, ''),
+       ('Corsair K70', 'Teclado Mecânico - Corsair K70 RGB MK.2', 8, 159.90, 23, 1,1, ''),
+       ('Corsair m65', 'Rato Gaming - Corsair M65 RGB Elite', 9, 69.90, 23,1,1, ''),
+       ('Logitech C920', 'Webcam - Logitech C920 HD Pro', 10, 99.90, 23, 1,1, '');
+
+INSERT INTO ProducaoEquipamento (equipamento, componente,criadoPor)
+VALUES (1, 1,1),
+       (1, 2,1),
+       (1, 3,1),
+       (1, 4,1),
+       (1, 5,1),
+       (1, 6,1),
+       (1, 7,1),
+       (1, 8,1);
 
 /*
 SELECT * FROM Tipoutilizador;
