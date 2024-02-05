@@ -1,6 +1,6 @@
 <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true"
     data-bs-backdrop="static">
-    <div style="max-width: 1000px" class="modal-dialog">
+    <div style="max-width: 1300px" class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="createModalLabel">Adicionar Equipamento</h5>
@@ -9,15 +9,14 @@
             <div class="modal-body">
                 <form action="/adicionarequipamento" method="POST">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="nome" class="form-label">Nome</label>
                                 <input type="text" class="form-control" id="nome" name="nome" />
                             </div>
                             <div class="mb-3">
                                 <label for="descricao" class="form-label">Descrição</label>
-                                <textarea class="form-control" id="descricao" name="descricao" rows="3"
-                                    maxlength="255"></textarea>
+                                <textarea class="form-control" id="descricao" name="descricao" rows="3" maxlength="255"></textarea>
                             </div>
                             <div class="mb-3">
                                 <div class="mb-3">
@@ -37,11 +36,52 @@
                                 <label for="iva" class="form-label">Iva</label>
                                 <input type="number" class="form-control" id="iva" name="iva" min="0" max="100" />
                             </div>
-
                             <div id="err" class="alert alert-danger d-none" role="alert"></div>
                         </div>
-                        <div class="col-md-6">
-                            
+                        <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="tipo" class="form-label">Tipo</label>
+                                    <select class="form-select" id="tipo{{ equipamento.0 }}" name="tipo">
+                                        <option value="0">Tipo de Equipamento</option>
+                                        {% for tipo in tiposequipamento %}
+                                        <option value="{{ tipo.0 }}">{{tipo.1}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="equipamento" class="form-label">Equipamento</label>
+                                    <select class="form-select" id="equipamento{{ equipamento.0 }}" name="equipamento">
+                                        <option value="0">Selecione um tipo</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <button id="btnaddequipamentos{{equipamento.0}}" type="button" disabled
+                                        onclick='addComponentToList("{{ equipamento.0 }}")' class="btn btn-success">
+                                        Adicionar equipamento à lista
+                                    </button>
+                                </div>
+                                <div id="equipamentoserr{{ equipamento.0 }}" class="alert alert-danger d-none"
+                                    role="alert"></div>
+                                <span>Equipamentos adicionados (clique no equipamento para
+                                    remover)</span>
+                                <ul class="listaequipamentos" id="addedequipamentos{{ equipamento.0 }}">
+                                    {% for equipamento in equipamentoequipamento %} {% if equipamento.0 == equipamento.0 %}
+                                    <li onclick="this.parentNode.removeChild(this);">
+                                        <a id="{{equipamento.0}}">{{equipamento.3}}</a>
+                                    </li>
+                                    {% endif %} {% endfor %}
+                                </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Imagem</label>
+                                <img style="width: 100%" id="imagemequipamento" src="/static/img/noimage.png" alt="Imagem do equipamento"
+                                    class="img-fluid" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Upload Imagem</label>
+                                <input type="file" onchange='convertImageToBytea("")' class="form-" id="image" name="image" />
+                            </div>
                         </div>
                     </div>
                 </form>

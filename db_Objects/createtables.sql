@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS EquipamentoArmazem CASCADE;
 DROP TABLE IF EXISTS Equipamento CASCADE;
 DROP TABLE IF EXISTS MaoObra CASCADE;
 DROP TABLE IF EXISTS FornecedorComponente CASCADE;
@@ -108,6 +109,14 @@ CREATE TABLE Equipamento (
     criadoPor int NOT NULL REFERENCES Utilizador(id),
     maoObra int REFERENCES MaoObra(id),
     imagem bytea NOT NULL,
+    isEnabled boolean DEFAULT true
+);
+
+CREATE TABLE EquipamentoArmazem(
+    equipamento int REFERENCES Equipamento(id),
+    armazem int REFERENCES Armazem(id),
+    quantidade int NOT NULL,
+    CONSTRAINT pk_EquipamentoArmazem PRIMARY KEY (equipamento, armazem),
     isEnabled boolean DEFAULT true
 );
 

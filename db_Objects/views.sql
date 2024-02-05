@@ -66,15 +66,36 @@ Equipamento.descricao,
 TipoEquipamento.nome AS tipo, 
 Equipamento.preco, 
 Equipamento.iva, 
-Equipamento.imagem AS criadoPor
+Equipamento.imagem,
+COALESCE(SUM(EquipamentoArmazem.quantidade), 0) AS quantidade
 FROM Equipamento 
+LEFT JOIN EquipamentoArmazem ON Equipamento.id = EquipamentoArmazem.equipamento
 JOIN TipoEquipamento ON Equipamento.tipo = TipoEquipamento.id
 WHERE Equipamento.isEnabled = 'True'
+GROUP BY Equipamento.id, TipoEquipamento.nome
 ORDER BY Equipamento.id;
 
 SELECT * FROM GetEquipamentos;
 
 -- #endregion
+
+-- #region EquipamentosArmazem
+
+DROP VIEW IF EXISTS GetEquipamentosArmazem;
+
+CREATE VIEW GetEquipamentosArmazem AS SELECT
+equipamentoArmazem.equipamento,
+equipamento.nome AS nomeEquipamento,
+equipamentoArmazem.armazem,
+armazem.nome AS nomeArmazem,
+equipamentoArmazem.quantidade,
+armazem.descricao
+FROM EquipamentoArmazem
+JOIN Equipamento ON EquipamentoArmazem.equipamento = Equipamento.id
+JOIN Armazem ON EquipamentoArmazem.armazem = Armazem.id
+WHERE EquipamentoArmazem.isEnabled = 'True';
+
+SELECT * FROM GetEquipamentosArmazem;
 
 -- #region Fornecedores
 
@@ -108,7 +129,8 @@ componenteArmazem.componente,
 componente.nome AS nomeComponente,
 componenteArmazem.armazem,
 armazem.nome AS nomeArmazem,
-componenteArmazem.quantidade
+componenteArmazem.quantidade,
+armazem.descricao
 FROM ComponenteArmazem
 JOIN Componente ON ComponenteArmazem.componente = Componente.id
 JOIN Armazem ON ComponenteArmazem.armazem = Armazem.id;

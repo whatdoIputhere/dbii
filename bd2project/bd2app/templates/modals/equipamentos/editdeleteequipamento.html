@@ -56,7 +56,9 @@
                                         <ul name="armazenslist{{ equipamento.0 }}">
                                             {% for equipamentoA in equipamentosarmazem %}
                                             {% if equipamentoA.0 == equipamento.0 %}
-                                            <li>{{equipamentoA.3}}: {{equipamentoA.4}} unidades</li>
+                                            <li>
+                                                <b data-bs-toggle="tooltip" data-bs-placement="top" title="{{equipamentoA.5}}">{{equipamentoA.3}}</b>
+                                                : {{equipamentoA.4}} unidades</li>
                                             {% endif %}
                                             {% endfor %}
                                         </ul>
@@ -66,6 +68,18 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="image" class="form-label">Imagem</label>
+                                        <img style="width: 100%;" id="imagemequipamento{{ equipamento.0 }}"
+                                            {% if equipamento.6 != '' %} src="{{ equipamento.6 }}" 
+                                            {% else %} src="/static/img/noimage.png" {% endif %}
+                                            alt="Imagem do equipamento" class="img-fluid">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="image" class="form-label">Upload Imagem</label>
+                                        <input type="file" onchange='convertImageToBytea("")' class="form-control" id="image"
+                                            name="image" />
+                                    </div>
                                 </div>
                             </div>
                             <input type="hidden" name="id" value="{{ equipamento.0 }}">

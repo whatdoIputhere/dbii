@@ -67,7 +67,11 @@ def getArmazens():
 
 def getEquipamentos():
     try:
-        return executedb("GetEquipamentos", [], 'view')        
+        equipamentos = executedb("GetEquipamentos", [], 'view')
+        for i in range(len(equipamentos)):
+            equipamentos[i] = list(equipamentos[i])
+            equipamentos[i][6] = equipamentos[i][6].tobytes().decode('utf-8')
+        return equipamentos
     except Exception as e:
         print(f"Error: {str(e)}")
         return []
@@ -75,6 +79,13 @@ def getEquipamentos():
 def getProducaoEquipamento():
     try:
         return executedb("GetProducaoEquipamento", [], 'view')        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return []
+
+def getEquipamentosArmazem():
+    try:
+        return executedb("GetEquipamentosArmazem", [], 'view')        
     except Exception as e:
         print(f"Error: {str(e)}")
         return []

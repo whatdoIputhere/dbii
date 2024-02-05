@@ -163,11 +163,12 @@ def gerirEquipamentos(request):
     if not isAdmin(request):
         return redirect('index')
     if(request.method != 'POST'):
-            return render(request, 'gerirequipamentos.html', 
-                          context={'equipamentos': getEquipamentos(),
-                                    'componentes': getComponentes(),
-                                    'tiposcomponente': getTiposComponentes(),
-                                    'producaoequipamento': getProducaoEquipamento()})
+        return render(request, 'gerirequipamentos.html', 
+                        context={'equipamentos': getEquipamentos(),
+                                'componentes': getComponentes(),
+                                'tiposequipamento': getTiposEquipamentos(),
+                                'producaoequipamento': getProducaoEquipamento(),
+                                'equipamentosarmazem': getEquipamentosArmazem()})
     data = request.POST
     if(data.get("action") == "edit"):
         if(editEquipamento(data.get("equipamento"))):

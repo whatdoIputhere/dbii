@@ -56,7 +56,9 @@
                                         <ul name="armazenslist{{ componente.0 }}">
                                             {% for componenteA in componentesarmazem %}
                                             {% if componenteA.0 == componente.0 %}
-                                            <li>{{componenteA.3}}: {{componenteA.4}} unidades</li>
+                                            <li>
+                                                <b data-bs-toggle="tooltip" data-bs-placement="top" title="{{componenteA.5}}">{{componenteA.3}}</b>
+                                                : {{componenteA.4}} unidades</li>
                                             {% endif %}
                                             {% endfor %}
                                         </ul>
@@ -69,7 +71,9 @@
                                     <div class="mb-3">
                                         <label for="image" class="form-label">Imagem</label>
                                         <img style="width: 100%;" id="imagemcomponente{{ componente.0 }}"
-                                            src="{{ componente.6 }}" alt="Imagem do Componente" class="img-fluid">
+                                            {% if componente.6 != '' %} src="{{ componente.6 }}" 
+                                            {% else %} src="/static/img/noimage.png" {% endif %}
+                                            alt="Imagem do Componente" class="img-fluid">
                                     </div>
                                     <div class="mb-3">
                                         <label for="image" class="form-label">Upload Imagem</label>

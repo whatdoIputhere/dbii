@@ -46,21 +46,74 @@
 
 
 <script>
+    let selectedRow = "";
     $(document).ready(function () {
         $("#equipamentostable").DataTable({
             language: {
                 url: "//cdn.datatables.net/plug-ins/1.10.25/i18n/Portuguese.json",
+                sSearch: "",
             },
             columnDefs: [{ targets: -1, orderable: false }],
-            dom: 'lf<rt>ip',
+            dom: "lf<rt>ip",
             initComplete: function () {
-                var btn = $(
-                    `<button type="button" class="btn btn-success" data-bs-toggle="modal" 
-                    data-bs-target="#createModal">Adicionar Equipamento</button>`
+                let btn = $(
+                    `<button style="max-height: 36px; max-width: 181px;" type="button" class="btn btn-success" data-bs-toggle="modal"
+                data-bs-target="#createModal">Adicionar Equipamento</button>`
                 );
                 $(".dataTables_filter").append(btn);
+                $(".dataTables_filter input").attr("placeholder", "Procurar");
+
+                $("#equipamentostable tbody").on("click", "button", function () {
+                    let table = $("#equipamentostable").DataTable();
+                    let row = table.row($(this).parents("tr"));
+                    selectedRow = row.index();
+                });
+
+                $("select[name='equipamento']").change(function () {
+                    let fornecedorid = this.id.replace('equipamento', '');
+                    let errorDiv = $('#equipamentoserr' + fornecedorid);
+                    errorDiv.text('');
+                    errorDiv.addClass('d-none')
+                });
+
+                $(document).on("change", "select[name='tipo']", function () {
+                    console.log("asd")
+                    if (this.getElementsByTagName('option')[0].value == 0)
+                        this.removeChild(this.getElementsByTagName('option')[0]);
+                    let fornecedorid = this.id.replace('tipo', '');
+                    $('#btnaddequipamentos' + fornecedorid).prop('disabled', false);
+                    let errorDiv = $('#equipamentoserr' + fornecedorid);
+                    errorDiv.text('');
+                    errorDiv.addClass('d-none')
+
+                    let selectedTipo = $(this).find(":selected").text().trim();
+                    $('#equipamento' + fornecedorid).empty();
+
+                    let equipamentosList = [{% for equipamento in equipamentos %}"{{ equipamento }}", {% endfor %}];
+
+                    equipamentosList.forEach((equipamento, index) => {
+                        equipamento = JSON.parse(equipamento.replace(/&#x27;/g, '"').replace('True', '"True"').replace('False', '"False"'));
+                        if (equipamento[3] == selectedTipo) {
+                            $('#equipamento' + fornecedorid).append(`<option value="${equipamento[0]}">${equipamento[1]}</option>`);
+                        }
+                    });
+                });
             },
         });
     });
+
+    function addComponentToList(fornecedorId) {
+        let equipamentoId = $('#equipamento' + fornecedorId).val();
+        let equipamentoName = $('#equipamento' + fornecedorId + ' option:selected').text();
+        let list = $('#addedequipamentos' + fornecedorId);
+        let errorDiv = $('#equipamentoserr' + fornecedorId);
+
+        if (list.find(`li:contains(${equipamentoName})`).length == 0)
+            list.append(`<li onclick="this.parentNode.removeChild(this);"><a id="${equipamentoId}">${equipamentoName}</a></li>`);
+        else {
+            errorDiv.text("Equipamento já foi adicionado à lista")
+            errorDiv.removeClass('d-none');
+        }
+    }
 </script>
 {% endblock %}

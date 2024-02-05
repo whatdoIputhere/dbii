@@ -116,6 +116,13 @@ VALUES (1, 1,1),
        (1, 7,1),
        (1, 8,1);
 
+INSERT INTO EquipamentoArmazem (equipamento, armazem, quantidade)
+VALUES (1, 1, 10),
+       (2, 1, 10),
+       (3, 2, 10),
+       (4, 2, 10),
+       (5, 2, 10);
+
 /*
 SELECT * FROM Tipoutilizador;
 SELECT * FROM Utilizador;
