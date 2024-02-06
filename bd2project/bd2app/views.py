@@ -167,6 +167,7 @@ def gerirEquipamentos(request):
                         context={'equipamentos': getEquipamentos(),
                                 'componentes': getComponentes(),
                                 'tiposequipamento': getTiposEquipamentos(),
+                                'tiposcomponente': getTiposComponentes(),
                                 'producaoequipamento': getProducaoEquipamento(),
                                 'equipamentosarmazem': getEquipamentosArmazem()})
     data = request.POST

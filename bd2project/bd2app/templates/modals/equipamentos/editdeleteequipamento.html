@@ -2,7 +2,7 @@
     <div name="modalsdiv">
         <div class="modal fade" id="editModal{{ equipamento.0 }}" tabindex="-1"
             aria-labelledby="editModalLabel{{ equipamento.0 }}" aria-hidden="true" data-bs-backdrop="static">
-            <div style="max-width: 1000px;" class="modal-dialog">
+            <div style="max-width: 1300px;" class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editModalLabel{{ equipamento.0 }}">Editar Equipamento
@@ -12,7 +12,7 @@
                     <div class="modal-body">
                         <form action="/editarequipamento" method="POST">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="mb-3">
                                         <label for="nome" class="form-label">Nome</label>
                                         <input type="text" class="form-control" id="nome{{equipamento.0}}" name="nome"
@@ -67,7 +67,50 @@
                                     <div id="err{{ equipamento.0 }}" class="alert alert-danger d-none" role="alert">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="tipo" class="form-label">Tipo</label>
+                                        <select class="form-select" id="tipo{{ equipamento.0 }}" name="tipo">
+                                            <option value="0">Tipo de componente</option>
+                                            {% for tipo in tiposcomponente %}
+                                            <option value="{{ tipo.0 }}">{{tipo.1}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="componente" class="form-label">Componente</label>
+                                        <select class="form-select" id="componente{{ equipamento.0 }}" name="componente">
+                                            <option value="0">Selecione um tipo</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <button id="btnaddcomponentes{{equipamento.0}}" type="button" disabled
+                                            onclick='addComponentToList("{{ equipamento.0 }}")' class="btn btn-success">
+                                            Adicionar componente à lista
+                                        </button>
+                                    </div>
+                                    <div id="componenteserr{{ equipamento.0 }}" class="alert alert-danger d-none"
+                                        role="alert">
+                                    </div>
+                                    <span>Componentes adicionados (clique no componente para
+                                        remover)</span>
+                                    <ul class="listacomponentes" id="addedcomponentes{{ equipamento.0 }}">
+                                        {% for componenteP in producaoequipamento %} 
+                                            {% if componenteP.1 == equipamento.0 %}
+                                                {% for componente in componentes %}
+                                                    {% if componente.0 == componenteP.3 %}
+                                                    <li>
+                                                        <a id="{{componente.0}}" 
+                                                        onclick="this.parentNode.parentNode.removeChild(this.parentNode);">{{componente.1}}
+                                                        </a>
+                                                    </li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %} 
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
                                     <div class="mb-3">
                                         <label for="image" class="form-label">Imagem</label>
                                         <img style="width: 100%;" id="imagemequipamento{{ equipamento.0 }}"
@@ -76,7 +119,7 @@
                                             alt="Imagem do equipamento" class="img-fluid">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="image" class="form-label">Upload Imagem</label>
+                                        <label for="image" class="form-label">Escolher Imagem</label>
                                         <input type="file" onchange='convertImageToBytea("")' class="form-control" id="image"
                                             name="image" />
                                     </div>
@@ -87,7 +130,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" id="btnclose{{ equipamento.0 }}" class="btn btn-secondary"
-                            data-bs-dismiss="modal">Fechar</button>
+                        data-bs-dismiss="modal">Fechar</button>
                         <button type="button" onclick='saveequipamento("{{ equipamento.0 }}")'
                             class="btn btn-primary">Guardar</button>
                     </div>

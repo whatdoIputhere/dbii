@@ -35,15 +35,18 @@
                                     </button>
                                 </div>
                                 <div id="componenteserr{{ fornecedor.0 }}" class="alert alert-danger d-none"
-                                    role="alert"></div>
+                                    role="alert">
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <span>Componentes adicionados (clique no componente para
                                     remover)</span>
                                 <ul class="listacomponentes" id="addedcomponentes{{ fornecedor.0 }}">
                                     {% for componente in fornecedorcomponente %} {% if componente.0 == fornecedor.0 %}
-                                    <li onclick="this.parentNode.removeChild(this);">
-                                        <a id="{{componente.0}}">{{componente.3}}</a>
+                                    <li>
+                                        <a id="{{componente.0}}" 
+                                        onclick="this.parentNode.parentNode.removeChild(this.parentNode);">{{componente.3}}
+                                        </a>
                                     </li>
                                     {% endif %} {% endfor %}
                                 </ul>

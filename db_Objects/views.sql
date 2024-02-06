@@ -114,7 +114,8 @@ DROP VIEW IF EXISTS GetArmazens;
 
 CREATE VIEW GetArmazens AS SELECT
 *
-FROM Armazem;
+FROM Armazem
+WHERE isEnabled = 'True';
 
 SELECT * FROM GetArmazens;
 
@@ -133,7 +134,8 @@ componenteArmazem.quantidade,
 armazem.descricao
 FROM ComponenteArmazem
 JOIN Componente ON ComponenteArmazem.componente = Componente.id
-JOIN Armazem ON ComponenteArmazem.armazem = Armazem.id;
+JOIN Armazem ON ComponenteArmazem.armazem = Armazem.id
+WHERE ComponenteArmazem.isEnabled = 'True';
 
 SELECT * FROM GetComponentesArmazem;
 
@@ -151,7 +153,7 @@ componente.nome AS nomeComponente
 FROM FornecedorComponente
 JOIN Fornecedor ON FornecedorComponente.fornecedor = Fornecedor.id
 JOIN Componente ON FornecedorComponente.componente = Componente.id
-WHERE componente.isEnabled = 'True';
+WHERE fornecedorComponente.isEnabled = 'True';
 
 SELECT * FROM GetFornecedorComponente;
 

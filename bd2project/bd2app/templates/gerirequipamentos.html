@@ -3,7 +3,13 @@
 {% block title %}Equipamentos{% endblock %}
 
 {% block content %}
-
+<style>
+    .listacomponentes li a:hover {
+        background-color: #dc3545;
+        cursor: pointer;
+        color: white !important;
+    }
+</style>
 
 <div class="container">
     <div class="row">
@@ -70,8 +76,8 @@
                 });
 
                 $("select[name='equipamento']").change(function () {
-                    let fornecedorid = this.id.replace('equipamento', '');
-                    let errorDiv = $('#equipamentoserr' + fornecedorid);
+                    let equipamentoId = this.id.replace('equipamento', '');
+                    let errorDiv = $('#equipamentoserr' + equipamentoId);
                     errorDiv.text('');
                     errorDiv.addClass('d-none')
                 });
@@ -80,21 +86,22 @@
                     console.log("asd")
                     if (this.getElementsByTagName('option')[0].value == 0)
                         this.removeChild(this.getElementsByTagName('option')[0]);
-                    let fornecedorid = this.id.replace('tipo', '');
-                    $('#btnaddequipamentos' + fornecedorid).prop('disabled', false);
-                    let errorDiv = $('#equipamentoserr' + fornecedorid);
+                    let equipamentoId = this.id.replace('tipo', '');
+                    console.log(equipamentoId)
+                    $('#btnaddcomponentes' + equipamentoId).prop('disabled', false);
+                    let errorDiv = $('#componenteserr' + equipamentoId);
                     errorDiv.text('');
                     errorDiv.addClass('d-none')
 
                     let selectedTipo = $(this).find(":selected").text().trim();
-                    $('#equipamento' + fornecedorid).empty();
+                    $('#componente' + equipamentoId).empty();
 
-                    let equipamentosList = [{% for equipamento in equipamentos %}"{{ equipamento }}", {% endfor %}];
+                    let componentesList = [{% for componente in componentes %}"{{ componente }}", {% endfor %}];
 
-                    equipamentosList.forEach((equipamento, index) => {
-                        equipamento = JSON.parse(equipamento.replace(/&#x27;/g, '"').replace('True', '"True"').replace('False', '"False"'));
-                        if (equipamento[3] == selectedTipo) {
-                            $('#equipamento' + fornecedorid).append(`<option value="${equipamento[0]}">${equipamento[1]}</option>`);
+                    componentesList.forEach((componente, index) => {
+                        componente = JSON.parse(componente.replace(/&#x27;/g, '"').replace('True', '"True"').replace('False', '"False"'));
+                        if (componente[3] == selectedTipo) {
+                            $('#componente' + equipamentoId).append(`<option value="${componente[0]}">${componente[1]}</option>`);
                         }
                     });
                 });
@@ -102,16 +109,188 @@
         });
     });
 
-    function addComponentToList(fornecedorId) {
-        let equipamentoId = $('#equipamento' + fornecedorId).val();
-        let equipamentoName = $('#equipamento' + fornecedorId + ' option:selected').text();
-        let list = $('#addedequipamentos' + fornecedorId);
-        let errorDiv = $('#equipamentoserr' + fornecedorId);
+    function isFormValid(equipamento) {
+        let isvalid = true;
 
-        if (list.find(`li:contains(${equipamentoName})`).length == 0)
-            list.append(`<li onclick="this.parentNode.removeChild(this);"><a id="${equipamentoId}">${equipamentoName}</a></li>`);
+        equipamento.nome == ""
+            ? (addInvalidCssClass('nome', isvalid, equipamentoId), err = "Campo obrigatório por preencher")
+            : nome.length > 50 || nome.length < 5
+                ? (addInvalidCssClass('nome', isvalid, equipamentoId), isvalid = false, err = "Nome tem de ter entre 5 e 50 caracteres")
+                : $('#nome' + equipamentoId).removeClass('is-invalid');
+
+        equipamento.descricao == ""
+            ? (addInvalidCssClass('descricao', isvalid, equipamentoId), isvalid = false, err = "Campo obrigatório por preencher")
+            : descricao.length > 255 || descricao.length < 10
+                ? (addInvalidCssClass('descricao', isvalid, equipamentoId), isvalid = false, err = "Descrição tem de ter entre 10 e 200 caracteres")
+                : $('#descricao' + equipamentoId).removeClass('is-invalid');
+
+        equipamento.preco == ""
+            ? (addInvalidCssClass('preco', isvalid, equipamentoId), isvalid = false, err = "Campo obrigatório por preencher")
+            : isNaN(preco)
+                ? (addInvalidCssClass('preco', isvalid, equipamentoId), isvalid = false, err = "Preo tem de ser um número")
+                : preco < 0
+                    ? (addInvalidCssClass('preco', isvalid, equipamentoId), isvalid = false, err = "Preco não pode ser negativo")
+                    : $('#preco' + equipamentoId).removeClass('is-invalid');
+
+        equipamento.iva == ""
+            ? (addInvalidCssClass('iva', isvalid, equipamentoId), isvalid = false, err = "Campo obrigatório por preencher")
+            : isNaN(iva)
+                ? (addInvalidCssClass('iva', isvalid, equipamentoId), isvalid = false, err = "Iva tem de ser um número")
+                : iva < 0 || iva > 100
+                    ? (addInvalidCssClass('iva', isvalid, equipamentoId), isvalid = false, err = "Iva tem de ser um número entre 0 e 100")
+                    : $('#iva' + equipamentoId).removeClass('is-invalid');
+        let errorDiv = $('#err' + equipamentoId);
+
+        isvalid
+            ? (errorDiv.text(''), isvalid = true, errorDiv.addClass('d-none'))
+            : (errorDiv.text(err), errorDiv.removeClass('d-none'));
+
+        return isvalid;
+    }
+
+    function addInvalidCssClass(campo, isvalid, equipamentoId) {
+        $('#' + campo + equipamentoId).addClass('is-invalid');
+        isvalid = false;
+    }
+
+    function saveEquipamento(equipamentoId) {
+        equipamento = {
+            id: equipamentoId,
+            nome: $('#nome' + equipamentoId).val(),
+            descricao: $('#descricao' + equipamentoId).val(),
+            tipo: $('#tipo' + equipamentoId).val(),
+            preco: $('#preco' + equipamentoId).val(),
+            iva: $('#iva' + equipamentoId).val(),
+            image: imagebytea == "" ? $('#imagemcomponente' + equipamentoId).attr('src') : imagebytea
+        }
+        if (equipamentoId == "")
+            equipamento.criadoPor = "{{ request.session.user.0 }}";
+        if (!isFormValid(equipamento))
+            return;
+
+        $.ajax({
+            url: "/gerircomponentes",
+            type: "POST",
+            data: { componente: JSON.stringify(Object.values(equipamento)), csrfmiddlewaretoken: '{{ csrf_token }}', action: equipamentoId == "" ? 'add' : 'edit' },
+            success: function (response) {
+                if (response == "edit") {
+                    $('#editModal' + equipamentoId).modal('hide');
+                    $('#editModal' + equipamentoId).on('hidden.bs.modal', function () {
+                        let table = $('#componentestable').DataTable();
+                        let row = table.row(selectedRow);
+                        if (row) {
+                            row.data([
+                                `<b>${equipamento.nome}</b>`,
+                                equipamento.descricao.length > 130 ? equipamento.descricao.substring(0, 130) + "..." : equipamento.descricao,
+                                $('#tipo' + equipamentoId + ' option:selected').text(),
+                                equipamento.preco + "€",
+                                `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal${equipamentoId}"><i class="fas fa-edit"></i></button>
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal${equipamentoId}"><i class="fas fa-trash"></i></button>`
+                            ]).draw(false);
+                            $('#editModal' + equipamentoId).unbind('hidden.bs.modal');
+                        }
+                    });
+                    return;
+                }
+                if (response.includes("add")) {
+                    response = JSON.parse(response.replace("add,", ""));
+                    
+                    let newId = response[0];
+                    response[4] = parseFloat(response[4]).toFixed(2);
+                    equipamento.preco = parseFloat(equipamento.preco).toFixed(2);
+                    $('#createModal').modal('hide');
+                    $('#createModal').on('hidden.bs.modal', function () {
+                        let newRow = [
+                            `<strong>${equipamento.nome}</strong>`,
+                            equipamento.descricao.length > 130 ? equipamento.descricao.substring(0, 130) + "..." : equipamento.descricao,
+                            $('#tipo option:selected').text(),
+                            equipamento.preco + "€",
+                            `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal${newId}"><i class="fas fa-edit"></i></button>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal${newId}"><i class="fas fa-trash"></i></button>`
+                        ];
+                        let table = $('#componentestable').DataTable();
+                        table.row.add(newRow).draw();
+
+                        $('#nome').val("");
+                        $('#descricao').val("");
+                        $('#preco').val("");
+                        $('#iva').val("");
+                        $('#imagemcomponente').attr('src', "");
+                        $('#image').val("");
+                        $('#tipo').val($('#tipo option:first').val());
+                        imagebytea = "";
+                        $('#createModal').unbind('hidden.bs.modal');
+                        componentValues = Object.values(response);
+
+                        $.ajax({
+                            url: "modals/componentes/editdeletecomponente",
+                            type: "POST",
+                            data: { componente: JSON.stringify(componentValues), csrfmiddlewaretoken: '{{ csrf_token }}' },
+                            success: function (response) {
+                                equipamento = {};
+                                let modal = response;
+                                $('div[name="editdeletemodal"]').last().after(modal);
+                            },
+                            error: function (xhr, errmsg, err) {
+                                console.log(xhr.status + ": " + xhr.responseText);
+                            }
+                        });
+
+                    });
+                    return;
+                }
+
+            },
+
+            error: function (xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+            }
+        });
+    };
+
+    function convertImageToBytea(equipamentoId) {
+        var reader = new FileReader();
+        reader.readAsDataURL($('#image' + equipamentoId)[0].files[0]);
+        reader.onload = function () {
+            imagebytea = reader.result;
+            $('#imagemcomponente' + equipamentoId).attr('src', imagebytea);
+        };
+        reader.onerror = function (error) {
+            console.log('Error: ', error);
+        };
+    }
+
+    function deletecomponente(equipamentoId) {
+        $.ajax({
+            url: "/gerircomponentes",
+            type: "POST",
+            data: { id: equipamentoId, csrfmiddlewaretoken: '{{ csrf_token }}', action: 'delete' },
+
+            success: function (json) {
+                $('#deleteModal' + equipamentoId).modal('hide');
+                $('#deleteModal' + equipamentoId).on('hidden.bs.modal', function () {
+                    let table = $('#componentestable').DataTable();
+                    table.row(selectedRow).remove().draw();
+                    $('#deleteModal' + equipamentoId).unbind('hidden.bs.modal');
+                });
+            },
+
+            error: function (xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+            }
+        });
+    };
+
+    function addComponentToList(fornecedorId) {
+        let componenteId = $('#componente' + fornecedorId).val();
+        let componenteName = $('#componente' + fornecedorId + ' option:selected').text();
+        let list = $('#addedcomponentes' + fornecedorId);
+        let errorDiv = $('#componenteserr' + fornecedorId);
+
+        if (list.find(`li:contains(${componenteName})`).length == 0)
+            list.append(`<li onclick="this.parentNode.removeChild(this);"><a id="${componenteId}">${componenteName}</a></li>`);
         else {
-            errorDiv.text("Equipamento já foi adicionado à lista")
+            errorDiv.text("Componente já foi adicionado à lista")
             errorDiv.removeClass('d-none');
         }
     }

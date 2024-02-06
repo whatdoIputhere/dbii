@@ -116,7 +116,7 @@
         let errorDiv = $('#componenteserr' + fornecedorId);
 
         if (list.find(`li:contains(${componenteName})`).length == 0)
-            list.append(`<li onclick="this.parentNode.removeChild(this);"><a id="${componenteId}">${componenteName}</a></li>`);
+            list.append(`<li><a onclick="this.parentNode.parentNode.removeChild(this.parentNode);" id="${componenteId}">${componenteName}</a></li>`);
         else {
             errorDiv.text("Componente já foi adicionado à lista")
             errorDiv.removeClass('d-none');

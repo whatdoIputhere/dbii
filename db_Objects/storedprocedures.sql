@@ -162,7 +162,7 @@ BEGIN
 END;
 $$; 
 
-CALL InserirEquipamento('PC Gaming #2', 'Processador: i7-9700k, Placa Gráfica: RTX 2080 Ti, Memória RAM: 16GB, Disco Rígido: 500GB, Fonte de Alimentação: 750W, Caixa: NZXT H500 Preta, Ventoinha: Corsair LL120', 2, 2249.99, 23, '', 1);
+CALL InserirEquipamento('PC Gaming #2', 'Processador: i7-9700k, Placa Gráfica: RTX 2080 Ti, Memória RAM: 16GB, Disco SSD: 1TB, Fonte de Alimentação: 750W, Caixa: NZXT H500 Preta, Ventoinha: Corsair LL120', 2, 2249.99, 23, '', 1);
 
 SELECT * FROM Equipamento;
 -- #endregion
@@ -218,20 +218,28 @@ SELECT * FROM ProducaoEquipamento;
 
 DROP PROCEDURE IF EXISTS InserirProducaoEquipamento;
 
-CREATE PROCEDURE InserirProducaoEquipamento(
-    p_equipamento int,
-    p_componente int,
-    p_criadoPor int
+CREATE OR REPLACE PROCEDURE InserirProducaoEquipamento(
+     componentesArray varchar,
+     equipamentoId integer,
+     criadoPor integer
 )
-LANGUAGE PLPGSQL
+LANGUAGE plpgsql
 AS $$
+DECLARE
+    componenteId integer;
 BEGIN
-    INSERT INTO ProducaoEquipamento (equipamento, componente, criadoPor)
-    VALUES (p_equipamento, p_componente, p_criadoPor);
+    FOREACH componenteId IN ARRAY string_to_array(componentesArray, ',')::INTEGER[]
+    LOOP
+        IF NOT EXISTS (SELECT 1 FROM producaoEquipamento WHERE componente = componenteId AND equipamento = equipamentoId) THEN
+            INSERT INTO producaoEquipamento(equipamento,componente,criadoPor) 
+            VALUES (equipamentoId, componenteId, criadoPor);
+        END IF;
+        
+    END LOOP;
 END;
-$$; 
+$$;
 
-CALL InserirProducaoEquipamento(2, 1, 1);
+CALL InserirProducaoEquipamento('1,2,3,4,14,6,7,8', 2, 1);
 
 SELECT * FROM ProducaoEquipamento;
 -- #endregion
@@ -1129,7 +1137,7 @@ BEGIN
 END;
 $$;
 
-CALL RemoverEquipamento(6);
+CALL RemoverEquipamento(3);
 
 SELECT * FROM Equipamento;
 
@@ -1204,7 +1212,7 @@ BEGIN
 END;
 $$;
 
-CALL RemoverProducaoEquipamento(2, 2);
+--CALL RemoverProducaoEquipamento(2, 2);
 
 SELECT * FROM ProducaoEquipamento;
 
@@ -1233,6 +1241,7 @@ CALL RemoverFornecedor(3);
 SELECT * FROM Fornecedor;
 
 -- #endregion
+
 
 -- #region EstadoEncomenda
 

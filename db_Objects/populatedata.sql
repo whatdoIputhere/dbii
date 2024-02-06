@@ -100,11 +100,7 @@ VALUES  ('Montagem (curta duração)', 'Montagem com duração inferior a 30 min
         ('Reparação (longa duração)', 'Reparação com duração superior a 2 horas',50);
 
 INSERT INTO Equipamento (nome, descricao, tipo, preco, iva, criadoPor, maoobra, imagem)
-VALUES ('PC Gaming #1', 'Processador: i7-9700k, Placa Gráfica: RTX 2080 Ti, Memória RAM: 16GB, Disco Rígido: 500GB, Fonte de Alimentação: 750W, Caixa: NZXT H500 Preta, Ventoinha: Corsair LL120', 2, 2249.99, 23, 1,2,''),
-       ('Monitor LG 24"', 'Monitor 24" LED - LG 24MK400H-B', 7, 99.90, 23, 1,1, ''),
-       ('Corsair K70', 'Teclado Mecânico - Corsair K70 RGB MK.2', 8, 159.90, 23, 1,1, ''),
-       ('Corsair m65', 'Rato Gaming - Corsair M65 RGB Elite', 9, 69.90, 23,1,1, ''),
-       ('Logitech C920', 'Webcam - Logitech C920 HD Pro', 10, 99.90, 23, 1,1, '');
+VALUES ('PC Gaming #1', 'Processador: i7-9700k, Placa Gráfica: RTX 2080 Ti, Memória RAM: 16GB, Disco  SSD: 500GB, Fonte de Alimentação: 750W, Caixa: NZXT H500 Preta, Ventoinha: Corsair LL120', 2, 2249.99, 23, 1,2,'');
 
 INSERT INTO ProducaoEquipamento (equipamento, componente,criadoPor)
 VALUES (1, 1,1),
@@ -117,11 +113,8 @@ VALUES (1, 1,1),
        (1, 8,1);
 
 INSERT INTO EquipamentoArmazem (equipamento, armazem, quantidade)
-VALUES (1, 1, 10),
-       (2, 1, 10),
-       (3, 2, 10),
-       (4, 2, 10),
-       (5, 2, 10);
+VALUES (1, 1, 3),
+       (1, 2, 5);
 
 /*
 SELECT * FROM Tipoutilizador;

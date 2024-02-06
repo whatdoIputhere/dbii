@@ -57,10 +57,10 @@
                                 <div class="mb-3">
                                     <button id="btnaddequipamentos{{equipamento.0}}" type="button" disabled
                                         onclick='addComponentToList("{{ equipamento.0 }}")' class="btn btn-success">
-                                        Adicionar equipamento à lista
+                                        Adicionar componentes à lista
                                     </button>
                                 </div>
-                                <div id="equipamentoserr{{ equipamento.0 }}" class="alert alert-danger d-none"
+                                <div id="componenteserr{{ equipamento.0 }}" class="alert alert-danger d-none"
                                     role="alert"></div>
                                 <span>Equipamentos adicionados (clique no equipamento para
                                     remover)</span>
@@ -79,8 +79,9 @@
                                     class="img-fluid" />
                             </div>
                             <div class="mb-3">
-                                <label for="image" class="form-label">Upload Imagem</label>
-                                <input type="file" onchange='convertImageToBytea("")' class="form-" id="image" name="image" />
+                                <label for="image" class="form-label">Escolher Imagem</label>
+                                <input type="file" onchange='convertImageToBytea("")' class="form-control" id="image"
+                                    name="image" />
                             </div>
                         </div>
                     </div>
