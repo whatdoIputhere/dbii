@@ -156,7 +156,7 @@
             tipo: $('#tipo' + componentId).val(),
             preco: $('#preco' + componentId).val(),
             iva: $('#iva' + componentId).val(),
-            image: imagebytea == "" ? $('#imagemcomponente' + componentId).attr('src') : imagebytea
+            image: $('#imagemcomponente' + componentId).attr('src').includes('noimage') ? "" : $('#imagemcomponente' + componentId).attr('src')
         }
         if (componentId == "")
             component.criadoPor = "{{ request.session.user.0 }}";

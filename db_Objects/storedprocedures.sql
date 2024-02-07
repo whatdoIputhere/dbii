@@ -228,18 +228,21 @@ AS $$
 DECLARE
     componenteId integer;
 BEGIN
+    DELETE FROM producaoEquipamento 
+    WHERE equipamento = equipamentoId 
+    AND componente NOT IN (SELECT unnest(string_to_array(componentesArray, ',')::INTEGER[]));
+    
     FOREACH componenteId IN ARRAY string_to_array(componentesArray, ',')::INTEGER[]
     LOOP
         IF NOT EXISTS (SELECT 1 FROM producaoEquipamento WHERE componente = componenteId AND equipamento = equipamentoId) THEN
-            INSERT INTO producaoEquipamento(equipamento,componente,criadoPor) 
+            INSERT INTO producaoEquipamento(equipamento, componente, criadoPor) 
             VALUES (equipamentoId, componenteId, criadoPor);
         END IF;
-        
     END LOOP;
 END;
 $$;
 
-CALL InserirProducaoEquipamento('1,2,3,4,14,6,7,8', 2, 1);
+CALL InserirProducaoEquipamento('1,2,3,4,5,6,7,8', 2, 1);
 
 SELECT * FROM ProducaoEquipamento;
 -- #endregion
@@ -652,8 +655,7 @@ CREATE PROCEDURE AtualizarEquipamento(
     p_tipo int,
     p_preco float,
     p_iva int,
-    p_imagem bytea,
-    p_criadoPor int
+    p_imagem bytea
 )
 LANGUAGE PLPGSQL
 AS $$
@@ -664,13 +666,12 @@ BEGIN
         tipo = p_tipo,
         preco = p_preco,
         iva = p_iva,
-        imagem = p_imagem,
-        criadoPor = p_criadoPor
+        imagem = p_imagem
     WHERE id = p_id;
 END;
 $$;
 
-CALL AtualizarEquipamento(6, 'PC Gaming #2 atualizado', 'Processador: i7-9700k, Placa Gráfica: RTX 2080 Ti, Memória RAM: 16GB, Disco Rígido: 500GB, Fonte de Alimentação: 750W, Caixa: NZXT H500 Preta, Ventoinha: Corsair LL120 atualizado', 2, 2249.99, 23, '', 1);
+CALL AtualizarEquipamento(2, 'PC Gaming #2 atualizado', 'Processador: i7-9700k, Placa Gráfica: RTX 2080 Ti, Memória RAM: 16GB, Disco SSD: 1TB, Fonte de Alimentação: 750W, Caixa: NZXT H500 Preta, Ventoinha: Corsair LL120 atualizado', 2, 2249.99, 23, '');
 
 SELECT * FROM Equipamento;
 
@@ -735,22 +736,7 @@ SELECT * FROM DetalhesFatura;
 
 SELECT * FROM ProducaoEquipamento;
 
-DROP PROCEDURE IF EXISTS AtualizarProducaoEquipamento;
-
-CREATE PROCEDURE AtualizarProducaoEquipamento(
-    p_equipamento int,
-    p_componente int
-)
-LANGUAGE PLPGSQL
-AS $$
-BEGIN
-    UPDATE ProducaoEquipamento
-    SET componente = p_componente
-    WHERE equipamento = p_equipamento;
-END;
-$$;
-
-CALL AtualizarProducaoEquipamento(2,2);
+CALL InserirProducaoEquipamento('1,2,3,4,14,6,7,8', 2, 1);
 
 SELECT * FROM ProducaoEquipamento;
 

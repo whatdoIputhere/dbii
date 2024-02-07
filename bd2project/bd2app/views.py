@@ -158,6 +158,7 @@ def gerirUtilizadores(request):
     return render(request, 'gerirutilizadores.html', context={'utilizadores': getUtilizadores()})
 #endregion
 
+
 #region Equipamentos
 def gerirEquipamentos(request):
     if not isAdmin(request):
@@ -171,12 +172,12 @@ def gerirEquipamentos(request):
                                 'producaoequipamento': getProducaoEquipamento(),
                                 'equipamentosarmazem': getEquipamentosArmazem()})
     data = request.POST
-    if(data.get("action") == "edit"):
-        if(editEquipamento(data.get("equipamento"))):
+    if(data.get("action") == "edit"):        
+        if(editEquipamento(data.get("equipamento"), data.get("componentes"),request.session.get('user')[0])):
             return HttpResponse(status=200, content="edit")
         return HttpResponse(status=400)
     if(data.get("action") == "add"):
-        newEquipamento = addEquipamento(data.get("equipamento"))
+        newEquipamento = addEquipamento(data.get("equipamento"), data.get("componentes"))
         if(newEquipamento):
             return HttpResponse(status=200, content="add,"+str(newEquipamento))
         return HttpResponse(status=400)

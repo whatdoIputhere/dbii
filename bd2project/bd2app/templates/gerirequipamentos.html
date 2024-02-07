@@ -29,7 +29,7 @@
                     {% for equipamento in equipamentos %}
                     <tr>
                         <td><b>{{ equipamento.1 }}</b></td>
-                        <td>{{ equipamento.2 }}</td>
+                        <td>{{ equipamento.2|truncatechars:130 }}</td>
                         <td>{{ equipamento.3 }}</td>
                         <td>{{ equipamento.4|floatformat:2 }}€</td>
                         <td style="min-width: 105px;">
@@ -53,6 +53,8 @@
 
 <script>
     let selectedRow = "";
+    let imagebytea = "";
+
     $(document).ready(function () {
         $("#equipamentostable").DataTable({
             language: {
@@ -82,8 +84,7 @@
                     errorDiv.addClass('d-none')
                 });
 
-                $(document).on("change", "select[name='tipo']", function () {
-                    console.log("asd")
+                $(document).on("change", "select[name='tipo']", function () {                    
                     if (this.getElementsByTagName('option')[0].value == 0)
                         this.removeChild(this.getElementsByTagName('option')[0]);
                     let equipamentoId = this.id.replace('tipo', '');
@@ -111,35 +112,36 @@
 
     function isFormValid(equipamento) {
         let isvalid = true;
-
+        console.log(isNaN(parseFloat(equipamento.preco)))
+        console.log(isNaN(equipamento.iva))
         equipamento.nome == ""
-            ? (addInvalidCssClass('nome', isvalid, equipamentoId), err = "Campo obrigatório por preencher")
+            ? (addInvalidCssClass('nome', isvalid, equipamento.id), err = "Campo obrigatório por preencher")
             : nome.length > 50 || nome.length < 5
-                ? (addInvalidCssClass('nome', isvalid, equipamentoId), isvalid = false, err = "Nome tem de ter entre 5 e 50 caracteres")
-                : $('#nome' + equipamentoId).removeClass('is-invalid');
+                ? (addInvalidCssClass('nome', isvalid, equipamento.id), isvalid = false, err = "Nome tem de ter entre 5 e 50 caracteres")
+                : $('#nome' + equipamento.id).removeClass('is-invalid');
 
         equipamento.descricao == ""
-            ? (addInvalidCssClass('descricao', isvalid, equipamentoId), isvalid = false, err = "Campo obrigatório por preencher")
+            ? (addInvalidCssClass('descricao', isvalid, equipamento.id), isvalid = false, err = "Campo obrigatório por preencher")
             : descricao.length > 255 || descricao.length < 10
-                ? (addInvalidCssClass('descricao', isvalid, equipamentoId), isvalid = false, err = "Descrição tem de ter entre 10 e 200 caracteres")
-                : $('#descricao' + equipamentoId).removeClass('is-invalid');
+                ? (addInvalidCssClass('descricao', isvalid, equipamento.id), isvalid = false, err = "Descrição tem de ter entre 10 e 200 caracteres")
+                : $('#descricao' + equipamento.id).removeClass('is-invalid');
 
         equipamento.preco == ""
-            ? (addInvalidCssClass('preco', isvalid, equipamentoId), isvalid = false, err = "Campo obrigatório por preencher")
-            : isNaN(preco)
-                ? (addInvalidCssClass('preco', isvalid, equipamentoId), isvalid = false, err = "Preo tem de ser um número")
-                : preco < 0
-                    ? (addInvalidCssClass('preco', isvalid, equipamentoId), isvalid = false, err = "Preco não pode ser negativo")
-                    : $('#preco' + equipamentoId).removeClass('is-invalid');
+            ? (addInvalidCssClass('preco', isvalid, equipamento.id), isvalid = false, err = "Campo obrigatório por preencher")
+            : isNaN(equipamento.preco)
+                ? (addInvalidCssClass('preco', isvalid, equipamento.id), isvalid = false, err = "Preço tem de ser um número")
+                : equipamento.preco < 0
+                    ? (addInvalidCssClass('preco', isvalid, equipamento.id), isvalid = false, err = "Preço não pode ser negativo")
+                    : $('#preco' + equipamento.id).removeClass('is-invalid');
 
         equipamento.iva == ""
-            ? (addInvalidCssClass('iva', isvalid, equipamentoId), isvalid = false, err = "Campo obrigatório por preencher")
-            : isNaN(iva)
-                ? (addInvalidCssClass('iva', isvalid, equipamentoId), isvalid = false, err = "Iva tem de ser um número")
-                : iva < 0 || iva > 100
-                    ? (addInvalidCssClass('iva', isvalid, equipamentoId), isvalid = false, err = "Iva tem de ser um número entre 0 e 100")
-                    : $('#iva' + equipamentoId).removeClass('is-invalid');
-        let errorDiv = $('#err' + equipamentoId);
+            ? (addInvalidCssClass('iva', isvalid, equipamento.id), isvalid = false, err = "Campo obrigatório por preencher")
+            : isNaN(equipamento.iva)
+                ? (addInvalidCssClass('iva', isvalid, equipamento.id), isvalid = false, err = "Iva tem de ser um número")
+                : equipamento.iva < 0 || equipamento.iva > 100
+                    ? (addInvalidCssClass('iva', isvalid, equipamento.id), isvalid = false, err = "Iva tem de ser um número entre 0 e 100")
+                    : $('#iva' + equipamento.id).removeClass('is-invalid');
+        let errorDiv = $('#err' + equipamento.id);
 
         isvalid
             ? (errorDiv.text(''), isvalid = true, errorDiv.addClass('d-none'))
@@ -153,7 +155,7 @@
         isvalid = false;
     }
 
-    function saveEquipamento(equipamentoId) {
+    function saveequipamento(equipamentoId) {
         equipamento = {
             id: equipamentoId,
             nome: $('#nome' + equipamentoId).val(),
@@ -161,22 +163,29 @@
             tipo: $('#tipo' + equipamentoId).val(),
             preco: $('#preco' + equipamentoId).val(),
             iva: $('#iva' + equipamentoId).val(),
-            image: imagebytea == "" ? $('#imagemcomponente' + equipamentoId).attr('src') : imagebytea
+            image: $('#imagemequipamento' + equipamentoId).attr('src').includes('noimage') ? "" : $('#imagemequipamento' + equipamentoId).attr('src')
         }
         if (equipamentoId == "")
             equipamento.criadoPor = "{{ request.session.user.0 }}";
         if (!isFormValid(equipamento))
             return;
+            
+        let componentsList = "";
+        $('#addedcomponentes' + equipamentoId + ' li').each(function () {
+            componentsList += $(this).find('a').attr('id') + ",";
+        });
+        componentsList = componentsList.slice(0, -1);
 
         $.ajax({
-            url: "/gerircomponentes",
+            url: "/gerirequipamentos",
             type: "POST",
-            data: { componente: JSON.stringify(Object.values(equipamento)), csrfmiddlewaretoken: '{{ csrf_token }}', action: equipamentoId == "" ? 'add' : 'edit' },
+            data: { equipamento: JSON.stringify(Object.values(equipamento)), componentes: JSON.stringify(componentsList),csrfmiddlewaretoken: '{{ csrf_token }}', action: equipamentoId == "" ? 'add' : 'edit' },
             success: function (response) {
                 if (response == "edit") {
                     $('#editModal' + equipamentoId).modal('hide');
                     $('#editModal' + equipamentoId).on('hidden.bs.modal', function () {
-                        let table = $('#componentestable').DataTable();
+                        console.log("here")
+                        let table = $('#equipamentostable').DataTable();
                         let row = table.row(selectedRow);
                         if (row) {
                             row.data([
@@ -192,7 +201,7 @@
                     });
                     return;
                 }
-                if (response.includes("add")) {
+                if (response == "add") {
                     response = JSON.parse(response.replace("add,", ""));
                     
                     let newId = response[0];
@@ -235,11 +244,9 @@
                                 console.log(xhr.status + ": " + xhr.responseText);
                             }
                         });
-
                     });
                     return;
                 }
-
             },
 
             error: function (xhr, errmsg, err) {
@@ -281,11 +288,11 @@
         });
     };
 
-    function addComponentToList(fornecedorId) {
-        let componenteId = $('#componente' + fornecedorId).val();
-        let componenteName = $('#componente' + fornecedorId + ' option:selected').text();
-        let list = $('#addedcomponentes' + fornecedorId);
-        let errorDiv = $('#componenteserr' + fornecedorId);
+    function addComponentToList(equipamentoId) {
+        let componenteId = $('#componente' + equipamentoId).val();
+        let componenteName = $('#componente' + equipamentoId + ' option:selected').text();
+        let list = $('#addedcomponentes' + equipamentoId);
+        let errorDiv = $('#componenteserr' + equipamentoId);
 
         if (list.find(`li:contains(${componenteName})`).length == 0)
             list.append(`<li onclick="this.parentNode.removeChild(this);"><a id="${componenteId}">${componenteName}</a></li>`);

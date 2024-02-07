@@ -65,6 +65,15 @@ def getArmazens():
 
 #region CRUD Equipamento
 
+def addProducaoEquipamento(componentes,equipamento,userId):
+    try:
+        print(componentes.replace('"',''))
+        executedb("InserirProducaoEquipamento", [componentes.replace('"',''),equipamento,userId], 'proc')
+        return True
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
+
 def getEquipamentos():
     try:
         equipamentos = executedb("GetEquipamentos", [], 'view')
@@ -89,13 +98,23 @@ def getEquipamentosArmazem():
     except Exception as e:
         print(f"Error: {str(e)}")
         return []
+    
+def editEquipamento(equipamento, componentes,userId):
+    try:
+        equipamento_obj = json.loads(equipamento)
+        executedb("AtualizarEquipamento", equipamento_obj, 'proc')
+        addProducaoEquipamento(componentes, equipamento_obj[0], userId)
+        return True
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
 
 #endregion
 
 #region CRUD FornecedorComponente
 def addFornecedorComponente(componentes, fornecedor):
     try:
-        print(componentes + "," + fornecedor)
+        print(componentes.replace('"',''))
         executedb("InserirFornecedorComponente", [componentes.replace('"',''),fornecedor], 'proc')
         return True
     except Exception as e:
