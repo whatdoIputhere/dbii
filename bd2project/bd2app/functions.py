@@ -65,6 +65,17 @@ def getArmazens():
 
 #region CRUD Equipamento
 
+def addEquipamento(equipamento, componentes,userId):
+    try:
+        equipamento_obj = json.loads(equipamento)
+        equipamento_obj.pop(0)
+        newEquipamento = executedb("InserirEquipamentoReturn", equipamento_obj, 'func')
+        addProducaoEquipamento(componentes, newEquipamento[0], userId)
+        return json.dumps(newEquipamento, cls=CustomEncoder)
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
+
 def addProducaoEquipamento(componentes,equipamento,userId):
     try:
         print(componentes.replace('"',''))
@@ -104,6 +115,14 @@ def editEquipamento(equipamento, componentes,userId):
         equipamento_obj = json.loads(equipamento)
         executedb("AtualizarEquipamento", equipamento_obj, 'proc')
         addProducaoEquipamento(componentes, equipamento_obj[0], userId)
+        return True
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
+
+def deleteEquipamento(id):
+    try:
+        executedb("RemoverEquipamento", [id], 'proc')
         return True
     except Exception as e:
         print(f"Error: {str(e)}")

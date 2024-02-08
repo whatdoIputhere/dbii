@@ -84,11 +84,10 @@
                     errorDiv.addClass('d-none')
                 });
 
-                $(document).on("change", "select[name='tipo']", function () {                    
+                $(document).on("change", "select[name='tipo']", function () {
                     if (this.getElementsByTagName('option')[0].value == 0)
                         this.removeChild(this.getElementsByTagName('option')[0]);
                     let equipamentoId = this.id.replace('tipo', '');
-                    console.log(equipamentoId)
                     $('#btnaddcomponentes' + equipamentoId).prop('disabled', false);
                     let errorDiv = $('#componenteserr' + equipamentoId);
                     errorDiv.text('');
@@ -112,8 +111,6 @@
 
     function isFormValid(equipamento) {
         let isvalid = true;
-        console.log(isNaN(parseFloat(equipamento.preco)))
-        console.log(isNaN(equipamento.iva))
         equipamento.nome == ""
             ? (addInvalidCssClass('nome', isvalid, equipamento.id), err = "Campo obrigatório por preencher")
             : nome.length > 50 || nome.length < 5
@@ -183,8 +180,7 @@
             success: function (response) {
                 if (response == "edit") {
                     $('#editModal' + equipamentoId).modal('hide');
-                    $('#editModal' + equipamentoId).on('hidden.bs.modal', function () {
-                        console.log("here")
+                    $('#editModal' + equipamentoId).on('hidden.bs.modal', function () {                        
                         let table = $('#equipamentostable').DataTable();
                         let row = table.row(selectedRow);
                         if (row) {
@@ -201,7 +197,7 @@
                     });
                     return;
                 }
-                if (response == "add") {
+                if (response.includes("add")) {
                     response = JSON.parse(response.replace("add,", ""));
                     
                     let newId = response[0];
@@ -211,7 +207,7 @@
                     $('#createModal').on('hidden.bs.modal', function () {
                         let newRow = [
                             `<strong>${equipamento.nome}</strong>`,
-                            equipamento.descricao.length > 130 ? equipamento.descricao.substring(0, 130) + "..." : equipamento.descricao,
+                            equipamento.descricao.length > 130 ? equipamento.descricao.substring(0, 130) + " ..." : equipamento.descricao,
                             $('#tipo option:selected').text(),
                             equipamento.preco + "€",
                             `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal${newId}"><i class="fas fa-edit"></i></button>
@@ -226,8 +222,15 @@
                         $('#iva').val("");
                         $('#imagemcomponente').attr('src', "");
                         $('#image').val("");
-                        $('#tipo').val($('#tipo option:first').val());
+                        $('#tipoequipamento').val($('#tipo option:first').val());
                         imagebytea = "";
+                        $('#addedcomponentes').empty();
+                        $('#componenteserr').addClass('d-none');
+
+                        $('#tipo').prepend('<option value="0" selected>Tipo de componente</option>');
+                        $('#componente').empty();
+                        $('#componente').append('<option value="0" selected>Selecione um tipo</option>');
+
                         $('#createModal').unbind('hidden.bs.modal');
                         componentValues = Object.values(response);
 
@@ -260,23 +263,23 @@
         reader.readAsDataURL($('#image' + equipamentoId)[0].files[0]);
         reader.onload = function () {
             imagebytea = reader.result;
-            $('#imagemcomponente' + equipamentoId).attr('src', imagebytea);
+            $('#imagemequipamento' + equipamentoId).attr('src', imagebytea);
         };
         reader.onerror = function (error) {
             console.log('Error: ', error);
         };
     }
 
-    function deletecomponente(equipamentoId) {
+    function deleteequipamento(equipamentoId) {
         $.ajax({
-            url: "/gerircomponentes",
+            url: "/gerirequipamentos",
             type: "POST",
             data: { id: equipamentoId, csrfmiddlewaretoken: '{{ csrf_token }}', action: 'delete' },
 
             success: function (json) {
                 $('#deleteModal' + equipamentoId).modal('hide');
                 $('#deleteModal' + equipamentoId).on('hidden.bs.modal', function () {
-                    let table = $('#componentestable').DataTable();
+                    let table = $('#equipamentostable').DataTable();
                     table.row(selectedRow).remove().draw();
                     $('#deleteModal' + equipamentoId).unbind('hidden.bs.modal');
                 });

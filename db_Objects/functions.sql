@@ -1,3 +1,4 @@
+-- #region account
 CREATE OR REPLACE FUNCTION RegistarUtilizador(
     p_username varchar(255),
     p_email varchar(255),
@@ -41,6 +42,9 @@ BEGIN
 END;
 $$;
 
+-- #endregion
+
+-- #region componente
 DROP TYPE IF EXISTS ComponenteInfo CASCADE;
 
 CREATE TYPE ComponenteInfo AS (
@@ -84,6 +88,9 @@ BEGIN
 END;
 $$;
 
+-- #endregion
+
+-- #region fornecedor
 DROP FUNCTION IF EXISTS InserirFornecedorReturn;
 
 CREATE FUNCTION InserirFornecedorReturn(
@@ -108,4 +115,48 @@ BEGIN
 END;
 $$;
 
---SELECT * FROM InserirFornecedorReturn('Fornecedor 1', 'Rua do Fornecedor 1', '912345678', 'asd@gmail.com', '123456789', 1);
+-- #endregion
+
+-- #region equipamento
+DROP TYPE IF EXISTS EquipamentoInfo CASCADE;
+
+CREATE TYPE EquipamentoInfo AS (
+    id int,
+    nome varchar(255),
+    descricao varchar(255),
+    tipo varchar(255),
+    preco float,
+    iva int,
+    imagem bytea,
+    quantidade int
+);
+
+DROP FUNCTION IF EXISTS InserirEquipamentoReturn;
+
+CREATE FUNCTION InserirEquipamentoReturn(
+    p_nome varchar(255),
+    p_descricao varchar(255),
+    p_tipo int,
+    p_preco float,
+    p_iva int,
+    p_imagem bytea,
+    p_criadoPor int
+)
+RETURNS EquipamentoInfo
+LANGUAGE PLPGSQL
+AS $$
+DECLARE
+    new_equipamento EquipamentoInfo;
+    equipamentoId int;
+BEGIN
+    INSERT INTO Equipamento (nome, descricao, tipo, preco, iva, imagem, criadoPor)
+    VALUES (p_nome, p_descricao, p_tipo, p_preco, p_iva, p_imagem, p_criadoPor)
+    RETURNING id INTO equipamentoId;
+
+    SELECT * INTO new_equipamento FROM GetEquipamentos WHERE id = equipamentoId;
+
+    RETURN new_equipamento;
+END;
+$$;
+
+-- #endregion

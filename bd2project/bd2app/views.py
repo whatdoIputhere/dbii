@@ -177,7 +177,7 @@ def gerirEquipamentos(request):
             return HttpResponse(status=200, content="edit")
         return HttpResponse(status=400)
     if(data.get("action") == "add"):
-        newEquipamento = addEquipamento(data.get("equipamento"), data.get("componentes"))
+        newEquipamento = addEquipamento(data.get("equipamento"), data.get("componentes"),request.session.get('user')[0])
         if(newEquipamento):
             return HttpResponse(status=200, content="add,"+str(newEquipamento))
         return HttpResponse(status=400)

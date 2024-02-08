@@ -671,7 +671,7 @@ BEGIN
 END;
 $$;
 
-CALL AtualizarEquipamento(2, 'PC Gaming #2 atualizado', 'Processador: i7-9700k, Placa Gráfica: RTX 2080 Ti, Memória RAM: 16GB, Disco SSD: 1TB, Fonte de Alimentação: 750W, Caixa: NZXT H500 Preta, Ventoinha: Corsair LL120 atualizado', 2, 2249.99, 23, '');
+CALL AtualizarEquipamento(2, 'PC Gaming #2 atualizado', 'Processador: i7-9700k, Placa Gráfica: RTX 2080 Ti, Memória RAM: 16GB, Disco SSD: 1TB, Fonte de Alimentação: 750W, Caixa: NZXT H500 Preta, Ventoinha: Corsair LL120 atualizado', 2, 2349.99, 23, '');
 
 SELECT * FROM Equipamento;
 

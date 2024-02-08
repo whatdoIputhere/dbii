@@ -176,7 +176,7 @@
                         if (row) {
                             row.data([
                                 `<b>${component.nome}</b>`,
-                                component.descricao.length > 130 ? component.descricao.substring(0, 130) + "..." : component.descricao,
+                                component.descricao.length > 130 ? component.descricao.substring(0, 130) + " ..." : component.descricao,
                                 $('#tipo' + componentId + ' option:selected').text(),
                                 component.preco + "€",
                                 `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal${componentId}"><i class="fas fa-edit"></i></button>
