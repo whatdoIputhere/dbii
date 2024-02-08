@@ -128,7 +128,12 @@ CREATE TYPE EquipamentoInfo AS (
     preco float,
     iva int,
     imagem bytea,
-    quantidade int
+    quantidade int,
+    maoobra int,
+    idMaoObra int,
+    tipoMaoObra VARCHAR(255),
+    descricaoMaoObra VARCHAR(255),
+    precoMaoObra FLOAT
 );
 
 DROP FUNCTION IF EXISTS InserirEquipamentoReturn;
@@ -140,6 +145,7 @@ CREATE FUNCTION InserirEquipamentoReturn(
     p_preco float,
     p_iva int,
     p_imagem bytea,
+    p_maoObra int,
     p_criadoPor int
 )
 RETURNS EquipamentoInfo
@@ -149,8 +155,8 @@ DECLARE
     new_equipamento EquipamentoInfo;
     equipamentoId int;
 BEGIN
-    INSERT INTO Equipamento (nome, descricao, tipo, preco, iva, imagem, criadoPor)
-    VALUES (p_nome, p_descricao, p_tipo, p_preco, p_iva, p_imagem, p_criadoPor)
+    INSERT INTO Equipamento (nome, descricao, tipo, preco, iva, imagem, maoObra, criadoPor)
+    VALUES (p_nome, p_descricao, p_tipo, p_preco, p_iva, p_imagem, p_maoObra, p_criadoPor)
     RETURNING id INTO equipamentoId;
 
     SELECT * INTO new_equipamento FROM GetEquipamentos WHERE id = equipamentoId;
@@ -158,5 +164,6 @@ BEGIN
     RETURN new_equipamento;
 END;
 $$;
+
 
 -- #endregion

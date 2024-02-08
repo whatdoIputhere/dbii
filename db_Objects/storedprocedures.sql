@@ -28,8 +28,8 @@ DROP PROCEDURE IF EXISTS InserirUtilizador;
 CREATE PROCEDURE InserirUtilizador(
     p_nome varchar(255),
     p_email varchar(255),
-    p_palavraPasse varchar(255)
-
+    p_palavraPasse varchar(255),
+    p_tipo int
 )
 LANGUAGE PLPGSQL
 AS $$
@@ -39,7 +39,7 @@ BEGIN
 END;
 $$; 
 
-CALL InserirUtilizador('Cliente 2', 'user2@gmail.com','$2b$12$LttOyjXCxF5k0hwLAU3qMuw6vhY0quJC2NglLI0CBX5ltafGTWyQa');
+CALL InserirUtilizador('Cliente 2', 'user2@gmail.com','$2b$12$LttOyjXCxF5k0hwLAU3qMuw6vhY0quJC2NglLI0CBX5ltafGTWyQa',2);
 
 SELECT * FROM Utilizador;
 -- #endregion
@@ -113,7 +113,7 @@ BEGIN
 END;
 $$; 
 
-CALL InserirComponenteArmazem(13,1,1);
+CALL InserirComponenteArmazem(21,1,7);
 
 SELECT * FROM ComponenteArmazem;
 -- #endregion
@@ -152,17 +152,18 @@ CREATE PROCEDURE InserirEquipamento(
     p_preco float,
     p_iva int,
     p_imagem bytea,
+    p_maoObra int,
     p_criadoPor int
 )
 LANGUAGE PLPGSQL
 AS $$
 BEGIN
-    INSERT INTO Equipamento (nome, descricao, tipo, preco, iva, imagem, criadoPor)
-    VALUES (p_nome, p_descricao, p_tipo, p_preco, p_iva, p_imagem, p_criadoPor);
+    INSERT INTO Equipamento (nome, descricao, tipo, preco, iva, imagem, maoObra, criadoPor)
+    VALUES (p_nome, p_descricao, p_tipo, p_preco, p_iva, p_imagem, p_maoObra, p_criadoPor);
 END;
 $$; 
 
-CALL InserirEquipamento('PC Gaming #2', 'Processador: i7-9700k, Placa Gráfica: RTX 2080 Ti, Memória RAM: 16GB, Disco SSD: 1TB, Fonte de Alimentação: 750W, Caixa: NZXT H500 Preta, Ventoinha: Corsair LL120', 2, 2249.99, 23, '', 1);
+CALL InserirEquipamento('PC Gaming #2', 'Processador: i7-9700k, Placa Gráfica: RTX 2080 Ti, Memória RAM: 16GB, Disco SSD: 1TB, Fonte de Alimentação: 750W, Caixa: NZXT H500 Preta, Ventoinha: Corsair LL120', 2, 2249.99, 23, '', 2,1);
 
 SELECT * FROM Equipamento;
 -- #endregion
@@ -655,7 +656,8 @@ CREATE PROCEDURE AtualizarEquipamento(
     p_tipo int,
     p_preco float,
     p_iva int,
-    p_imagem bytea
+    p_imagem bytea,
+    p_maoObra int
 )
 LANGUAGE PLPGSQL
 AS $$
@@ -666,12 +668,13 @@ BEGIN
         tipo = p_tipo,
         preco = p_preco,
         iva = p_iva,
-        imagem = p_imagem
+        imagem = p_imagem,
+        maoObra = p_maoObra
     WHERE id = p_id;
 END;
 $$;
 
-CALL AtualizarEquipamento(2, 'PC Gaming #2 atualizado', 'Processador: i7-9700k, Placa Gráfica: RTX 2080 Ti, Memória RAM: 16GB, Disco SSD: 1TB, Fonte de Alimentação: 750W, Caixa: NZXT H500 Preta, Ventoinha: Corsair LL120 atualizado', 2, 2349.99, 23, '');
+CALL AtualizarEquipamento(2, 'PC Gaming #2 atualizado', 'Processador: i7-9700k, Placa Gráfica: RTX 2080 Ti, Memória RAM: 16GB, Disco SSD: 1TB, Fonte de Alimentação: 750W, Caixa: NZXT H500 Preta, Ventoinha: Corsair LL120 atualizado', 2, 2349.99, 23, '',2);
 
 SELECT * FROM Equipamento;
 
@@ -1099,7 +1102,7 @@ BEGIN
 END;
 $$;
 
-CALL RemoverTipoEquipamento(11);
+CALL RemoverTipoEquipamento(4);
 
 SELECT * FROM TipoEquipamento;
 
@@ -1227,7 +1230,6 @@ CALL RemoverFornecedor(3);
 SELECT * FROM Fornecedor;
 
 -- #endregion
-
 
 -- #region EstadoEncomenda
 

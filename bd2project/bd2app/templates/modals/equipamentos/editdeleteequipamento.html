@@ -2,7 +2,7 @@
     <div name="modalsdiv">
         <div class="modal fade" id="editModal{{ equipamento.0 }}" tabindex="-1"
             aria-labelledby="editModalLabel{{ equipamento.0 }}" aria-hidden="true" data-bs-backdrop="static">
-            <div style="max-width: 1300px;" class="modal-dialog">
+            <div style="max-width: 1400px;" class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editModalLabel{{ equipamento.0 }}">Editar Equipamento
@@ -44,12 +44,20 @@
                                             value="{{ equipamento.5 }}" min="0" max="100">
                                     </div>
                                     <div class="mb-3">
+                                        <label for="maoobra" class="form-label">Mão de obra</label>
+                                        <select class="form-select" id="maoobra{{equipamento.0}}" name="maoobra">
+                                            {% for mao in maoobra %}
+                                            <option value="{{ mao.0 }}" {% if mao.0 == equipamento.9 %} selected {% endif %} >{{ mao.1 }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
                                         <label for="quantidade" class="form-label">Quantidade em
                                             armazém</label>
                                         <input disabled type="number" class="form-control"
                                             id="quantidade{{equipamento.0}}" name="quantidade"
                                             value="{{ equipamento.7 }}">
-                                    </div>
+                                    </div>                                    
                                     {% if equipamento.7 > 0 %}
                                     <div class="mb-3">
                                         <span>Armazéns em que se encontra</span>

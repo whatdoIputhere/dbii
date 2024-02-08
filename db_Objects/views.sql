@@ -67,12 +67,18 @@ TipoEquipamento.nome AS tipo,
 Equipamento.preco, 
 Equipamento.iva, 
 Equipamento.imagem,
-COALESCE(SUM(EquipamentoArmazem.quantidade), 0) AS quantidade
-FROM Equipamento 
+COALESCE(SUM(EquipamentoArmazem.quantidade), 0) AS quantidade,
+equipamento.maoobra,
+maoobra.id as idMaoObra,
+maoobra.tipo AS tipoMaoObra,
+maoobra.descricao AS descricaoMaoObra,
+maoobra.preco AS precoMaoObra
+FROM Equipamento
 LEFT JOIN EquipamentoArmazem ON Equipamento.id = EquipamentoArmazem.equipamento
 JOIN TipoEquipamento ON Equipamento.tipo = TipoEquipamento.id
+JOIN MaoObra ON Equipamento.maoobra = MaoObra.id
 WHERE Equipamento.isEnabled = 'True'
-GROUP BY Equipamento.id, TipoEquipamento.nome
+GROUP BY Equipamento.id, TipoEquipamento.nome, maoobra.id
 ORDER BY Equipamento.id;
 
 SELECT * FROM GetEquipamentos;
@@ -96,6 +102,8 @@ JOIN Armazem ON EquipamentoArmazem.armazem = Armazem.id
 WHERE EquipamentoArmazem.isEnabled = 'True';
 
 SELECT * FROM GetEquipamentosArmazem;
+
+-- #endregion
 
 -- #region Fornecedores
 
@@ -194,3 +202,17 @@ WHERE isEnabled = 'True';
 SELECT * FROM GetTipoEquipamento;
 
 -- #endregion
+
+-- #region MaoObra
+
+DROP VIEW IF EXISTS GetMaoObra;
+
+CREATE VIEW GetMaoObra AS SELECT
+*
+FROM MaoObra
+WHERE isEnabled = 'True';
+
+SELECT * FROM GetMaoObra;
+
+-- #endregion
+

@@ -63,13 +63,15 @@ def logout(request):
 
 #region Componentes
 def gerirComponentes(request):
-    if isAdmin(request):
+    if not isAdmin(request):
+        return redirect('index')
+    try:
         if(request.method != 'POST'):
             return render(request, 'gerircomponentes.html', 
-                          context={'componentes': getComponentes(), 
-                                   'tiposcomponente': getTiposComponentes(), 
-                                   'armazens': getArmazens(), 
-                                   'componentesarmazem': getComponentesArmazem()})
+                            context={'componentes': getComponentes(), 
+                                    'tiposcomponente': getTiposComponentes(), 
+                                    'armazens': getArmazens(), 
+                                    'componentesarmazem': getComponentesArmazem()})
         data = request.POST
         if(data.get("action") == "edit"):
             if(editComponente(data.get("componente"))):
@@ -83,7 +85,11 @@ def gerirComponentes(request):
         if(deleteComponente(data.get("id"))):
             return HttpResponse(status=200, content="delete")
         return HttpResponse(status=400)
-    return redirect('index')
+    except Exception as e:
+        #this should be changed to a error page
+        print(e)
+        return render(request, 'index.html')
+   
 
 def editDeleteComponenteModal(request):
     if request.META.get('HTTP_REFERER') is None:
@@ -103,30 +109,35 @@ def editDeleteComponenteModal(request):
 def gerirFornecedores(request):
     if not isAdmin(request):
         return redirect('index')
-    if(request.method != 'POST'):
-        return render(request, 'gerirfornecedores.html', 
-                    context={'fornecedores': getFornecedores(),
-                            'componentes': getComponentes(),
-                            'tiposcomponente': getTiposComponentes(), 
-                            'fornecedorcomponente': getFornecedorComponente()})
-    data = request.POST
-    if(data.get("action") == "edit"):
-        if(editFornecedor(data.get("fornecedor"))):
-            return HttpResponse(status=200, content="edit")
+    try:
+        if(request.method != 'POST'):
+            return render(request, 'gerirfornecedores.html', 
+                        context={'fornecedores': getFornecedores(),
+                                'componentes': getComponentes(),
+                                'tiposcomponente': getTiposComponentes(), 
+                                'fornecedorcomponente': getFornecedorComponente()})
+        data = request.POST
+        if(data.get("action") == "edit"):
+            if(editFornecedor(data.get("fornecedor"))):
+                return HttpResponse(status=200, content="edit")
+            return HttpResponse(status=400)
+        if(data.get("action") == "add"):
+            newFornecedor = addFornecedor(data.get("fornecedor"))
+            if(newFornecedor):
+                return HttpResponse(status=200, content="add,"+str(newFornecedor))
+            return HttpResponse(status=400)
+        if(data.get("action") == "addcomponentes"):
+            if(addFornecedorComponente(data.get("componentes"), data.get("fornecedorId"))):
+                return HttpResponse(status=200, content="addcomponentes")
+            return HttpResponse(status=400)
+        if(deleteFornecedor(data.get("id"))):
+            print('deleted ' + data.get("id"))
+            return HttpResponse(status=200, content="delete")
         return HttpResponse(status=400)
-    if(data.get("action") == "add"):
-        newFornecedor = addFornecedor(data.get("fornecedor"))
-        if(newFornecedor):
-            return HttpResponse(status=200, content="add,"+str(newFornecedor))
-        return HttpResponse(status=400)
-    if(data.get("action") == "addcomponentes"):
-        if(addFornecedorComponente(data.get("componentes"), data.get("fornecedorId"))):
-            return HttpResponse(status=200, content="addcomponentes")
-        return HttpResponse(status=400)
-    if(deleteFornecedor(data.get("id"))):
-        print('deleted ' + data.get("id"))
-        return HttpResponse(status=200, content="delete")
-    return HttpResponse(status=400)
+    except Exception as e:
+        #this should be changed to a error page
+        print(e)
+        return render(request, 'index.html')
 
 def editDeleteFornecedorModal(request):
     if request.META.get('HTTP_REFERER') is None:
@@ -155,35 +166,48 @@ def viewEditComponentesModal(request):
 def gerirUtilizadores(request):
     if not isAdmin(request):
         return redirect('index')
-    return render(request, 'gerirutilizadores.html', context={'utilizadores': getUtilizadores()})
+    try:
+        return render(request, 'gerirutilizadores.html', context={'utilizadores': getUtilizadores()})
+    except Exception as e:
+        print(e)
+        #this should be changed to a error page
+        return render(request, 'index.html')
 #endregion
 
-
 #region Equipamentos
+
 def gerirEquipamentos(request):
     if not isAdmin(request):
         return redirect('index')
-    if(request.method != 'POST'):
-        return render(request, 'gerirequipamentos.html', 
-                        context={'equipamentos': getEquipamentos(),
-                                'componentes': getComponentes(),
-                                'tiposequipamento': getTiposEquipamentos(),
-                                'tiposcomponente': getTiposComponentes(),
-                                'producaoequipamento': getProducaoEquipamento(),
-                                'equipamentosarmazem': getEquipamentosArmazem()})
-    data = request.POST
-    if(data.get("action") == "edit"):        
-        if(editEquipamento(data.get("equipamento"), data.get("componentes"),request.session.get('user')[0])):
-            return HttpResponse(status=200, content="edit")
+    
+    try:
+        if(request.method != 'POST'):
+            return render(request, 'gerirequipamentos.html', 
+                            context={'equipamentos': getEquipamentos(),
+                                    'componentes': getComponentes(),
+                                    'tiposequipamento': getTiposEquipamentos(),
+                                    'tiposcomponente': getTiposComponentes(),
+                                    'producaoequipamento': getProducaoEquipamento(),
+                                    'equipamentosarmazem': getEquipamentosArmazem(),
+                                    'maoobra': getMaoObra()})
+        data = request.POST
+        if(data.get("action") == "edit"):        
+            if(editEquipamento(data.get("equipamento"), data.get("componentes"),request.session.get('user')[0])):
+                return HttpResponse(status=200, content="edit")
+            return HttpResponse(status=400)
+        if(data.get("action") == "add"):
+            print(data.get("equipamento"))
+            newEquipamento = addEquipamento(data.get("equipamento"), data.get("componentes"),request.session.get('user')[0])
+            if(newEquipamento):
+                return HttpResponse(status=200, content="add,"+str(newEquipamento))
+            return HttpResponse(status=400)
+        if(deleteEquipamento(data.get("id"))):
+            return HttpResponse(status=200, content="delete")
         return HttpResponse(status=400)
-    if(data.get("action") == "add"):
-        newEquipamento = addEquipamento(data.get("equipamento"), data.get("componentes"),request.session.get('user')[0])
-        if(newEquipamento):
-            return HttpResponse(status=200, content="add,"+str(newEquipamento))
-        return HttpResponse(status=400)
-    if(deleteEquipamento(data.get("id"))):
-        return HttpResponse(status=200, content="delete")
-    return HttpResponse(status=400)
+    except Exception as e:
+        print(e)
+        #this should be changed to a error page
+        return render(request, 'index.html')
 
 def editDeleteEquipamentoModal(request):
     if request.META.get('HTTP_REFERER') is None:
@@ -193,7 +217,10 @@ def editDeleteEquipamentoModal(request):
     equipamento = json.loads(equipamento)
     return render(request, 'modals/equipamentos/editdeleteequipamento.html', 
                     context={'equipamento': equipamento, 
-                            'tiposequipamento': getTiposequipamentos(), 
+                            'tiposequipamento': getTiposEquipamentos(), 
                             'armazens': getArmazens(), 
-                            'equipamentosarmazem': getequipamentosArmazem()})
+                            'equipamentosarmazem': getEquipamentosArmazem(),
+                            'componentes': getComponentes(),
+                            'tiposcomponente': getTiposComponentes(),
+                            'maoObra': getMaoObra()})
 #endregion

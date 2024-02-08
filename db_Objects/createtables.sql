@@ -107,7 +107,7 @@ CREATE TABLE Equipamento (
     iva int NOT NULL,
     criadoEm TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     criadoPor int NOT NULL REFERENCES Utilizador(id),
-    maoObra int REFERENCES MaoObra(id),
+    maoObra int NOT NULL REFERENCES MaoObra(id),
     imagem bytea NOT NULL,
     isEnabled boolean DEFAULT true
 );

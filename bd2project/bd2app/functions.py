@@ -62,6 +62,13 @@ def getArmazens():
     except Exception as e:
         print(f"Error: {str(e)}")
         return []
+    
+def getMaoObra():
+    try:
+        return executedb("GetMaoObra", [], 'view')        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return []
 
 #region CRUD Equipamento
 
@@ -69,6 +76,7 @@ def addEquipamento(equipamento, componentes,userId):
     try:
         equipamento_obj = json.loads(equipamento)
         equipamento_obj.pop(0)
+        print(equipamento_obj)
         newEquipamento = executedb("InserirEquipamentoReturn", equipamento_obj, 'func')
         addProducaoEquipamento(componentes, newEquipamento[0], userId)
         return json.dumps(newEquipamento, cls=CustomEncoder)

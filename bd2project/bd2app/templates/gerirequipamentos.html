@@ -34,9 +34,9 @@
                         <td>{{ equipamento.4|floatformat:2 }}€</td>
                         <td style="min-width: 105px;">
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#editModal{{ equipamento.0 }}"><i class="fas fa-edit"></i></button>
+                                title="Editar componente" data-bs-target="#editModal{{ equipamento.0 }}"><i class="fas fa-edit"></i></button>
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                data-bs-target="#deleteModal{{ equipamento.0 }}"><i class="fas fa-trash"></i></button>
+                            title="Apagar componente" data-bs-target="#deleteModal{{ equipamento.0 }}"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>
                     <div name="editdeletemodal">
@@ -157,11 +157,13 @@
             id: equipamentoId,
             nome: $('#nome' + equipamentoId).val(),
             descricao: $('#descricao' + equipamentoId).val(),
-            tipo: $('#tipo' + equipamentoId).val(),
+            tipo: $('#tipoequipamento' + equipamentoId).val(),
             preco: $('#preco' + equipamentoId).val(),
             iva: $('#iva' + equipamentoId).val(),
-            image: $('#imagemequipamento' + equipamentoId).attr('src').includes('noimage') ? "" : $('#imagemequipamento' + equipamentoId).attr('src')
+            image: $('#imagemequipamento' + equipamentoId).attr('src').includes('noimage') ? "" : $('#imagemequipamento' + equipamentoId).attr('src'),
+            maoobra: $('#maoobra' + equipamentoId).val(),
         }
+        console.log(equipamento);
         if (equipamentoId == "")
             equipamento.criadoPor = "{{ request.session.user.0 }}";
         if (!isFormValid(equipamento))
@@ -189,8 +191,8 @@
                                 equipamento.descricao.length > 130 ? equipamento.descricao.substring(0, 130) + "..." : equipamento.descricao,
                                 $('#tipo' + equipamentoId + ' option:selected').text(),
                                 equipamento.preco + "€",
-                                `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal${equipamentoId}"><i class="fas fa-edit"></i></button>
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal${equipamentoId}"><i class="fas fa-trash"></i></button>`
+                                `<button type="button" title="Editar equipamento" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal${equipamentoId}"><i class="fas fa-edit"></i></button>
+                                <button type="button" title="Apagar equipamento" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal${equipamentoId}"><i class="fas fa-trash"></i></button>`
                             ]).draw(false);
                             $('#editModal' + equipamentoId).unbind('hidden.bs.modal');
                         }
@@ -208,19 +210,19 @@
                         let newRow = [
                             `<strong>${equipamento.nome}</strong>`,
                             equipamento.descricao.length > 130 ? equipamento.descricao.substring(0, 130) + " ..." : equipamento.descricao,
-                            $('#tipo option:selected').text(),
+                            $('#tipoequipamento option:selected').text(),
                             equipamento.preco + "€",
-                            `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal${newId}"><i class="fas fa-edit"></i></button>
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal${newId}"><i class="fas fa-trash"></i></button>`
+                            `<button type="button" title="Editar equipamento" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal${newId}"><i class="fas fa-edit"></i></button>
+                            <button type="button" title="Apagar equipamento" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal${newId}"><i class="fas fa-trash"></i></button>`
                         ];
-                        let table = $('#componentestable').DataTable();
+                        let table = $('#equipamentostable').DataTable();
                         table.row.add(newRow).draw();
 
                         $('#nome').val("");
                         $('#descricao').val("");
                         $('#preco').val("");
                         $('#iva').val("");
-                        $('#imagemcomponente').attr('src', "");
+                        $('#imagemequipamento').attr('src', "");
                         $('#image').val("");
                         $('#tipoequipamento').val($('#tipo option:first').val());
                         imagebytea = "";
@@ -232,12 +234,12 @@
                         $('#componente').append('<option value="0" selected>Selecione um tipo</option>');
 
                         $('#createModal').unbind('hidden.bs.modal');
-                        componentValues = Object.values(response);
-
+                        equipamentoValues = Object.values(response);
+                        console.log(equipamentoValues);
                         $.ajax({
-                            url: "modals/componentes/editdeletecomponente",
+                            url: "modals/equipamentos/editdeleteequipamento",
                             type: "POST",
-                            data: { componente: JSON.stringify(componentValues), csrfmiddlewaretoken: '{{ csrf_token }}' },
+                            data: { equipamento: JSON.stringify(equipamentoValues), csrfmiddlewaretoken: '{{ csrf_token }}' },
                             success: function (response) {
                                 equipamento = {};
                                 let modal = response;

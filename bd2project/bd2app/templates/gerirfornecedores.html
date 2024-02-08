@@ -26,16 +26,16 @@
                         <td>{{ fornecedor.4 }}</td>
                         <td>{{ fornecedor.3 }}</td>
                         <td style="min-width: 88px">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#editModal{{ fornecedor.0 }}">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ fornecedor.0 }}"
+                                title="Editar fornecedor">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button type="button" class="btn btn-info" data-bs-toggle="modal"
-                                data-bs-target="#componentesModal{{ fornecedor.0 }}">
+                            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#componentesModal{{ fornecedor.0 }}"
+                                title="Ver/editar componentes">
                                 <i class="fas fa-boxes" style="color: #fff"></i>
                             </button>
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                data-bs-target="#deleteModal{{ fornecedor.0 }}">
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ fornecedor.0 }}"
+                                title="Apagar fornecedor">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </td>
@@ -199,17 +199,17 @@
                                 fornecedor.email,
                                 fornecedor.telefone,
                                 `<button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#editModal${fornecedor.id}">
+                                title="Editar fornecedor" data-bs-target="#editModal${fornecedor.id}">
                                     <i class="fas fa-edit"></i>
                                 </button>
 
                                 <button type="button" class="btn btn-info" data-bs-toggle="modal"
-                                    data-bs-target="#componentesModal${fornecedor.id}">
+                                title="Ver/editar componentes" data-bs-target="#componentesModal${fornecedor.id}">
                                     <i class="fas fa-boxes" style="color: #fff"></i>
                                 </button>
 
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal${fornecedor.id}">
+                                title="Apagar fornecedor" data-bs-target="#deleteModal${fornecedor.id}">
                                     <i class="fas fa-trash"></i>
                                 </button>`
                             ]).draw(false);
@@ -229,17 +229,17 @@
                             fornecedor.email,
                             fornecedor.telefone,
                             `<button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#editModal${newId}">
+                                title="Editar fornecedor" data-bs-target="#editModal${fornecedor.id}">
                                     <i class="fas fa-edit"></i>
                                 </button>
 
                                 <button type="button" class="btn btn-info" data-bs-toggle="modal"
-                                    data-bs-target="#componentesModal${newId}">
+                                title="Ver/editar componentes" data-bs-target="#componentesModal${fornecedor.id}">
                                     <i class="fas fa-boxes" style="color: #fff"></i>
                                 </button>
 
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal${newId}">
+                                title="Apagar fornecedor" data-bs-target="#deleteModal${fornecedor.id}">
                                     <i class="fas fa-trash"></i>
                                 </button>`
                         ];
