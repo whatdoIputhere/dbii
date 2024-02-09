@@ -23,7 +23,7 @@
 
 ## Python dependencies
 **Windows\Linux**\
-`pip install psycog2, django-bootstrap-v5, djongo, bcrypt`
+`pip install psycog2 django-bootstrap-v5 djongo bcrypt`
 
 # Initialize and run application
 Depending if you're on windows or linux system run the appropriate **initdb** file\
