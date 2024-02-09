@@ -99,7 +99,7 @@ def addEncomendaComponente(encomenda, userId):
         encomenda_obj.pop(0)
         encomenda_obj = [int(encomenda_obj[0]), [[int(i[0]), int(i[1])] for i in encomenda_obj[1]], int(encomenda_obj[2])]
         componente_array = ', '.join(f"ROW({i[0]}, {i[1]})::ComponenteArray" for i in encomenda_obj[1])
-        query = f"InserirEncomendaComponenteReturn{f"({encomenda_obj[0]}, ARRAY[{componente_array}], {encomenda_obj[2]})"}"
+        query = "InserirEncomendaComponenteReturn" + f"({encomenda_obj[0]}, ARRAY[{componente_array}], {encomenda_obj[2]})"
         newEncomenda = executedb(query, [], 'funcnoparams')
         print(newEncomenda)
         return json.dumps(newEncomenda, cls=CustomEncoder)

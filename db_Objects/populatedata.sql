@@ -95,8 +95,6 @@ VALUES (1, 1, 25, 1),
        (1, 3, 19, 2),
        (2, 4, 6, 1);
 
-SELECT * FROM componentearmazem
-
 INSERT INTO MaoObra (tipo, descricao, preco)
 VALUES  ('Montagem (curta duração)', 'Montagem com duração inferior a 30 minutos' ,20),
         ('Montagem (média duração)', 'Montagem com duração entre 30 minutos a 2 horas',35),

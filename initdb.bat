@@ -12,10 +12,10 @@ psql -d %CONNSTRING% -tc "SELECT 1 FROM pg_database WHERE datname = 'bd2'" | fin
 SET PGDATABASE=bd2
 
 psql -d %CONNSTRING% -f ".\db_objects\createtables.sql"
+psql -d %CONNSTRING% -f ".\db_objects\views.sql"
 psql -d %CONNSTRING% -f ".\db_objects\functions.sql"
 psql -d %CONNSTRING% -f ".\db_objects\populatedata.sql"
 psql -d %CONNSTRING% -f ".\db_objects\storedprocedures.sql"
-psql -d %CONNSTRING% -f ".\db_objects\views.sql"
 
 cd .\bd2project
 python manage.py migrate
