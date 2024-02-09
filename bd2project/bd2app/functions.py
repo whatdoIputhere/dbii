@@ -114,6 +114,14 @@ def deleteEncomendaComponente(id):
     except Exception as e:
         print(f"Error: {str(e)}")
         return False
+    
+def exportEncomendasComponente():
+    try:
+        return executedb("exportFornecedoresEncomendasJson", [], 'func')        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return []
+    
 
 #endregion
 
@@ -242,6 +250,14 @@ def deleteComponente(id):
     except Exception as e:
         print(f"Error: {str(e)}")
         return False
+    
+def importComponentes(data):
+    try:
+        print(data)
+        return executedb("insertComponentesFromJson", [data], 'func')        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return []
 #endregion
 
 #region CRUD Fornecedor

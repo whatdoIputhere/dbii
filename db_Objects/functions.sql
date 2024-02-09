@@ -221,7 +221,7 @@ $$;
 
 -- #endregion
 
-
+-- #region estadoencomendacomponente
 DROP FUNCTION IF EXISTS updateEstadoEncomendaComponente CASCADE;
 CREATE OR REPLACE FUNCTION updateEstadoEncomendaComponente()
 RETURNS TRIGGER
@@ -281,21 +281,9 @@ EXECUTE FUNCTION updateEstadoEncomendaComponente();
 -- select * from GetEntregaEncomendaComponente;
 -- select * from componentearmazem;
 
+-- #endregion
 
-CREATE TABLE Componente(
-    id serial PRIMARY KEY,
-    nome varchar(255) NOT NULL,
-    descricao varchar(255) NOT NULL,
-    tipo int NOT NULL REFERENCES TipoComponente(id),
-    preco float NOT NULL,
-    iva int NOT NULL,
-    imagem bytea NOT NULL,
-    criadoPor int NOT NULL REFERENCES Utilizador(id),
-    criadoEm TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    isEnabled boolean DEFAULT true
-);
-
-
+-- #region importcomponentesjson
 DROP FUNCTION IF EXISTS insertComponentesFromJson CASCADE;
 
 CREATE OR REPLACE FUNCTION insertComponentesFromJson(jsonData json)
@@ -319,3 +307,48 @@ BEGIN
     CLOSE componenteCursor;
 END;
 $$;
+
+-- #endregion
+
+-- #region exportfornecedoresencomendasjson
+
+DROP FUNCTION IF EXISTS exportFornecedoresEncomendasJson CASCADE;
+
+CREATE OR REPLACE FUNCTION exportFornecedoresEncomendasJson()
+RETURNS json
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    fornecedorData json;
+    encomendasData json;
+    result json;
+BEGIN
+    SELECT json_agg(json_build_object(
+        'fornecedor', fc.fornecedor,
+        'encomendas', (
+            SELECT json_agg(json_build_object(
+                'encomenda', ec.id,
+                'componentes', (
+                    SELECT json_agg(json_build_object(
+                        'componente', ecc.componente,
+                        'quantidade', ecc.quantidade
+                    ))
+                    FROM EncomendaComponenteComponentes ecc
+                    WHERE ecc.encomenda = ec.id
+                )
+            ))
+            FROM EncomendaComponente ec
+            WHERE ec.fornecedor = fc.fornecedor
+        )
+    ))
+    INTO result
+    FROM FornecedorComponente fc;
+
+    RETURN result;
+END;
+$$;
+
+select * from exportFornecedoresEncomendasJson();
+
+
+-- #endregion

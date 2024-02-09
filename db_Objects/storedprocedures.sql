@@ -113,8 +113,6 @@ BEGIN
 END;
 $$; 
 
-
-
 SELECT * FROM ComponenteArmazem;
 -- #endregion
 

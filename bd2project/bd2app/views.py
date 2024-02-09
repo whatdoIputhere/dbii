@@ -5,7 +5,7 @@ from urllib.parse import unquote
 from django.http import HttpResponseForbidden
 
 
-def index(request):
+def index(request):    
     return render(request, 'index.html')
 
 def notFound(request, exception=None):
@@ -77,6 +77,10 @@ def gerirComponentes(request):
             if(editComponente(data.get("componente"))):
                 return HttpResponse(status=200, content="edit")
             return HttpResponse(status=400)
+        if(data.get("action") == "import"):
+            formData = data.get("file")
+            importComponentes(formData)
+            return HttpResponse(status=200, content="")
         if(data.get("action") == "add"):
             newComponente = addComponente(data.get("componente"))
             if(newComponente):
@@ -131,7 +135,6 @@ def gerirFornecedores(request):
                 return HttpResponse(status=200, content="addcomponentes")
             return HttpResponse(status=400)
         if(deleteFornecedor(data.get("id"))):
-            print('deleted ' + data.get("id"))
             return HttpResponse(status=200, content="delete")
         return HttpResponse(status=400)
     except Exception as e:
@@ -196,7 +199,6 @@ def gerirEquipamentos(request):
                 return HttpResponse(status=200, content="edit")
             return HttpResponse(status=400)
         if(data.get("action") == "add"):
-            print(data.get("equipamento"))
             newEquipamento = addEquipamento(data.get("equipamento"), data.get("componentes"),request.session.get('user')[0])
             if(newEquipamento):
                 return HttpResponse(status=200, content="add,"+str(newEquipamento))
@@ -233,7 +235,6 @@ def gerirEncomendas(request):
     try:
         
         if(request.method != 'POST'):
-            print(getEncomendasComponenteComponentes())
             return render(request, 'gerirencomendas.html', 
                           context={'encomendas': getEncomendasComponente(),
                                     'fornecedores': getFornecedores(),
@@ -247,6 +248,8 @@ def gerirEncomendas(request):
             if(editEncomenda(data.get("encomenda"))):
                 return HttpResponse(status=200, content="edit")
             return HttpResponse(status=400)
+        if(data.get("action") == "export"):
+            return HttpResponse(status=200, content=exportEncomendasComponente())
         if(data.get("action") == "add"):
             newEncomenda = addEncomendaComponente(data.get("encomenda"), request.session.get('user')[0])
             if(newEncomenda):

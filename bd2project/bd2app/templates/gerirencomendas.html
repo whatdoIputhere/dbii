@@ -64,6 +64,10 @@
                     `<button style="max-height: 36px; max-width: 181px;" type="button" class="btn btn-success" data-bs-toggle="modal"
                     data-bs-target="#encomendamodal">Efetuar encomendar</button>`
                 );
+                let btnexport = $(
+                    `<button onclick="exportdata()" style="max-height: 36px; max-width: 181px;" type="button" class="btn btn-secondary">Exportar</button>`
+                );
+                $(".dataTables_filter").append(btnexport);
                 $(".dataTables_filter").append(btn);
                 $(".dataTables_filter input").attr("placeholder", "Procurar");
 
@@ -280,6 +284,24 @@
 
             },
 
+            error: function (xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+            }
+        });
+    };
+
+    function exportdata() {
+        $.ajax({
+            url: "/gerirencomendas",
+            type: "POST",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}', action: 'export' },
+            success: function (response) {
+                let blob = new Blob([response.replaceAll("'",'"').replaceAll('None','null')], { type: 'application/vnd.ms-excel' });
+                let link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "encomendas.json";
+                link.click();
+            },
             error: function (xhr, errmsg, err) {
                 console.log(xhr.status + ": " + xhr.responseText);
             }
