@@ -1,0 +1,29 @@
+[
+    {
+        "nome": "Intel Core i5-9400F 2.9GHz",
+        "descricao": "Processador Intel Core i5-9400F 2.9GHz 9MB",
+        "tipo": 9,
+        "preco": 99.90,
+        "iva": 23,
+        "imagem": "",
+        "criadoPor": 1
+    },
+    {
+        "nome": "Intel Core i9-9900K 3.6GHz",
+        "descricao": "Processador Intel Core i9-9900K 3.6GHz 16MB",
+        "tipo": 9,
+        "preco": 299.90,
+        "iva": 23,
+        "imagem": "",
+        "criadoPor": 1
+    },
+    {
+        "nome": "AMD Ryzen 9 3900X 3.8GHz",
+        "descricao": "Processador AMD Ryzen 9 3900X 3.8GHz 64MB",
+        "tipo": 9,
+        "preco": 349.90,
+        "iva": 23,
+        "imagem": "",
+        "criadoPor": 1
+    }
+]

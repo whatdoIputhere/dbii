@@ -269,14 +269,53 @@ ON EntregaEncomendaComponente
 FOR EACH ROW
 EXECUTE FUNCTION updateEstadoEncomendaComponente();
 
-select * from GetEncomendasComponente;
-select * from GetEncomendasComponenteComponentes;
-select * from GetEntregaEncomendaComponente;
-select * from componentearmazem;
+-- select * from GetEncomendasComponente;
+-- select * from GetEncomendasComponenteComponentes;
+-- select * from GetEntregaEncomendaComponente;
+-- select * from componentearmazem;
 
-insert into EntregaEncomendaComponente (encomenda, componente, quantidade, armazem) values (2, 4, 1, 1);
+-- insert into EntregaEncomendaComponente (encomenda, componente, quantidade, armazem) values (2, 4, 1, 1);
 
-select * from GetEncomendasComponente;
-select * from GetEncomendasComponenteComponentes;
-select * from GetEntregaEncomendaComponente;
-select * from componentearmazem;
+-- select * from GetEncomendasComponente;
+-- select * from GetEncomendasComponenteComponentes;
+-- select * from GetEntregaEncomendaComponente;
+-- select * from componentearmazem;
+
+
+CREATE TABLE Componente(
+    id serial PRIMARY KEY,
+    nome varchar(255) NOT NULL,
+    descricao varchar(255) NOT NULL,
+    tipo int NOT NULL REFERENCES TipoComponente(id),
+    preco float NOT NULL,
+    iva int NOT NULL,
+    imagem bytea NOT NULL,
+    criadoPor int NOT NULL REFERENCES Utilizador(id),
+    criadoEm TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    isEnabled boolean DEFAULT true
+);
+
+
+DROP FUNCTION IF EXISTS insertComponentesFromJson CASCADE;
+
+CREATE OR REPLACE FUNCTION insertComponentesFromJson(jsonData json)
+RETURNS void
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    componenteCursor CURSOR FOR SELECT json_array_elements(jsonData);
+    componenteData json;
+BEGIN
+    OPEN componenteCursor;
+    LOOP
+        FETCH componenteCursor INTO componenteData;
+        EXIT WHEN NOT FOUND;
+
+        IF NOT EXISTS (SELECT 1 FROM Componente WHERE nome = componenteData->>'nome') THEN
+            INSERT INTO Componente (nome, descricao, tipo, preco, iva, imagem, criadoPor)
+            VALUES (componenteData->>'nome', componenteData->>'descricao', (componenteData->>'tipo')::int, (componenteData->>'preco')::float, (componenteData->>'iva')::int, (componenteData->>'imagem')::bytea, (componenteData->>'criadoPor')::int);
+        END IF;
+    END LOOP;
+    CLOSE componenteCursor;
+END;
+$$;

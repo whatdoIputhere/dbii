@@ -55,6 +55,8 @@ VALUES  ('Intel i7-9700k', 'Processador Intel Core i7-9700K 3.6GHz c/ Turbo 4.9G
         ('Samsung 860 Evo 500GB M.2', 'Disco Rígido SSD Samsung 860 Evo 500GB M.2 SATA', 5, 89.90, 23, '', 1),
         ('Samsung 860 Evo 1TB M.2', 'Disco Rígido SSD Samsung 860 Evo 1TB M.2 SATA', 5, 149.90, 23, '', 1);
 
+
+
 INSERT INTO TipoEquipamento (nome, criadoPor)
 VALUES  ('Computador Portátil', 1),
         ('Computador Fixo', 1),  
