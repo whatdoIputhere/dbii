@@ -84,7 +84,6 @@
                 });
 
                 $(document).on("change", "select[name='tipo']", function () {
-                    console.log("asd")
                     if (this.getElementsByTagName('option')[0].value == 0)
                         this.removeChild(this.getElementsByTagName('option')[0]);
                     let fornecedorid = this.id.replace('tipo', '');
@@ -340,7 +339,6 @@
     }
 
     function deletefornecedor(fornecedorId) {
-        console.log(fornecedorId);
         $.ajax({
             url: "/gerirfornecedores",
             type: "POST",

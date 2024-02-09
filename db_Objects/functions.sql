@@ -167,3 +167,112 @@ $$;
 
 
 -- #endregion
+
+-- #region encomendacomponente
+
+DROP TYPE IF EXISTS ComponenteArray CASCADE;
+
+CREATE TYPE ComponenteArray AS (
+    componente_id int,
+    quantidade int
+);
+
+DROP TYPE IF EXISTS EncomendaComponentet CASCADE;
+
+CREATE TYPE EncomendaComponentet AS (
+    id int,
+    fornecedor int,
+    nomeFornecedor varchar(255),
+    criadoPor int,
+    nomeCriadoPor varchar(255),
+    criadoEm TIMESTAMP,
+    estado int,
+    nomeEstado varchar(255)
+);
+
+DROP FUNCTION IF EXISTS InserirEncomendaComponenteReturn;
+
+CREATE FUNCTION InserirEncomendaComponenteReturn(
+    p_fornecedor int,
+    p_componentes ComponenteArray[],
+    p_criadoPor int
+)
+RETURNS EncomendaComponentet
+LANGUAGE PLPGSQL
+AS $$
+DECLARE
+    new_encomenda EncomendaComponentet;
+    encomendaId int;
+BEGIN
+    INSERT INTO EncomendaComponente (fornecedor, criadoPor)
+    VALUES (p_fornecedor, p_criadoPor)
+    RETURNING id INTO encomendaId;
+
+    FOR i IN 1..array_length(p_componentes, 1) LOOP
+        INSERT INTO EncomendaComponenteComponentes (encomenda, componente, quantidade)
+        VALUES (encomendaId, p_componentes[i].componente_id, p_componentes[i].quantidade);
+    END LOOP;
+
+    SELECT * FROM GetEncomendasComponente WHERE id = encomendaId INTO new_encomenda;
+
+    RETURN new_encomenda;
+END;
+$$;
+
+-- #endregion
+
+
+DROP FUNCTION IF EXISTS updateEstadoEncomendaComponente CASCADE;
+CREATE OR REPLACE FUNCTION updateEstadoEncomendaComponente()
+RETURNS TRIGGER
+LANGUAGE PLPGSQL
+AS $$
+DECLARE
+    encomendaId int;
+    isFullyDelivered boolean;
+    rec RECORD;
+BEGIN
+    SELECT encomenda INTO encomendaId FROM EntregaEncomendaComponente WHERE id = NEW.id;
+
+    isFullyDelivered := true;
+    FOR rec IN SELECT * FROM EncomendaComponenteComponentes WHERE encomenda = encomendaId LOOP
+        IF (SELECT SUM(quantidade) FROM EntregaEncomendaComponente WHERE encomenda = encomendaId AND componente = rec.componente) < rec.quantidade THEN
+            isFullyDelivered := false;
+            EXIT;
+        END IF;
+    END LOOP;
+
+    UPDATE EncomendaComponente
+    SET estado = CASE WHEN isFullyDelivered THEN 4 ELSE 3 END
+    WHERE id = encomendaId;
+
+
+    IF EXISTS (SELECT 1 FROM ComponenteArmazem WHERE componente = NEW.componente AND armazem = NEW.armazem) THEN
+
+        UPDATE ComponenteArmazem
+        SET quantidade = quantidade + NEW.quantidade
+        WHERE componente = NEW.componente AND armazem = NEW.armazem;
+    ELSE
+        INSERT INTO ComponenteArmazem (componente, armazem, quantidade)
+        VALUES (NEW.componente, NEW.armazem, NEW.quantidade);
+    END IF;
+
+    RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS updateEstadoEncomendaComponente ON EntregaEncomendaComponente;
+
+CREATE TRIGGER updateEstadoEncomendaComponente
+AFTER INSERT
+ON EntregaEncomendaComponente
+FOR EACH ROW
+EXECUTE FUNCTION updateEstadoEncomendaComponente();
+
+select * from GetEntregaEncomendaComponente;
+select * from componentearmazem;
+
+insert into EntregaEncomendaComponente (encomenda, componente, quantidade, armazem) values (2, 4, 1, 1);
+
+select * from GetEntregaEncomendaComponente;
+select * from componentearmazem;

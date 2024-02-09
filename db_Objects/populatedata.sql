@@ -55,29 +55,6 @@ VALUES  ('Intel i7-9700k', 'Processador Intel Core i7-9700K 3.6GHz c/ Turbo 4.9G
         ('Samsung 860 Evo 500GB M.2', 'Disco Rígido SSD Samsung 860 Evo 500GB M.2 SATA', 5, 89.90, 23, '', 1),
         ('Samsung 860 Evo 1TB M.2', 'Disco Rígido SSD Samsung 860 Evo 1TB M.2 SATA', 5, 149.90, 23, '', 1);
 
-INSERT INTO ComponenteArmazem (componente, armazem, quantidade)
-VALUES  (1, 1, 8),
-        (2, 1, 9),
-        (3, 1, 7),
-        (4, 2, 8),
-        (5, 2, 9),
-        (6, 2, 7),
-        (7, 1, 9),
-        (8, 1, 8),
-        (9, 1, 7),
-        (10, 2, 9),
-        (11, 1, 8),
-        (12, 1, 13),
-        (12, 2, 9),
-        (13, 1, 8),
-        (14, 1, 9),
-        (15, 1, 7),
-        (16, 2, 9),
-        (17, 2, 8),
-        (18, 2, 7),
-        (19, 1, 9),
-        (20, 1, 8);
-
 INSERT INTO TipoEquipamento (nome, criadoPor)
 VALUES  ('Computador Portátil', 1),
         ('Computador Fixo', 1),  
@@ -102,10 +79,23 @@ VALUES ('Em processamento'),
        ('Parcialmente Entregue'),
        ('Entregue');
 
-INSERT INTO EstadoEntrega (nome)
-VALUES ('Em processamento'),
-       ('Em transporte'),
-       ('Entregue');
+INSERT INTO EncomendaComponente (fornecedor, criadoPor)
+VALUES (1, 1),
+       (2, 1);
+
+INSERT INTO EncomendaComponenteComponentes (encomenda, componente, quantidade)
+VALUES (1, 1, 25),
+       (1, 2, 13),
+       (1, 3, 19),
+       (2, 4, 7);
+
+INSERT INTO EntregaEncomendaComponente (encomenda, componente, quantidade, armazem)
+VALUES (1, 1, 25, 1),
+       (1, 2, 13, 1),
+       (1, 3, 19, 2),
+       (2, 4, 6, 1);
+
+SELECT * FROM componentearmazem
 
 INSERT INTO MaoObra (tipo, descricao, preco)
 VALUES  ('Montagem (curta duração)', 'Montagem com duração inferior a 30 minutos' ,20),

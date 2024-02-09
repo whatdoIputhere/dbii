@@ -113,7 +113,7 @@ BEGIN
 END;
 $$; 
 
-CALL InserirComponenteArmazem(21,1,7);
+
 
 SELECT * FROM ComponenteArmazem;
 -- #endregion
@@ -327,27 +327,6 @@ CALL InserirEstadoEncomenda('Estado 5');
 SELECT * FROM EstadoEncomenda;
 -- #endregion
 
--- #region EstadoEntrega
-SELECT * FROM EstadoEntrega;
-
-DROP PROCEDURE IF EXISTS InserirEstadoEntrega;
-
-CREATE PROCEDURE InserirEstadoEntrega(
-    p_nome varchar(255)
-)
-LANGUAGE PLPGSQL
-AS $$
-BEGIN
-    INSERT INTO EstadoEntrega (nome)
-    VALUES (p_nome);
-END;
-$$; 
-
-CALL InserirEstadoEntrega('Estado 4');
-
-SELECT * FROM EstadoEntrega;
--- #endregion
-
 -- #region EncomendaComponente
 SELECT * FROM EncomendaComponente;
 
@@ -355,18 +334,17 @@ DROP PROCEDURE IF EXISTS InserirEncomendaComponente;
 
 CREATE PROCEDURE InserirEncomendaComponente(
     p_fornecedor int,
-    p_estado int,
     p_criadoPor int
 )
 LANGUAGE PLPGSQL
 AS $$
 BEGIN
-    INSERT INTO EncomendaComponente (fornecedor, estado, criadoPor)
-    VALUES (p_fornecedor, p_estado, p_criadoPor);
+    INSERT INTO EncomendaComponente (fornecedor, criadoPor)
+    VALUES (p_fornecedor, p_criadoPor);
 END;
 $$; 
 
-CALL InserirEncomendaComponente(1, 1, 1);
+CALL InserirEncomendaComponente(2, 1);
 
 SELECT * FROM EncomendaComponente;
 -- #endregion
@@ -394,6 +372,31 @@ CALL InserirEncomendaEquipamento(1, 1, 1);
 SELECT * FROM EncomendaEquipamento;
 -- #endregion
 
+-- #region EncomendaComponenteComponentes
+
+SELECT * FROM EncomendaComponenteComponentes;
+
+DROP PROCEDURE IF EXISTS InserirEncomendaComponenteComponentes;
+
+CREATE PROCEDURE InserirEncomendaComponenteComponentes(
+    p_encomenda int,
+    p_componente int,
+    p_quantidade int
+)
+LANGUAGE PLPGSQL
+AS $$
+BEGIN
+    INSERT INTO EncomendaComponenteComponentes (encomenda, componente, quantidade)
+    VALUES (p_encomenda, p_componente, p_quantidade);
+END;
+$$;
+
+CALL InserirEncomendaComponenteComponentes(3, 4, 5);
+
+SELECT * FROM EncomendaComponenteComponentes;
+
+-- #endregion
+
 -- #region EntregaEncomendaComponente
 SELECT * FROM EntregaEncomendaComponente;
 
@@ -402,43 +405,43 @@ DROP PROCEDURE IF EXISTS InserirEntregaEncomendaComponente;
 CREATE PROCEDURE InserirEntregaEncomendaComponente(
     p_encomenda int,
     p_componente int,
-    p_estado int
+    p_quantidade int
 )
 LANGUAGE PLPGSQL
 AS $$
 BEGIN
-    INSERT INTO EntregaEncomendaComponente (encomenda, componente, estado)
-    VALUES (p_encomenda, p_componente, p_estado);
+    INSERT INTO EntregaEncomendaComponente (encomenda, componente, quantidade)
+    VALUES (p_encomenda, p_componente, p_quantidade);
 END;
 $$; 
 
-CALL InserirEntregaEncomendaComponente(1, 1, 1);
+
 
 SELECT * FROM EntregaEncomendaComponente;
 -- #endregion
 
--- #region EntregaEncomendaEquipamento
-SELECT * FROM EntregaEncomendaEquipamento;
+-- -- #region EntregaEncomendaEquipamento
+-- SELECT * FROM EntregaEncomendaEquipamento;
 
-DROP PROCEDURE IF EXISTS InserirEntregaEncomendaEquipamento;
+-- DROP PROCEDURE IF EXISTS InserirEntregaEncomendaEquipamento;
 
-CREATE PROCEDURE InserirEntregaEncomendaEquipamento(
-    p_encomenda int,
-    p_equipamento int,
-    p_estado int
-)
-LANGUAGE PLPGSQL
-AS $$
-BEGIN
-    INSERT INTO EntregaEncomendaEquipamento (encomenda, equipamento, estado)
-    VALUES (p_encomenda, p_equipamento, p_estado);
-END;
-$$; 
+-- CREATE PROCEDURE InserirEntregaEncomendaEquipamento(
+--     p_encomenda int,
+--     p_equipamento int,
+--     p_estado int
+-- )
+-- LANGUAGE PLPGSQL
+-- AS $$
+-- BEGIN
+--     INSERT INTO EntregaEncomendaEquipamento (encomenda, equipamento, estado)
+--     VALUES (p_encomenda, p_equipamento, p_estado);
+-- END;
+-- $$; 
 
-CALL InserirEntregaEncomendaEquipamento(1, 1, 1);
+-- CALL InserirEntregaEncomendaEquipamento(1, 1, 1);
 
-SELECT * FROM EntregaEncomendaEquipamento;
--- #endregion
+-- SELECT * FROM EntregaEncomendaEquipamento;
+-- -- #endregion
 
 -- #region MaoObra
 SELECT * FROM MaoObra;
@@ -803,31 +806,6 @@ SELECT * FROM EstadoEncomenda;
 
 -- #endregion
 
--- #region EstadoEntrega
-
-SELECT * FROM EstadoEntrega;
-
-DROP PROCEDURE IF EXISTS AtualizarEstadoEntrega;
-
-CREATE PROCEDURE AtualizarEstadoEntrega(
-    p_id int,
-    p_nome varchar(255)
-)
-LANGUAGE PLPGSQL
-AS $$
-BEGIN
-    UPDATE EstadoEntrega
-    SET nome = p_nome
-    WHERE id = p_id;
-END;
-$$;
-
-CALL AtualizarEstadoEntrega(4, 'Estado 4 atualizado');
-
-SELECT * FROM EstadoEntrega;
-
--- #endregion
-
 -- #region EncomendaComponente
 
 SELECT * FROM EncomendaComponente;
@@ -847,7 +825,7 @@ BEGIN
 END;
 $$;
 
-CALL AtualizarEncomendaComponente(1, 2);
+CALL AtualizarEncomendaComponente(3, 2);
 
 SELECT * FROM EncomendaComponente;
 
@@ -878,31 +856,6 @@ SELECT * FROM EncomendaEquipamento;
 
 -- #endregion
 
--- #region EntregaEncomendaComponente
-
-SELECT * FROM EntregaEncomendaComponente;
-
-DROP PROCEDURE IF EXISTS AtualizarEntregaEncomendaComponente;
-
-CREATE PROCEDURE AtualizarEntregaEncomendaComponente(
-    p_encomenda int,
-    p_componente int,
-    p_estado int
-)
-LANGUAGE PLPGSQL
-AS $$
-BEGIN
-    UPDATE EntregaEncomendaComponente
-        set estado = p_estado
-    WHERE encomenda = p_encomenda AND componente = p_componente;
-END;
-$$;
-
-CALL AtualizarEntregaEncomendaComponente(1, 1, 2);
-
-SELECT * FROM EntregaEncomendaComponente;
-
--- #endregion
 
 -- #region EntregaEncomendaEquipamento
 
@@ -1255,30 +1208,6 @@ SELECT * FROM EstadoEncomenda;
 
 -- #endregion
 
--- #region EstadoEntrega
-
-SELECT * FROM EstadoEntrega;
-
-DROP PROCEDURE IF EXISTS RemoverEstadoEntrega;
-
-CREATE PROCEDURE RemoverEstadoEntrega(
-    p_id int
-)
-LANGUAGE PLPGSQL
-AS $$
-BEGIN
-    UPDATE EstadoEntrega
-    SET isEnabled = false
-    WHERE id = p_id;
-END;
-$$;
-
-CALL RemoverEstadoEntrega(4);
-
-SELECT * FROM EstadoEntrega;
-
--- #endregion
-
 -- #region EncomendaComponente
 
 SELECT * FROM EncomendaComponente;
@@ -1297,7 +1226,7 @@ BEGIN
 END;
 $$;
 
-CALL RemoverEncomendaComponente(1);
+CALL RemoverEncomendaComponente(3);
 
 SELECT * FROM EncomendaComponente;
 
@@ -1346,7 +1275,7 @@ BEGIN
 END;
 $$;
 
-CALL RemoverEntregaEncomendaComponente(1, 1);
+CALL RemoverEntregaEncomendaComponente(3, 4);
 
 SELECT * FROM EntregaEncomendaComponente;
 

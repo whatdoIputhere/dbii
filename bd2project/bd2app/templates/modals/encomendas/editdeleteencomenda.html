@@ -1,0 +1,95 @@
+<div name="editdeletemodal">
+    <div name="modalsdiv">
+        <div class="modal fade" id="editModal{{ encomenda.0 }}" tabindex="-1"
+            aria-labelledby="editModalLabel{{ encomenda.0 }}" aria-hidden="true" data-bs-backdrop="static">
+            <div style="max-width: 800px" class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel{{ encomenda.0 }}">
+                            Ver/Editar encomenda
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/editarencomenda" method="POST">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="nome" class="form-label">Fornecedor</label>
+                                        <input disabled type="text" class="form-control" id="nome{{encomenda.0}}" name="nome"
+                                            value="{{ encomenda.2 }}" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="componentes" class="form-label">Componentes encomendados</label>                                        
+                                        <ul>
+                                            {% for componente in encomendacomponentes %}
+                                            {% if componente.0 == encomenda.0 %}
+                                            <li>{{ componente.2 }}: {{ componente.3 }} unidades</li>                                            
+                                            {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="mb-3">
+                                            <label for="data" class="form-label">Data de encomenda</label>
+                                            <input type="text" class="form-control" id="data{{encomenda.0}}"
+                                                name="data" disabled value="{{ encomenda.5 }}" maxlength="9" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="estado" class="form-label">Estado da encomenda</label>
+                                            <select class="form-select" id="estado{{encomenda.0}}" name="estado">
+                                                {% for estado in estadoencomenda %}
+                                                <option value="{{ estado.0 }}" {% if estado.0 == encomenda.6 %} selected {% endif %}>
+                                                    {{ estado.1 }}
+                                                </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div id="err{{ encomenda.0 }}" class="alert alert-danger d-none" role="alert">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                   
+                                </div>
+                            </div>
+                            <input type="hidden" name="id" value="{{ encomenda.0 }}" />
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnclose{{ encomenda.0 }}" class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                            Fechar
+                        </button>
+                        <button type="button" onclick='saveencomenda("{{ encomenda.0 }}")' class="btn btn-primary">
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="deleteModal{{ encomenda.0 }}" tabindex="-1"
+            aria-labelledby="deleteModalLabel{{ encomenda.0 }}" aria-hidden="true" data-bs-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel{{ encomenda.0 }}">
+                            Confirmar Eliminação
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Tem certeza que deseja excluir o encomenda "{{ encomenda.1 }}"?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <a onclick='deleteencomenda("{{ encomenda.0 }}")' class="btn btn-danger">Eliminar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

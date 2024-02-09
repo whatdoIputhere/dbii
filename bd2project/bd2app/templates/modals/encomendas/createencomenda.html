@@ -1,0 +1,67 @@
+<div name="encomendamodal">
+    <div name="modalsdiv">
+        <div class="modal fade" id="encomendamodal" tabindex="-1"
+            aria-labelledby="encomendamodalLabel" aria-hidden="true" data-bs-backdrop="static">
+            <div style="max-width: 1000px" class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="encomendamodalLabel">Nova encomenda
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/editarfornecedor" method="POST">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="tipo" class="form-label">Fornecedor</label>
+                                        <select class="form-select" id="fornecedor" name="fornecedor">
+                                            <option value="0">Fornecedor</option>
+                                            {% for fornecedor in fornecedores %}
+                                            <option value="{{ fornecedor.0 }}">{{fornecedor.1}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="tipo" class="form-label">Tipo de componente</label>
+                                        <select disabled class="form-select" id="tipo" name="tipo">
+                                            <option value="0">Tipo de componente</option>
+                                            {% for tipo in tiposcomponente %}
+                                            <option value="{{ tipo.0 }}">{{tipo.1}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="componente" class="form-label">Componente</label>
+                                        <select disabled class="form-select" id="componente" name="componente">
+                                            <option value="0">Selecione um tipo</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <button id="btnaddcomponentes{{fornecedor.0}}" type="button" disabled
+                                            onclick='addComponentToList("")' class="btn btn-success">
+                                            Adicionar componente à lista
+                                        </button>
+                                    </div>
+                                    <div id="componenteserr" class="alert alert-danger d-none"
+                                        role="alert">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <span>Componentes adicionados (clique no componente para remover)</span>
+                                    <ul class="listacomponentes" id="addedcomponentes">                                        
+                                    </ul>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btncloseencomenda" class="btn btn-secondary"
+                            data-bs-dismiss="modal">Fechar</button>
+                        <button type="button" onclick='saveencomenda("")'
+                            class="btn btn-primary">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>

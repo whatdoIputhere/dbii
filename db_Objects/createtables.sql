@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS EntregaEncomendaEquipamento CASCADE;
 DROP TABLE IF EXISTS EntregaEncomendaComponente CASCADE;
 DROP TABLE IF EXISTS EncomendaEquipamento CASCADE;
 DROP TABLE IF EXISTS EncomendaComponente CASCADE;
+DROP TABLE IF EXISTS EncomendaComponenteComponentes CASCADE;
 DROP TABLE IF EXISTS EstadoEntrega CASCADE;
 DROP TABLE IF EXISTS EstadoEncomenda CASCADE;
 DROP TABLE IF EXISTS Fornecedor CASCADE;
@@ -174,10 +175,28 @@ CREATE TABLE EstadoEntrega(
 CREATE TABLE EncomendaComponente(
     id serial PRIMARY KEY,
     fornecedor int REFERENCES Fornecedor(id),
-    isEnabled boolean DEFAULT true,
-    estado int REFERENCES EstadoEncomenda(id),
+    estado int REFERENCES EstadoEncomenda(id) DEFAULT 1,
     criadoPor int NOT NULL REFERENCES Utilizador(id),
-    criadoEm TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    criadoEm TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    isEnabled boolean DEFAULT true
+);
+
+CREATE TABLE EncomendaComponenteComponentes(
+    encomenda int REFERENCES EncomendaComponente(id),
+    componente int REFERENCES Componente(id),
+    quantidade int NOT NULL,
+    CONSTRAINT pk_EncomendaComponenteComponentes PRIMARY KEY (encomenda, componente),
+    isEnabled boolean DEFAULT true
+);
+
+CREATE TABLE EntregaEncomendaComponente(
+    id serial PRIMARY KEY,
+    encomenda int REFERENCES EncomendaComponente(id),
+    componente int REFERENCES Componente(id),
+    quantidade int NOT NULL,
+    armazem int REFERENCES Armazem(id),
+    dataEntrega TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    isEnabled boolean DEFAULT true
 );
 
 CREATE TABLE EncomendaEquipamento(
@@ -187,15 +206,6 @@ CREATE TABLE EncomendaEquipamento(
     criadoPor int NOT NULL REFERENCES Utilizador(id),
     criadoEm TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     dataEncomenda TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    isEnabled boolean DEFAULT true
-);
-
-CREATE TABLE EntregaEncomendaComponente(
-    id serial PRIMARY KEY,
-    encomenda int REFERENCES EncomendaComponente(id),
-    componente int REFERENCES Componente(id),
-    estado int REFERENCES EstadoEntrega(id),
-    dataEntrega TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     isEnabled boolean DEFAULT true
 );
 

@@ -1,0 +1,310 @@
+{% extends 'base.html' %} {% block title %}Encomendas{% endblock %} {% block content %}
+<style>
+    .listacomponentes li a:hover {
+        background-color: #dc3545;
+        cursor: pointer;
+        color: white !important;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2>Encomendas</h2>
+            <table id="encomendastable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Fornecedor</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Data da encomenda</th>
+                        <th scope="col">Utilizador</th>
+                        <th scope="col">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for encomenda in encomendas %}
+                    <tr>
+                        <td><b>{{ encomenda.2 }}</b></td>
+                        <td>{{ encomenda.7 }}</td>
+                        <td>{{ encomenda.5 }}</td>
+                        <td>{{ encomenda.4 }}</td>
+                        <td style="min-width: 88px">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#editModal{{ encomenda.0 }}" title="Editar encomenda">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal{{ encomenda.0 }}" title="Apagar encomenda">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <div name="modals">
+                        {% include 'modals/encomendas/editdeleteencomenda.html' %}
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% include 'modals/encomendas/createencomenda.html' %}
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedRow = "";
+    $(document).ready(function () {
+        $("#encomendastable").DataTable({
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.10.25/i18n/Portuguese.json",
+                sSearch: "",
+            },
+            columnDefs: [{ targets: -1, orderable: false }],
+            dom: "lf<rt>ip",
+            initComplete: function () {
+                let btn = $(
+                    `<button style="max-height: 36px; max-width: 181px;" type="button" class="btn btn-success" data-bs-toggle="modal"
+                    data-bs-target="#encomendamodal">Efetuar encomendar</button>`
+                );
+                $(".dataTables_filter").append(btn);
+                $(".dataTables_filter input").attr("placeholder", "Procurar");
+
+                $("#encomendastable tbody").on("click", "button", function () {
+                    let table = $("#encomendastable").DataTable();
+                    let row = table.row($(this).parents("tr"));
+                    selectedRow = row.index();
+                });
+
+                $("select[name='componente']").change(function () {
+                    let encomendaid = this.id.replace('componente', '');
+                    let errorDiv = $('#componenteserr' + encomendaid);
+                    errorDiv.text('');
+                    errorDiv.addClass('d-none')
+                });
+
+                $(document).on("change", "select[name='tipo']", function () {
+                    if (this.getElementsByTagName('option')[0].value == 0)
+                        this.removeChild(this.getElementsByTagName('option')[0]);
+                    updateSelectOptions(this, this.id.replace('tipo', ''));
+                });
+
+                $(document).on("change", "select[name='fornecedor']", function () {
+                    if (this.getElementsByTagName('option')[0].value == 0)
+                        this.removeChild(this.getElementsByTagName('option')[0]);
+                    $('#tipo').attr('disabled', false);
+                    if ($('#tipo').val() != 0) {
+                        updateSelectOptions(this, this.id.replace('fornecedor', ''));
+                    }
+                    $('#addedcomponentes').empty();
+                });
+            },
+        });
+    });
+
+    function updateSelectOptions(_this, encomendaid) {
+        $('#componente').attr('disabled', false);
+        $('#btnaddcomponentes' + encomendaid).prop('disabled', false);
+        let errorDiv = $('#componenteserr' + encomendaid);
+        errorDiv.text('');
+        errorDiv.addClass('d-none')
+
+        let selectedTipo = $('#tipo' + encomendaid).find('option:selected').text();
+        let selectedFornecedor = $('#fornecedor' + encomendaid).val();
+        $('#componente' + encomendaid).empty();
+
+        let componentesList = [{% for componente in componentes %} "{{ componente }}", {% endfor %}];
+    let fornecedorcomponentesList = [{% for fornecedorc in fornecedorcomponente %}"{{ fornecedorc }}", {% endfor %}];
+
+    fornecedorcomponentesList.forEach((fornecedorcomponente, index) => {
+        fornecedorcomponente = JSON.parse(fornecedorcomponente.replace(/&#x27;/g, '"').replace('True', '"True"').replace('False', '"False"').replace('(', '[').replace(')', ']'));
+        if (fornecedorcomponente[0] == selectedFornecedor) {
+            componentesList.forEach((componente, index) => {
+                componente = JSON.parse(componente.replace(/&#x27;/g, '"').replace('True', '"True"').replace('False', '"False"'));
+                if (componente[0] == fornecedorcomponente[2] && componente[3] == selectedTipo) {
+
+                    $('#componente' + encomendaid).append(`<option value="${componente[0]}">${componente[1]}</option>`);
+                }
+            });
+        }
+    });
+    if ($('#componente' + encomendaid).children().length == 0) {
+        $('#btnaddcomponentes' + encomendaid).prop('disabled', true);
+        $('#componente' + encomendaid).attr('disabled', true);
+        errorDiv.text('O fornecedor selecionado não tem componentes para o tipo selecionado');
+        errorDiv.removeClass('d-none');
+    }
+    }
+
+    function addComponentToList(encomendaId) {
+        let componenteId = $('#componente' + encomendaId).val();
+        let componenteName = $('#componente' + encomendaId + ' option:selected').text();
+        let list = $('#addedcomponentes' + encomendaId);
+        let errorDiv = $('#componenteserr' + encomendaId);
+
+        if (list.find(`li:contains(${componenteName})`).length == 0)
+            list.append(`
+            <li>
+                <a onclick="this.parentNode.parentNode.removeChild(this.parentNode);" id="${componenteId}">${componenteName}</a>
+                <input style="max-width: 50px;" type="number" id="quantidade${encomendaId},${componenteId}" name="quantidade" value="1">
+            </li>`);
+        else {
+            errorDiv.text("Componente já foi adicionado à lista")
+            errorDiv.removeClass('d-none');
+        }
+    }
+
+    function addInvalidCssClass(campo, isvalid, componentId) {
+        $('#' + campo + componentId).addClass('is-invalid');
+        isvalid = false;
+    }
+
+    function saveencomenda(encomendaId) {
+        encomenda = {
+            id: encomendaId,
+            fornecedor: $('#fornecedor' + encomendaId).val(),
+            componentes: [],
+        }
+        $('#addedcomponentes' + encomendaId).children().each(function () {
+            let componenteId = $(this).find('a').attr('id');
+            let quantidade = $(this).find('input').val();
+            encomenda.componentes.push([componenteId, quantidade]);
+        });
+        if (encomendaId == "")
+            encomenda.criadoPor = "{{ request.session.user.0 }}";
+
+        $.ajax({
+            url: "/gerirencomendas",
+            type: "POST",
+            data: { encomenda: JSON.stringify(Object.values(encomenda)), csrfmiddlewaretoken: '{{ csrf_token }}', action: encomendaId == "" ? 'add' : 'edit' },
+            success: function (response) {
+                if (response == "edit") {
+                    $('#editModal' + encomendaId).modal('hide');
+                    $('#editModal' + encomendaId).on('hidden.bs.modal', function () {
+                        let table = $('#encomendastable').DataTable();
+                        let row = table.row(selectedRow);
+                        if (row) {
+                            row.data([
+                                `<strong>${encomenda.nome}</strong>`,
+                                encomenda.email,
+                                encomenda.telefone,
+                                `<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                title="Editar encomenda" data-bs-target="#editModal${encomenda.id}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+
+                                <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                                title="Ver/editar componentes" data-bs-target="#componentesModal${encomenda.id}">
+                                    <i class="fas fa-boxes" style="color: #fff"></i>
+                                </button>
+
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                title="Apagar encomenda" data-bs-target="#deleteModal${encomenda.id}">
+                                    <i class="fas fa-trash"></i>
+                                </button>`
+                            ]).draw(false);
+                            $('#editModal' + encomendaId).unbind('hidden.bs.modal');
+                        }
+                    });
+                    return;
+                }
+                if (response.includes("add")) {
+                    response = JSON.parse(response.replace("add,", ""))[0];
+                    let newId = response[0];
+                    encomenda.id = newId;
+                    encomenda.fornecedor = response[2];
+                    encomenda.estado = response[7];
+                    encomenda.data = response[5];
+                    encomenda.criadoPor = response[4];
+
+                    $('#encomendamodal').modal('hide');
+                    $('#encomendamodal').on('hidden.bs.modal', function () {
+                        let parts = encomenda.data.split("/");
+                        let date = new Date(`${parts[1]}/${parts[0]}/${parts[2]}`);
+                        let optionsDate = { day: 'numeric', month: 'long', year: 'numeric' };
+                        let optionsTime = { hour: '2-digit', minute: '2-digit', hour12: false };
+                        let formattedDate = date.toLocaleDateString('pt-PT', optionsDate) + ' às ' + date.toLocaleTimeString('pt-PT', optionsTime);
+
+                        let dateParts = formattedDate.split(" ");
+                        dateParts[2] = dateParts[2].charAt(0).toUpperCase() + dateParts[2].slice(1);
+                        formattedDate = dateParts.join(" ");
+                        let newRow = [
+                            `<strong>${encomenda.fornecedor}</strong>`,
+                            encomenda.estado,
+                            formattedDate,
+                            encomenda.criadoPor,
+                            `<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                title="Editar encomenda" data-bs-target="#editModal${encomenda.id}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                title="Apagar encomenda" data-bs-target="#deleteModal${encomenda.id}">
+                                    <i class="fas fa-trash"></i>
+                                </button>`
+                        ];
+                        let table = $('#encomendastable').DataTable();
+                        table.row.add(newRow).draw();
+
+                        $('#fornecedor').prepend('<option selected value="0">Fornecedor</option>');
+                        $('#tipo').attr('disabled', true);
+                        $('tipo').prepend('<option selected value="0">Tipo de componente</option>');
+                        $('#componente').attr('disabled', true);
+                        $('#componente').prepend('<option selected value="0">Selecione um tipo</option>');
+                        $('#addedcomponentes').empty();
+
+                        $('#encomendamodal').unbind('hidden.bs.modal');
+                        encomendaValues = Object.values(response);
+                        console.log(encomendaValues);
+                        console.log(encomenda.componentes);
+                        $.ajax({
+                            url: "modals/encomendas/editdeleteencomenda",
+                            type: "POST",
+                            data: { encomenda: JSON.stringify(encomendaValues), encomendacomponentes: JSON.stringify(encomenda.componentes), csrfmiddlewaretoken: '{{ csrf_token }}' },
+                            success: function (response) {
+                                try {
+                                    encomenda = {};
+                                    let editDeleteModal = response;
+                                    let modalsdiv = `<div name="modals">
+                                            ${editDeleteModal}
+                                    </div>`
+                                    $('div[name="modals"]').last().after(modalsdiv);
+                                } catch (error) {
+                                    console.log(error);
+                                }
+                            },
+                            error: function (xhr, errmsg, err) {
+                                console.log(xhr.status + ": " + xhr.responseText);
+                            }
+                        });
+                    });
+                    return;
+                }
+
+            },
+
+            error: function (xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+            }
+        });
+    };
+
+    function deleteencomenda(encomendaId) {
+        $.ajax({
+            url: "/gerirencomendas",
+            type: "POST",
+            data: { id: encomendaId, csrfmiddlewaretoken: '{{ csrf_token }}', action: 'delete' },
+
+            success: function (json) {
+                $('#deleteModal' + encomendaId).modal('hide');
+                $('#deleteModal' + encomendaId).on('hidden.bs.modal', function () {
+                    let table = $('#encomendastable').DataTable();
+                    table.row(selectedRow).remove().draw();
+                    $('#deleteModal' + encomendaId).unbind('hidden.bs.modal');
+                });
+            },
+
+            error: function (xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+            }
+        });
+    };
+</script>
+{% endblock %}

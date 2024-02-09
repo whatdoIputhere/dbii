@@ -105,7 +105,7 @@ def editDeleteComponenteModal(request):
 
 # endregion
 
-#region Fornecedores
+#region Fornecedores 
 def gerirFornecedores(request):
     if not isAdmin(request):
         return redirect('index')
@@ -223,4 +223,58 @@ def editDeleteEquipamentoModal(request):
                             'componentes': getComponentes(),
                             'tiposcomponente': getTiposComponentes(),
                             'maoObra': getMaoObra()})
+#endregion
+
+#region Encomendas
+
+def gerirEncomendas(request):
+    if not isAdmin(request):
+        return redirect('index')
+    try:
+        
+        if(request.method != 'POST'):
+            print(getEncomendasComponenteComponentes())
+            return render(request, 'gerirencomendas.html', 
+                          context={'encomendas': getEncomendasComponente(),
+                                    'fornecedores': getFornecedores(),
+                                    'componentes': getComponentes(),
+                                    'tiposcomponente': getTiposComponentes(),
+                                    'fornecedorcomponente': getFornecedorComponente(),
+                                    'encomendacomponentes': getEncomendasComponenteComponentes(),
+                                    'estadoencomenda': getEstadoEncomendaComponente()})
+        data = request.POST
+        if(data.get("action") == "edit"):
+            if(editEncomenda(data.get("encomenda"))):
+                return HttpResponse(status=200, content="edit")
+            return HttpResponse(status=400)
+        if(data.get("action") == "add"):
+            newEncomenda = addEncomendaComponente(data.get("encomenda"), request.session.get('user')[0])
+            if(newEncomenda):
+                return HttpResponse(status=200, content="add,"+str(newEncomenda))
+            return HttpResponse(status=400)
+        if(deleteEncomendaComponente(data.get("id"))):
+            return HttpResponse(status=200, content="delete")
+        return HttpResponse(status=400)
+    except Exception as e:
+        print(e)
+        #this should be changed to a error page
+        return render(request, 'index.html')
+
+
+def editDeleteEncomendaComponenteModal(request):
+    if request.META.get('HTTP_REFERER') is None:
+        return render(request, '404.html')
+    
+    encomenda = unquote(request.POST.get("encomenda"))
+    encomenda = json.loads(encomenda)
+    encomendacomponentes = unquote(request.POST.get("encomendacomponentes"))
+    encomendacomponentess = json.loads(encomendacomponentes)
+    return render(request, 'modals/encomendas/editdeleteencomenda.html', 
+                    context={'encomenda': encomenda, 
+                            'fornecedores': getFornecedores(),
+                            'componentes': getComponentes(),
+                            'tiposcomponente': getTiposComponentes(),
+                            'fornecedorcomponente': getFornecedorComponente(),
+                            'encomendacomponentes': getEncomendasComponenteComponentes(),
+                            'estadoencomenda': getEstadoEncomendaComponente()})
 #endregion

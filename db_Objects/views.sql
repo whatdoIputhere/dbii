@@ -161,7 +161,7 @@ componente.nome AS nomeComponente
 FROM FornecedorComponente
 JOIN Fornecedor ON FornecedorComponente.fornecedor = Fornecedor.id
 JOIN Componente ON FornecedorComponente.componente = Componente.id
-WHERE fornecedorComponente.isEnabled = 'True';
+WHERE fornecedor.isEnabled = 'True';
 
 SELECT * FROM GetFornecedorComponente;
 
@@ -216,3 +216,71 @@ SELECT * FROM GetMaoObra;
 
 -- #endregion
 
+-- #region EncomendasComponente
+DROP VIEW IF EXISTS GetEncomendasComponente;
+
+CREATE VIEW GetEncomendasComponente AS SELECT
+encomendaComponente.id,
+encomendaComponente.fornecedor,
+fornecedor.nome AS nomeFornecedor,
+encomendaComponente.criadoPor,
+utilizador.nome AS nomeCriadoPor,
+encomendaComponente.criadoEm,
+encomendaComponente.estado,
+estadoEncomenda.nome AS nomeEstado
+FROM EncomendaComponente
+JOIN Fornecedor ON EncomendaComponente.fornecedor = Fornecedor.id
+JOIN EstadoEncomenda ON EncomendaComponente.estado = EstadoEncomenda.id
+JOIN Utilizador ON EncomendaComponente.criadoPor = Utilizador.id
+WHERE EncomendaComponente.isEnabled = 'True';
+
+SELECT * FROM GetEncomendasComponente;
+
+-- #endregion
+
+-- #region EncomendasComponenteComponentes
+DROP VIEW IF EXISTS GetEncomendasComponenteComponentes;
+
+CREATE VIEW GetEncomendasComponenteComponentes AS SELECT
+encomendaComponenteComponentes.encomenda,
+encomendaComponenteComponentes.componente,
+componente.nome AS nomeComponente,
+encomendaComponenteComponentes.quantidade
+FROM EncomendaComponenteComponentes
+JOIN Componente ON EncomendaComponenteComponentes.componente = Componente.id
+JOIN EncomendaComponente ON EncomendaComponenteComponentes.encomenda = EncomendaComponente.id
+WHERE EncomendaComponente.isEnabled = 'True';
+
+SELECT * FROM GetEncomendasComponenteComponentes;
+
+-- #endregion
+
+-- #region EntregaEncomendaComponente
+
+DROP VIEW IF EXISTS GetEntregaEncomendaComponente;
+
+CREATE VIEW GetEntregaEncomendaComponente AS SELECT
+entregaEncomendaComponente.id,
+entregaEncomendaComponente.encomenda,
+entregaEncomendaComponente.componente,
+entregaEncomendaComponente.quantidade,
+entregaEncomendaComponente.dataEntrega
+FROM EntregaEncomendaComponente
+WHERE EntregaEncomendaComponente.isEnabled = 'True';
+
+SELECT * FROM GetEntregaEncomendaComponente;
+
+-- #endregion
+
+-- #region EstadoEncomenda
+
+DROP VIEW IF EXISTS GetEstadoEncomendaComponente;
+
+CREATE VIEW GetEstadoEncomendaComponente AS SELECT
+*
+FROM EstadoEncomenda
+WHERE EstadoEncomenda.isEnabled = 'True';
+
+SELECT * FROM GetEstadoEncomendaComponente;
+
+-- #endregion

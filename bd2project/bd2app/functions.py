@@ -70,6 +70,53 @@ def getMaoObra():
         print(f"Error: {str(e)}")
         return []
 
+#region encomendaComponente
+
+def getEncomendasComponente():
+    try:
+        return executedb("GetEncomendasComponente", [], 'view')        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return []
+    
+def getEncomendasComponenteComponentes():
+    try:
+        return executedb("GetEncomendasComponenteComponentes", [], 'view')        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return []
+
+def getEstadoEncomendaComponente():
+    try:
+        return executedb("GetEstadoEncomendaComponente", [], 'view')        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return []
+
+def addEncomendaComponente(encomenda, userId):
+    try:
+        encomenda_obj = json.loads(encomenda)
+        encomenda_obj.pop(0)
+        encomenda_obj = [int(encomenda_obj[0]), [[int(i[0]), int(i[1])] for i in encomenda_obj[1]], int(encomenda_obj[2])]
+        componente_array = ', '.join(f"ROW({i[0]}, {i[1]})::ComponenteArray" for i in encomenda_obj[1])
+        query = f"InserirEncomendaComponenteReturn{f"({encomenda_obj[0]}, ARRAY[{componente_array}], {encomenda_obj[2]})"}"
+        newEncomenda = executedb(query, [], 'funcnoparams')
+        print(newEncomenda)
+        return json.dumps(newEncomenda, cls=CustomEncoder)
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
+
+def deleteEncomendaComponente(id):
+    try:
+        executedb("RemoverEncomendaComponente", [id], 'proc')
+        return True
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return False
+
+#endregion
+
 #region CRUD Equipamento
 
 def addEquipamento(equipamento, componentes,userId):
@@ -241,7 +288,7 @@ def printSessionValues(request):
 class CustomEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime.datetime):
-            return obj.isoformat()
+            return obj.strftime("%d/%m/%Y %H:%M:%S")
         elif isinstance(obj, memoryview):
             return obj.tobytes().decode('utf-8')
         return super().default(obj)
@@ -249,6 +296,7 @@ class CustomEncoder(json.JSONEncoder):
 # TODO: Add try catch to all functions and display information that something went wrong with the database
 def executedb(name, params, type):
     query = f"{name}({','.join(['%s'] * len(params))})"
+
     cursor = connections['default'].cursor()
     if type == "proc":
         cursor.execute('CALL ' + query, params)
@@ -256,6 +304,9 @@ def executedb(name, params, type):
         cursor.callproc(name, params)
         return cursor.fetchone()
     elif type == "view":
+        cursor.execute('SELECT * FROM ' + name)
+        return cursor.fetchall()
+    else:
         cursor.execute('SELECT * FROM ' + name)
         return cursor.fetchall()
 
