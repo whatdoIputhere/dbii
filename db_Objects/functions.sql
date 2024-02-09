@@ -269,10 +269,14 @@ ON EntregaEncomendaComponente
 FOR EACH ROW
 EXECUTE FUNCTION updateEstadoEncomendaComponente();
 
+select * from GetEncomendasComponente;
+select * from GetEncomendasComponenteComponentes;
 select * from GetEntregaEncomendaComponente;
 select * from componentearmazem;
 
 insert into EntregaEncomendaComponente (encomenda, componente, quantidade, armazem) values (2, 4, 1, 1);
 
+select * from GetEncomendasComponente;
+select * from GetEncomendasComponenteComponentes;
 select * from GetEntregaEncomendaComponente;
 select * from componentearmazem;
