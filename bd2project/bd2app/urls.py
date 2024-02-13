@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('',views.index, name='index'),
@@ -18,8 +19,7 @@ urlpatterns = [
     path('modals/fornecedores/vieweditcomponentes',views.viewEditComponentesModal, name='vieweditcomponentes'),
     path('modals/equipamentos/editdeleteequipamento',views.editDeleteEquipamentoModal, name='editdeleteequipamento'),
     path('modals/encomendas/editdeleteencomenda',views.editDeleteEncomendaComponenteModal, name='editdeleteencomenda'),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-urlpatterns += staticfiles_urlpatterns()
 
 handler404='bd2app.views.notFound'
