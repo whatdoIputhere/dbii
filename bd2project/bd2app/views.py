@@ -27,14 +27,14 @@ def register(request):
         context['username'] = username
         return render(request, 'register.html', context)
     password = data.get("password")
-    if(fregister(username, email, password)):
+    if(fregister(username, email, password)[0]):
         return redirect('login')
     else:
         context['error'] = "Username ou email já existente!"
         context['username'] = username
         context['email'] = email
         return render(request, 'register.html', context)
-
+    
 def login(request):
     context = {}
     if request.method != 'POST':
@@ -46,9 +46,9 @@ def login(request):
     email = data.get("email")
     password = data.get("password")
     user = flogin(email, password)
-
-    if not user:
-        context['error'] = "Email or password incorrect!"
+    print(email, password, user)
+    if user == False:
+        context['error'] = "Email ou palavra-passe inválidos!"
         context['email'] = email
         return render(request, 'login.html', context)
     

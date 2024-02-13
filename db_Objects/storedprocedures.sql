@@ -28,8 +28,7 @@ DROP PROCEDURE IF EXISTS InserirUtilizador;
 CREATE PROCEDURE InserirUtilizador(
     p_nome varchar(255),
     p_email varchar(255),
-    p_palavraPasse varchar(255),
-    p_tipo int
+    p_palavraPasse varchar(255)
 )
 LANGUAGE PLPGSQL
 AS $$
@@ -39,7 +38,7 @@ BEGIN
 END;
 $$; 
 
-CALL InserirUtilizador('Cliente 2', 'user2@gmail.com','$2b$12$LttOyjXCxF5k0hwLAU3qMuw6vhY0quJC2NglLI0CBX5ltafGTWyQa',2);
+CALL InserirUtilizador('Cliente 2', 'user2@gmail.com','$2b$12$LttOyjXCxF5k0hwLAU3qMuw6vhY0quJC2NglLI0CBX5ltafGTWyQa');
 
 SELECT * FROM Utilizador;
 -- #endregion
